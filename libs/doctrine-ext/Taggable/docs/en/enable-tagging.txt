@@ -1,0 +1,24 @@
+You can enable tagging on any given model simply by adding the `Taggable` 
+behavior using the `actAs` functionality in your models.
+
+Below is an example where we enable it on a simple `BlogPost` model.
+
+    [yml]
+    BlogPost:
+      actAs: [Taggable]
+      columns:
+        title:
+          type: string(255)
+          notnull: true
+        description:
+          type: string(255)
+          notnull: true
+
+Now when we build our models we will instantly have some new functionality 
+available that we can utilize to set the tags a record has by simply specifying 
+a comma separated list of tags.
+
+Enabling this behavior will create a model named `BlogPostTaggableTag` and use it as a `refClass` to create a many to many relationship between `BlogPost` and `TaggableTag`.
+
+> **NOTE**
+> The `TaggableTag` model is auto generated for you internally by Doctrine and it is a simple model with is an `id` and a `name`.

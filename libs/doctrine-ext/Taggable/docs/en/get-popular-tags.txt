@@ -1,0 +1,36 @@
+Sometimes you may want to get all the tags that are the most popular across your content. This can be done easily enough by using the `Doctrine_Table` method named `getPopularTags()`.
+
+> **NOTE**
+> This method doesn't actually exist on any class that extends `Doctrine_Table`. It is made available to the `TaggableTagTable` instance via use of PHPs magic `__call()` method.
+
+    [php]
+    $tags = Doctrine::getTable('TaggableTag')->getPopularTags();
+
+This returns a `Doctrine_Collection` of `TaggableTag` instances with some additional aggregate data which calculates the number of time the tags have been used across all models, and how many times it has been used total across all models. The names of the added keys for our examples are the following.
+
+* num_blog_post
+* total_num
+
+By default the `getPopular()` tags methods returns the count for all models the behavior is enabled on. If you want to limit the models it returns results for then you can specify a single model to get the popular tags for or an array of models.
+
+If you had the behavior enabled on multiple models. For example two other models named `Photo` and `Bookmark`. You could get the popular tags for one of the single model.
+
+    [php]
+    $tags = Doctrine::getTable('TaggableTag')->getPopularTags('Photo');
+
+Or if you wanted to get the tags for multiple models you can specify an array.
+
+    [php]
+    $tags = Doctrine::getTable('TaggableTag')->getPopularTags(array('BlogPost', 'Photo'));
+
+If you want to simply get a sorted array of popular tags where the `key` is the `name` of the tag and the value is the number of times it has been used.
+
+    [php]
+    $tags = Doctrine::getTable('TaggableTag')->getPopularTagsArray();
+
+All of the above mentioned methods accept the same arguments.
+
+* $relations - An array of relationships to return the tags for. If you don't specify anything it will default to all models that use the behavior.
+* $limit - The number of tags to limit the results for.
+
+The `getPopularTags()` method accepts an additional third argument `$hydrationMode` that defaults to `Doctrine::HYDRATE_RECORD`.

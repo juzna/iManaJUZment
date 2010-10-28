@@ -1,0 +1,3 @@
+The `Taggable` extension is a behavior which adds Tagging capabilities to any 
+models you want. You have the ability set, add and remove tags from any model 
+where the included `Taggable` behavior is enabled.

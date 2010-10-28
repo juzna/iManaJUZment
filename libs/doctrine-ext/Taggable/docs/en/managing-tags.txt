@@ -1,0 +1,61 @@
+We can manage the tags a record has by using a few simple functions.
+
+* setTags() - Set the tags by specifying a list of tags separated by commas.
+* addTags() - Add new tags to the existing set of tags by specifying a list of tags separated by commas.
+* removeTags() - Remove tags from the existing set of tags by specifying a list of tags separated by commas.
+* removeAllTags() - Remove all tags from the existing record.
+
+Below we'll show examples of how you can utilize each of the above methods described.
+
+++ Set Tags
+
+You can easily set the tags by using the `setTags()` method. This method completely removes any existing tags then adds the tags you've specified. Below is an example.
+
+    [php]
+    $post = new BlogPost();
+    $post->title = 'This is a sample blog post';
+    $post->description = 'Cool!';
+    $post->setTags('2009, symfony, doctrine');
+    $post->save();
+
+Now internally setting that tags string would create any `TaggableTag` records that don't already exist in the database, and it would synchronize the associations between the `BlogPost` and the `TaggableTag` records. It would be similar to doing something like this manually with Doctrine.
+
+    [php]
+    $post = new BlogPost();
+    $post->title = 'This is a sample blog post';
+    $post->description = 'Cool!';
+    $post->Tags[]->name = '2009';
+    $post->Tags[]->name = 'symfony';
+    $post->Tags[]->name = 'doctrine';
+    $post->save();
+
+The only difference is that the `setTags()` method makes sure that no duplicates are entered and will create the `TaggableTag` record only if it doesn't already exist.
+
+++ Adding Tags
+
+I can add to the existing set of tags by using the `addTags()` method.
+
+    [php]
+    $post->addTags('new tag, sympal');
+    $post->save();
+
+This will not affect any existing tag associations. It will only add new tags to the `BlogPost`.
+
+++ Removing Tags
+
+Now if we wanted to remove an existing tag we can simply use the `removeTags()` method.
+
+    [php]
+    $post->removeTags('sympal');
+    $post->save();
+
+++ Removing all Tags
+
+Sometimes you may want to simply remove all the tags from a record. This can be done by using the `removeAllTags()` method.
+
+    [php]
+    $post->removeAllTags();
+    $post->save();
+
+> **NOTE**
+> All of the above methods of managing your tags don't persist the changes to the database until you call the `save()` method. Internally this method is adding new `TaggableTag` instances to the collection of `Tags` in the relationship. So the collection is not saved until you call `save()`.

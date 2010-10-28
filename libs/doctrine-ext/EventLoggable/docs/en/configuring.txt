@@ -1,0 +1,37 @@
+The `EventLoggable` is a simple behavior to log events on your models and connections. It can be enabled like the following.
+
+    [yml]
+    User:
+      actAs:
+        EventLoggable:
+          events: [preDelete, preQuery]
+          logger:
+            type: file
+            path: /path/to/logfile.log
+      columns:
+        username: string(255)
+        password: string(255)
+
+Now when you execute some code it will log the events which you have specified.
+
+    Array
+    (
+        [method] => preDelete
+        [name] => delete record
+        [code] => 21
+        [skipped] => 
+        [time] => 
+        [query] => 
+        [params] => Array
+            (
+            )
+
+        [invoker] => Array
+            (
+                [id] => 1
+                [name] => ok
+            )
+
+    )
+    
+If you don't specify any array of events then all events will be logged.
