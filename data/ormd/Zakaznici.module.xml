@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\zakaznici.yml" imported-type="YML">
+
+  <module imported-type="YML" name="Zakaznici" visBkColor="16052987" visSizeX="48" visSizeX2="642" visSizeY="47" visSizeY2="704">
+    <table description="Tabulka zakazniku" name="Zakaznik" visPositionX="125" visPositionY="284" visSizeX="0" visSizeX2="192" visSizeY="0" visSizeY2="251">
+      <column name="PorCis" primary="true" required="true" size="11" type="integer"/>
+      <column name="cisloSmlouvy" size="11" type="integer" unique="true"/>
+      <column name="heslo" size="50" type="string"/>
+      <column name="aktivniOd" type="date"/>
+      <column default="false" name="accepted" required="true" type="boolean"/>
+      <column name="acceptedUser" type="integer"/>
+      <column name="acceptedTime" type="timestamp"/>
+      <column name="predplaceno" type="date"/>
+      <column default="true" name="aktivni" type="boolean"/>
+      <column default="0" name="staryDluh" type="integer"/>
+      <column default="false" name="nepocitatPredplatne" required="true" type="boolean"/>
+      <column name="nepocitatPredplatneDuvod" size="255" type="string"/>
+      <column name="instalacniPoplatek" type="float"/>
+      <column name="doporucitel" size="11" type="integer"/>
+      <column name="sepsaniSmlouvy" type="date"/>
+      <column name="neplaticSkupina" type="integer"/>
+      <column name="neplaticTolerance" type="integer"/>
+      <column name="neplaticNeresitDo" type="date"/>
+      <column description="Foreign key to ZakaznikAdresa" name="vychoziAdresa" size="11" type="integer"/>
+      <index name="cisloSmlouvy" unique="true">
+        <index-column name="cisloSmlouvy"/>
+      </index>
+      <orm-properties>
+        <attribute name="actAs">
+          <attribute name="Geographical"/>
+          <attribute name="SoftDelete"/>
+          <attribute name="Timestampable"/>
+        </attribute>
+        <attribute name="tableName">Zakaznik</attribute>
+      </orm-properties>
+    </table>
+    <table description="IP adresy zakazniku" name="ZakaznikIP" visPositionX="262" visPositionY="-33" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="277">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column name="IP" required="true" size="20" type="string"/>
+      <column description="Sitova maska" name="netmask" required="true" size="2" type="integer"/>
+      <column name="IPold" size="20" type="string"/>
+      <column name="IPverej" size="20" type="string"/>
+      <column description="Skutecna MAC adresa zakaznikova PC" name="MAC" size="20" type="string"/>
+      <column description="Viditelna MAC v ARPu" name="visibleMAC" size="20" type="string"/>
+      <column description="Foreign key to ZakaznikAdresa.ID, zvolena adresa musi byt odberna" name="adresa" required="true" size="11" type="integer"/>
+      <column description="L2 parent, Foreign key to AP.ID" name="l2parent" size="11" type="integer"/>
+      <column description="L2 parent interface" name="l2parentIf" size="50" type="string"/>
+      <column name="l3parent" size="11" type="integer"/>
+      <column name="l3parentIf" size="50" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+      <column default="none" name="encType" required="true" type="enum" values="none,wep,wpa"/>
+      <column description="Wireless encryption key" name="encKey" size="50" type="string"/>
+      <column default="none" name="router" required="true" type="enum" values="none,cable,wifi,combo"/>
+      <column default="false" description="Pokud ma router, zda je zakaznikuv" name="routerVlastni" type="boolean"/>
+      <column default="none" name="voip" required="true" type="enum" values="none,hlas,data"/>
+      <column default="false" name="vlastniRychlost" required="true" type="boolean"/>
+      <column description="IP adresa prijmoveho zarizeni" name="APIP" size="15" type="string"/>
+      <column description="MAC adresa prijimaciho zarizeni" name="APMAC" size="20" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikIP</attribute>
+        <attribute name="actAs">
+          <attribute name="InetSpeed"/>
+          <attribute name="GeographicalCZ">
+            <attribute name="postal">false</attribute>
+            <attribute name="uir">false</attribute>
+          </attribute>
+        </attribute>
+      </orm-properties>
+    </table>
+    <table description="Postovni adresy zakazniku" name="ZakaznikAdresa" visPositionX="-36" visPositionY="-26" visSizeX="0" visSizeX2="138" visSizeY="0" visSizeY2="329">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column default="false" name="isOdberna" required="true" type="boolean"/>
+      <column default="false" name="isFakturacni" required="true" type="boolean"/>
+      <column default="false" name="isKorespondencni" required="true" type="boolean"/>
+      <column name="popis" size="255" type="string"/>
+      <column name="firma" size="100" type="string"/>
+      <column name="firma2" size="100" type="string"/>
+      <column name="titulPred" size="50" type="string"/>
+      <column name="jmeno" size="50" type="string"/>
+      <column name="druheJmeno" size="50" type="string"/>
+      <column name="prijmeni" size="50" type="string"/>
+      <column name="druhePrijmeni" size="50" type="string"/>
+      <column name="titulZa" size="50" type="string"/>
+      <column name="ICO" size="20" type="string"/>
+      <column name="DIC" size="20" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+      <column name="rodneCislo" size="20" type="string"/>
+      <column name="datumNarozeni" size="20" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikAdresa</attribute>
+        <attribute name="actAs">
+          <attribute name="GeographicalCZ">
+            <attribute name="postal">true</attribute>
+            <attribute name="uir">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-properties>
+    </table>
+    <table description="Kontakt na zakaznika" name="ZakaznikKontakt" visPositionX="112" visPositionY="-25" visSizeX="0" visSizeX2="89" visSizeY="0" visSizeY2="82">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column description="Typ kontaktu: email, telefon, mobil, fax, jabber..." name="typ" required="true" size="10" type="string"/>
+      <column name="hodnota" required="true" size="100" type="string"/>
+      <column name="popis" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikKontakt</attribute>
+      </orm-properties>
+    </table>
+    <table description="Neaktivita zakaznika" name="ZakaznikNeaktivni" visPositionX="438" visPositionY="-22" visSizeX="0" visSizeX2="105" visSizeY="0" visSizeY2="82">
+      <column name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column name="PorCis" required="true" size="11" type="integer"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" type="date"/>
+      <column name="duvod" required="true" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikNeaktivni</attribute>
+      </orm-properties>
+    </table>
+    <table description="Sparovani neaktivity zakaznika s tarify" name="ZakaznikNeaktivniTarif" visPositionX="33" visPositionY="601" visSizeX="0" visSizeX2="118" visSizeY="0" visSizeY2="56">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikTarif.ID" name="tarif" required="true" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikNeaktiv.ID" name="neaktivita" required="true" size="11" type="integer"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikNekativniTarif</attribute>
+      </orm-properties>
+    </table>
+    <table name="ZakaznikTarif" visPositionX="-43" visPositionY="345" visSizeX="0" visSizeX2="125" visSizeY="0" visSizeY2="212">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Tarif.ID" name="tarif" required="true" size="11" type="integer"/>
+      <column name="popis" size="255" type="string"/>
+      <column default="false" description="Zda je to zakladni tarif (kopiruje hodnotu z tabulky Tarif)" name="zakladni" required="true" type="boolean"/>
+      <column default="false" name="specialniCeny" required="true" type="boolean"/>
+      <column name="mesicniPausal" type="float"/>
+      <column name="ctvrtletniPausal" type="float"/>
+      <column name="pololetniPausal" type="float"/>
+      <column name="rocniPausal" type="float"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" type="date"/>
+      <column name="predplaceno" type="date"/>
+      <column default="true" name="aktivni" required="true" type="boolean"/>
+      <column description="Pokud je ukoncen, zda je kompletne zaplacen" name="zaplacenoCele" type="boolean"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikTarif</attribute>
+      </orm-properties>
+    </table>
+    <table description="Uhrady tarifu zakaznika" name="ZakanzikTarifUhrada" visPositionX="183" visPositionY="595" visSizeX="0" visSizeX2="102" visSizeY="0" visSizeY2="82">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikTarif" name="tarif" required="true" size="11" type="integer"/>
+      <column description="Pocet mesicu" name="mesicu" required="true" size="3" type="integer"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" required="true" type="date"/>
+    </table>
+    <foreign-key from="Zakaznik" name="FK_Zakaznik_ZakaznikAdresa" to="ZakaznikAdresa">
+      <foreign-key-column from="vychoziAdresa" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikIP" name="FK_ZakaznikIP" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikAdresa" name="FK_ZakaznikAdresa" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikKontakt" name="FK_ZakaznikKontakt" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikNeaktivni" name="FK_ZakaznikNeaktivni" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikNeaktivniTarif" name="FK_ZakaznikNeaktivniTarif" to="ZakaznikTarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikNeaktivniTarif" name="FK_ZakaznikNeaktivniTarif_ZakaznikNeaktivni" to="ZakaznikNeaktivni">
+      <foreign-key-column from="neaktivita" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTarif" name="FK_ZakaznikTarif" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTarif" name="FK_ZakaznikTarif" to="Tarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakanzikTarifUhrada" name="FK_ZakanzikTarifUhrada_ZakaznikTarif" to="ZakaznikTarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

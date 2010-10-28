@@ -1,0 +1,216 @@
+Tarif:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      unique: true
+      type: string(50)
+      notnull: true
+    zakladni:
+      default: true
+      type: boolean
+      notnull: true
+    mesicniPausal:
+      type: float
+      notnull: true
+    ctvrtletniPausal:
+      type: float
+      notnull: true
+    pololetniPausal:
+      type: float
+      notnull: true
+    rocniPausal:
+      type: float
+      notnull: true
+    popis:
+      type: string(255)
+      notnull: true
+    posilatFaktury:
+      default: false
+      type: boolean
+      notnull: true
+Adresar:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(100)
+    jePlatceDph:
+      default: false
+      type: boolean
+      notnull: true
+    zobrazit:
+      default: true
+      type: boolean
+      notnull: true
+AdresarAdresa:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+    adresar:
+      type: integer(11)
+      notnull: true
+    isOdberna:
+      default: false
+      type: boolean
+      notnull: true
+    isFakturacni:
+      default: false
+      type: boolean
+      notnull: true
+    isKorespondencni:
+      default: false
+      type: boolean
+      notnull: true
+    popis:
+      type: string(255)
+    firma:
+      type: string(100)
+    firma2:
+      type: string(100)
+    titulPred:
+      type: string(50)
+    jmeno:
+      type: string(50)
+    druheJmeno:
+      type: string(50)
+    prijmeni:
+      type: string(50)
+    druhePrijmeni:
+      type: string(50)
+    titulZa:
+      type: string(50)
+    ulice:
+      type: string(50)
+    cisloPopisne:
+      type: string(20)
+    mesto:
+      type: string(50)
+    PSC:
+      type: string(10)
+    uir_objekt:
+      type: integer(11)
+    ICO:
+      type: string(20)
+    DIC:
+      type: string(20)
+    poznamka:
+      type: string(255)
+    rodneCislo:
+      type: string(20)
+    datumNarozeni:
+      type: string(20)
+  relations:
+    Adresar:
+      local: adresar
+      foreign: ID
+AdresarKontakt:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    adresar:
+      type: integer(11)
+      notnull: true
+    typ:
+      type: string(10)
+      notnull: true
+    hodnota:
+      type: string(100)
+      notnull: true
+    popis:
+      type: string(255)
+  relations:
+    Adresar:
+      local: adresar
+      foreign: ID
+AdresarUcet:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    adresar:
+      type: integer(11)
+    predcisli:
+      type: string(10)
+      notnull: true
+    cislo:
+      type: string(10)
+      notnull: true
+    kodBanky:
+      type: string(4)
+      notnull: true
+    poznamka:
+      type: string(255)
+  relations:
+    Adresar:
+      local: adresar
+      foreign: ID
+AdresarZalohovyUcet:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    adresar:
+      type: integer(11)
+    nazev:
+      type: string(100)
+      notnull: true
+    kod:
+      default: 1
+      type: integer(1)
+      notnull: true
+  indexes:
+    IX_AdresarZalohovyUcet_adresar_kod:
+      fields: [adresar, kod]
+      type: unique
+  relations:
+    Adresar:
+      local: adresar
+      foreign: ID
+TarifFlag:
+  tableName: TarifFlag
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      unique: true
+      type: string(50)
+      notnull: true
+TarifRychlost:
+  actAs:
+    InetSpeed: 
+  tableName: TarifRychlost
+  columns:
+    tarif:
+      primary: true
+      type: integer(11)
+    flag:
+      primary: true
+      type: integer(11)
+  relations:
+    Tarif:
+      local: tarif
+      foreign: ID
+    TarifFlag:
+      local: flag
+      foreign: ID

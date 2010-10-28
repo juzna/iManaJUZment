@@ -1,0 +1,338 @@
+Zakaznik:
+  actAs:
+    Geographical: 
+    SoftDelete: 
+    Timestampable: 
+  tableName: Zakaznik
+  columns:
+    PorCis:
+      primary: true
+      type: integer(11)
+      notnull: true
+    cisloSmlouvy:
+      unique: true
+      type: integer(11)
+    heslo:
+      type: string(50)
+    aktivniOd:
+      type: date
+    accepted:
+      default: false
+      type: boolean
+      notnull: true
+    acceptedUser:
+      type: integer
+    acceptedTime:
+      type: timestamp
+    predplaceno:
+      type: date
+    aktivni:
+      default: true
+      type: boolean
+    staryDluh:
+      default: 0
+      type: integer
+    nepocitatPredplatne:
+      default: false
+      type: boolean
+      notnull: true
+    nepocitatPredplatneDuvod:
+      type: string(255)
+    instalacniPoplatek:
+      type: float
+    doporucitel:
+      type: integer(11)
+    sepsaniSmlouvy:
+      type: date
+    neplaticSkupina:
+      type: integer
+    neplaticTolerance:
+      type: integer
+    neplaticNeresitDo:
+      type: date
+    vychoziAdresa:
+      type: integer(11)
+  indexes:
+    cisloSmlouvy:
+      fields: [cisloSmlouvy]
+      type: unique
+  relations:
+    ZakaznikAdresa:
+      local: vychoziAdresa
+      foreign: ID
+ZakaznikIP:
+  tableName: ZakaznikIP
+  actAs:
+    InetSpeed: 
+    GeographicalCZ:
+      postal: false
+      uir: false
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    IP:
+      type: string(20)
+      notnull: true
+    netmask:
+      type: integer(2)
+      notnull: true
+    IPold:
+      type: string(20)
+    IPverej:
+      type: string(20)
+    MAC:
+      type: string(20)
+    visibleMAC:
+      type: string(20)
+    adresa:
+      type: integer(11)
+      notnull: true
+    l2parent:
+      type: integer(11)
+    l2parentIf:
+      type: string(50)
+    l3parent:
+      type: integer(11)
+    l3parentIf:
+      type: string(50)
+    poznamka:
+      type: string(255)
+    encType:
+      default: none
+      type: enum
+      notnull: true
+      values: [none,wep,wpa]
+    encKey:
+      type: string(50)
+    router:
+      default: none
+      type: enum
+      notnull: true
+      values: [none,cable,wifi,combo]
+    routerVlastni:
+      default: false
+      type: boolean
+    voip:
+      default: none
+      type: enum
+      notnull: true
+      values: [none,hlas,data]
+    vlastniRychlost:
+      default: false
+      type: boolean
+      notnull: true
+    APIP:
+      type: string(15)
+    APMAC:
+      type: string(20)
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+ZakaznikAdresa:
+  tableName: ZakaznikAdresa
+  actAs:
+    GeographicalCZ:
+      postal: true
+      uir: true
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    isOdberna:
+      default: false
+      type: boolean
+      notnull: true
+    isFakturacni:
+      default: false
+      type: boolean
+      notnull: true
+    isKorespondencni:
+      default: false
+      type: boolean
+      notnull: true
+    popis:
+      type: string(255)
+    firma:
+      type: string(100)
+    firma2:
+      type: string(100)
+    titulPred:
+      type: string(50)
+    jmeno:
+      type: string(50)
+    druheJmeno:
+      type: string(50)
+    prijmeni:
+      type: string(50)
+    druhePrijmeni:
+      type: string(50)
+    titulZa:
+      type: string(50)
+    ICO:
+      type: string(20)
+    DIC:
+      type: string(20)
+    poznamka:
+      type: string(255)
+    rodneCislo:
+      type: string(20)
+    datumNarozeni:
+      type: string(20)
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+ZakaznikKontakt:
+  tableName: ZakaznikKontakt
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    typ:
+      type: string(10)
+      notnull: true
+    hodnota:
+      type: string(100)
+      notnull: true
+    popis:
+      type: string(255)
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+ZakaznikNeaktivni:
+  tableName: ZakaznikNeaktivni
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+    duvod:
+      type: string(255)
+      notnull: true
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+ZakaznikNeaktivniTarif:
+  tableName: ZakaznikNekativniTarif
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    tarif:
+      type: integer(11)
+      notnull: true
+    neaktivita:
+      type: integer(11)
+      notnull: true
+  relations:
+    ZakaznikTarif:
+      local: tarif
+      foreign: ID
+    ZakaznikNeaktivni:
+      local: neaktivita
+      foreign: ID
+ZakaznikTarif:
+  tableName: ZakaznikTarif
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    tarif:
+      type: integer(11)
+      notnull: true
+    popis:
+      type: string(255)
+    zakladni:
+      default: false
+      type: boolean
+      notnull: true
+    specialniCeny:
+      default: false
+      type: boolean
+      notnull: true
+    mesicniPausal:
+      type: float
+    ctvrtletniPausal:
+      type: float
+    pololetniPausal:
+      type: float
+    rocniPausal:
+      type: float
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+    predplaceno:
+      type: date
+    aktivni:
+      default: true
+      type: boolean
+      notnull: true
+    zaplacenoCele:
+      type: boolean
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+    Tarif:
+      local: tarif
+      foreign: ID
+ZakanzikTarifUhrada:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    tarif:
+      type: integer(11)
+      notnull: true
+    mesicu:
+      type: integer(3)
+      notnull: true
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+      notnull: true
+  relations:
+    ZakaznikTarif:
+      local: tarif
+      foreign: ID

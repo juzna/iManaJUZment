@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\obecne.yml" imported-type="YML">
+
+  <module imported-type="YML" name="Obecne" visBkColor="15857662" visSizeX="0" visSizeX2="492" visSizeY="0" visSizeY2="558">
+    <table description="Seznam tarifu internetu" name="Tarif" visPositionX="20" visPositionY="40" visSizeX="0" visSizeX2="125" visSizeY="0" visSizeY2="134">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column name="nazev" required="true" size="50" type="string" unique="true"/>
+      <column default="true" description="Zda tarif muze byt samostatne" name="zakladni" required="true" type="boolean"/>
+      <column name="mesicniPausal" required="true" type="float"/>
+      <column name="ctvrtletniPausal" required="true" type="float"/>
+      <column name="pololetniPausal" required="true" type="float"/>
+      <column name="rocniPausal" required="true" type="float"/>
+      <column name="popis" required="true" size="255" type="string"/>
+      <column default="false" name="posilatFaktury" required="true" type="boolean"/>
+    </table>
+    <table description="Adresar firem" name="Adresar" visPositionX="167" visPositionY="41" visSizeX="0" visSizeX2="49" visSizeY="0" visSizeY2="43">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column name="nazev" size="100" type="string"/>
+      <column default="false" name="jePlatceDph" required="true" type="boolean"/>
+      <column default="true" name="zobrazit" required="true" type="boolean"/>
+    </table>
+    <table description="Postovni adresy subjektu z adresare" name="AdresarAdresa" visPositionX="310" visPositionY="42" visSizeX="0" visSizeX2="138" visSizeY="0" visSizeY2="329">
+      <column name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Adresar.ID" name="adresar" required="true" size="11" type="integer"/>
+      <column default="false" name="isOdberna" required="true" type="boolean"/>
+      <column default="false" name="isFakturacni" required="true" type="boolean"/>
+      <column default="false" name="isKorespondencni" required="true" type="boolean"/>
+      <column name="popis" size="255" type="string"/>
+      <column name="firma" size="100" type="string"/>
+      <column name="firma2" size="100" type="string"/>
+      <column name="titulPred" size="50" type="string"/>
+      <column name="jmeno" size="50" type="string"/>
+      <column name="druheJmeno" size="50" type="string"/>
+      <column name="prijmeni" size="50" type="string"/>
+      <column name="druhePrijmeni" size="50" type="string"/>
+      <column name="titulZa" size="50" type="string"/>
+      <column name="ulice" size="50" type="string"/>
+      <column name="cisloPopisne" size="20" type="string"/>
+      <column name="mesto" size="50" type="string"/>
+      <column name="PSC" size="10" type="string"/>
+      <column name="uir_objekt" size="11" type="integer"/>
+      <column name="ICO" size="20" type="string"/>
+      <column name="DIC" size="20" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+      <column name="rodneCislo" size="20" type="string"/>
+      <column name="datumNarozeni" size="20" type="string"/>
+    </table>
+    <table description="Kontaktni informace " name="AdresarKontakt" visPositionX="169" visPositionY="138" visSizeX="0" visSizeX2="110" visSizeY="0" visSizeY2="82">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to Adresar.ID" name="adresar" required="true" size="11" type="integer"/>
+      <column description="Typ kontaktu: email, telefon, mobil, fax, jabber..." name="typ" required="true" size="10" type="string"/>
+      <column name="hodnota" required="true" size="100" type="string"/>
+      <column name="popis" size="255" type="string"/>
+    </table>
+    <table description="Bankovni utcy subjektu" name="AdresarUcet" visPositionX="168" visPositionY="243" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="95">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Adresar.ID" name="adresar" size="11" type="integer"/>
+      <column name="predcisli" required="true" size="10" type="string"/>
+      <column name="cislo" required="true" size="10" type="string"/>
+      <column name="kodBanky" required="true" size="4" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+    </table>
+    <table description="Zalohove ucty subjektu z adresare" name="AdresarZalohovyUcet" visPositionX="175" visPositionY="349" visSizeX="0" visSizeX2="108" visSizeY="0" visSizeY2="69">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Adresar" name="adresar" size="11" type="integer"/>
+      <column name="nazev" required="true" size="100" type="string"/>
+      <column default="1" name="kod" required="true" size="1" type="integer"/>
+      <index description="Kod zalohoveho uctu pro kazdy subjekt musi byt unikatni" name="IX_AdresarZalohovyUcet_adresar_kod" unique="true">
+        <index-column name="adresar"/>
+        <index-column name="kod"/>
+      </index>
+    </table>
+    <table description="Priznak pro tarif" name="TarifFlag" visPositionX="27" visPositionY="329" visSizeX="0" visSizeX2="97" visSizeY="0" visSizeY2="43">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column name="nazev" required="true" size="50" type="string" unique="true"/>
+      <orm-properties>
+        <attribute name="tableName">TarifFlag</attribute>
+      </orm-properties>
+    </table>
+    <table description="Rychlost jednotlivych tarifu podle znacek" name="TarifRychlost" visPositionX="26" visPositionY="222" visSizeX="0" visSizeX2="94" visSizeY="0" visSizeY2="43">
+      <column description="Foreign key to Tarif" name="tarif" primary="true" size="11" type="integer"/>
+      <column description="Foreign key to TarifFlag" name="flag" primary="true" size="11" type="integer"/>
+      <orm-properties>
+        <attribute name="actAs">
+          <attribute name="InetSpeed"/>
+        </attribute>
+        <attribute name="tableName">TarifRychlost</attribute>
+      </orm-properties>
+    </table>
+    <foreign-key from="AdresarAdresa" name="FK_AdresarAdresa_Adresar" to="Adresar">
+      <foreign-key-column from="adresar" to="ID"/>
+    </foreign-key>
+    <foreign-key from="AdresarKontakt" name="FK_AdresarKontakt_Adresar" to="Adresar">
+      <foreign-key-column from="adresar" to="ID"/>
+    </foreign-key>
+    <foreign-key from="AdresarUcet" name="FK_AdresarUcet_Adresar" to="Adresar">
+      <foreign-key-column from="adresar" to="ID"/>
+    </foreign-key>
+    <foreign-key from="AdresarZalohovyUcet" name="FK_AdresarZalohovyUcet_Adresar" to="Adresar">
+      <foreign-key-column from="adresar" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TarifRychlost" name="FK_TarifRychlost_Tarif" to="Tarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TarifRychlost" name="FK_TarifRychlost_TarifFlag" to="TarifFlag">
+      <foreign-key-column from="flag" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

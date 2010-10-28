@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\fakturace.yml" imported-type="YML">
+
+  <module imported-type="YML" name="Fakturace" visBkColor="15923959" visSizeX="0" visSizeX2="577" visSizeY="0" visSizeY2="675">
+    <table name="Faktura" visPositionX="20" visPositionY="40" visSizeX="0" visSizeX2="87" visSizeY="0" visSizeY2="30">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Adresar" name="adresar" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik" name="PorCis" size="11" type="integer"/>
+      <column name="typ" required="true" type="enum" values="vydana,prijata"/>
+      <column name="typ2" required="true" type="enum" values="normal,zalohova,dobropis,zavazek,pohledavka"/>
+      <column description="Foreign key to CiselnaRada" name="ciselnaRada" required="true" type="integer"/>
+      <column name="cislo" required="true" size="20" type="string"/>
+      <column description="Pro prijate faktury" name="interniCislo" size="20" type="string"/>
+      <column name="dVystaveni" type="date"/>
+      <column name="dZapisu" type="date"/>
+      <column name="dSplatnosti" type="date"/>
+      <column description="Datum zdanitelneho plneni" name="dUZP" type="date"/>
+      <column name="predkontace" size="50" type="string"/>
+      <column name="typDPH" size="50" type="string"/>
+      <column name="text" size="5000" type="string"/>
+      <column default="1" description="Neprepocitavat automaticky" name="castkaAutoOff" required="true" type="boolean"/>
+      <column default="20" name="dphSazba1" required="true" size="2" type="integer"/>
+      <column default="10" name="dphSazba2" required="true" size="2" type="integer"/>
+      <column default="0" description="Castka bez DPH" name="castka0" required="true" type="float"/>
+      <column default="0" description="Castka se zakladni sazbou" name="castka1" required="true" type="float"/>
+      <column default="0" name="dph1" required="true" type="float"/>
+      <column default="0" description="Castka se snizenou sazbou" name="castka2" required="true" type="float"/>
+      <column default="0" name="dph2" required="true" type="float"/>
+      <column description="Celkova castka" name="castka" required="true" type="float"/>
+      <column default="CZK" name="mena" required="true" size="3" type="string"/>
+      <column default="0" description="tmp: zbyva na zaplaceni" name="naZaplaceni" required="true" type="float"/>
+      <column default="0" description="tmp: ceka na potvrzeni" name="naPotvrzeni" required="true" type="float"/>
+      <column default="0" description="tmp: jiz zaplaceno a potvrzeno" name="zaplaceno" required="true" type="float"/>
+      <column default="0" description="tmp: pouzita castka ze zalohove faktury nebo dobropisu" name="pouzito" required="true" type="float"/>
+      <column default="predovem" name="formaUhrady" required="true" type="enum" values="dobirkou,hotove,kartou,prevodem,slozenkou,zalohou,zapoctem,jine"/>
+      <column name="cisloUctu" type="string"/>
+      <column name="VS" size="10" type="string"/>
+      <column name="SS" size="10" type="string"/>
+      <column name="KS" size="4" type="string"/>
+      <column name="dOdeslano" type="date"/>
+      <column description="Vydana faktura, kdo ji oznacil za odeslanou; Foreign key to User" name="odeslal" size="11" type="integer"/>
+      <column description="Kdo vytvoril fakturu v sytemu; Foreign key to User.ID" name="vytvoril" required="true" size="11" type="integer"/>
+      <column name="vytvoreno" type="timestamp"/>
+      <column name="poznamka" type="string"/>
+      <column name="ucetniRok" size="4" type="integer"/>
+      <column description="Foreign key to Stredisko" name="stredisko" size="11" type="integer"/>
+      <column default="false" description="Zda je faktura na splatky" name="naSplatky" required="true" type="boolean"/>
+      <column default="false" name="neplatit" required="true" type="boolean"/>
+      <column name="neplatitCastka" type="float"/>
+      <column name="neplatitPoznamka" type="string"/>
+      <column name="uuid" size="50" type="string"/>
+    </table>
+    <table description="Adresa pro fakturu" name="FakturaAdresa" visPositionX="199" visPositionY="39" visSizeX="0" visSizeX2="108" visSizeY="0" visSizeY2="173">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Faktura" name="faktura" required="true" size="11" type="integer"/>
+      <column description="prijemce,odberatel,dodavatel" name="typ" required="true" type="enum"/>
+      <column description="Foreign key to Adresar" name="adresar" size="11" type="integer"/>
+      <column name="jmeno" type="string"/>
+      <column name="ulice" type="string"/>
+      <column name="CP" type="string"/>
+      <column name="mesto" type="string"/>
+      <column name="PSC" type="string"/>
+      <column name="ICO" type="string"/>
+      <column name="DIC" type="string"/>
+      <column name="poznamka" type="string"/>
+    </table>
+    <table description="Polozky faktury" name="FakturaPolozka" visPositionX="347" visPositionY="40" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="225">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Faktura" name="faktura" size="11" type="integer"/>
+      <column name="ucel" size="50" type="string"/>
+      <column name="index" size="11" type="integer"/>
+      <column name="text" size="100" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+      <column description="seriove cislo" name="sn" size="100" type="string"/>
+      <column default="1" name="mnozstvi" required="true" type="float"/>
+      <column default="ks" name="mernaJednotka" size="5" type="string"/>
+      <column name="jednotkovaCena" required="true" type="float"/>
+      <column default="20" name="dphSazba" required="true" size="2" type="integer"/>
+      <column name="caskaBezDPH" required="true" type="float"/>
+      <column name="castkaDPH" required="true" type="float"/>
+      <column name="castkaSDPH" required="true" type="float"/>
+      <column name="predkontace" size="50" type="string"/>
+      <column name="typDPH" size="50" type="string"/>
+    </table>
+    <foreign-key from="Faktura" name="FK_Faktura_Adresar" to="Adresar">
+      <foreign-key-column from="adresar" to="ID"/>
+    </foreign-key>
+    <foreign-key from="Faktura" name="FK_Faktura_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="FakturaAdresa" name="FK_FakturaAdresa_Faktura" to="Faktura">
+      <foreign-key-column from="faktura" to="ID"/>
+    </foreign-key>
+    <foreign-key from="FakturaAdresa" name="FK_FakturaAdresa_Adresar" to="Adresar">
+      <foreign-key-column from="adresar" to="ID"/>
+    </foreign-key>
+    <foreign-key from="FakturaPolozka" name="FK_FakturaPolozka_Faktura" to="Faktura">
+      <foreign-key-column from="faktura" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

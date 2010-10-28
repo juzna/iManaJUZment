@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\platby.yml" imported-type="YML">
+
+  <module imported-type="YML" name="Platby" visBkColor="15857406" visSizeX="0" visSizeX2="269" visSizeY="0" visSizeY2="103">
+    <table description="Seznam vsech plateb" name="Platba" visPositionX="20" visPositionY="40" visSizeX="0" visSizeX2="87" visSizeY="0" visSizeY2="30">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+    </table>
+    <table name="Uhrada" visPositionX="147" visPositionY="40" visSizeX="0" visSizeX2="102" visSizeY="0" visSizeY2="43">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Platba" name="platba" size="11" type="integer"/>
+    </table>
+    <foreign-key from="Uhrada" name="FK_Uhrada_Platba" to="Platba">
+      <foreign-key-column from="platba" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

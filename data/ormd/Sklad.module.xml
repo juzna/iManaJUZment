@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\sklad.yml" imported-type="YML">
+
+  <module description="Sladova evidence" imported-type="YML" name="Sklad" visBkColor="15858929" visSizeX="0" visSizeX2="1022" visSizeY="-7" visSizeY2="519">
+    <table description="Rozdeleni skladove evidence do kategorii" name="SkladKategorie" visPositionX="12" visPositionY="28" visSizeX="0" visSizeX2="98" visSizeY="0" visSizeY2="56">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column name="nazev" size="50" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="actAs">
+          <attribute name="MultiCategory">
+            <attribute name="catTableName">SkladKategorie</attribute>
+            <attribute name="relationTableName">SkladKategorieParent</attribute>
+          </attribute>
+        </attribute>
+      </orm-properties>
+    </table>
+    <table name="SkladVyrobek" visPositionX="147" visPositionY="29" visSizeX="0" visSizeX2="113" visSizeY="0" visSizeY2="82">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column name="nazev" size="50" type="string"/>
+      <column name="popis" size="255" type="string"/>
+      <column default="false" name="hromadovy" required="true" type="boolean"/>
+      <column name="jednotka" size="10" type="string"/>
+      <column name="prodejniCena" type="float"/>
+      <orm-properties>
+        <attribute name="actAs">
+          <attribute name="MultiCategory">
+            <attribute name="catTableName">SkladKategorie</attribute>
+            <attribute name="relationTableName">SkladVyrobekParent</attribute>
+          </attribute>
+        </attribute>
+      </orm-properties>
+    </table>
+    <table description="Revize jednotliveho vyrobku" name="SkladRevize" visPositionX="306" visPositionY="31" visSizeX="0" visSizeX2="134" visSizeY="0" visSizeY2="69">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to SkladVyrobek.ID" name="vyrobek" size="11" type="integer"/>
+      <column name="nazev" size="50" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+    </table>
+    <table description="Sablony pro promenne, jenz se prirazuji prvkum skladu" name="SkladTagTemplate" visPositionX="487" visPositionY="38" visSizeX="0" visSizeX2="132" visSizeY="0" visSizeY2="121">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column name="kod" required="true" size="50" type="string" unique="true"/>
+      <column name="nazev" required="true" size="255" type="string"/>
+      <column name="popis" size="255" type="string"/>
+      <column name="format" required="true" size="50" type="string"/>
+      <column name="formatParameters" size="255" type="string"/>
+      <column name="defaultValue" size="255" type="string"/>
+      <column default="false" name="required" required="true" type="boolean"/>
+    </table>
+    <table description="Pripojeni tag template jednotlivym prvkum skladu" name="SkladTagAttach" visPositionX="657" visPositionY="40" visSizeX="0" visSizeX2="152" visSizeY="0" visSizeY2="69">
+      <column name="SkladTagTemplate_ID" type="integer"/>
+      <column name="SkladKategorie_ID" type="integer"/>
+      <column name="SkladVyrobek_ID" type="integer"/>
+      <column name="SkladRevize_ID" type="integer"/>
+    </table>
+    <table description="Prirazeni konkretnich hodnot tagu jednotlivym prvkum skladu" name="SkladTagValue" visPositionX="849" visPositionY="40" visSizeX="0" visSizeX2="152" visSizeY="0" visSizeY2="69">
+      <column name="SkladTagTemplate_ID" required="true" type="integer"/>
+      <column name="SkladKategorie_ID" type="integer"/>
+      <column name="SkladVyrobek_ID" type="integer"/>
+      <column name="SkladRevize_ID" type="integer"/>
+      <column name="SkladPolozka_ID" type="integer"/>
+      <column name="value" required="true" size="255" type="string"/>
+    </table>
+    <table description="Polozky skladu (konkretni fyzicke kusy)" name="SkladPolozka" visPositionX="135" visPositionY="213" visSizeX="0" visSizeX2="143" visSizeY="0" visSizeY2="173">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to SkladVyrobek.ID" name="vyrobek" size="11" type="integer"/>
+      <column description="Foreign key to SkladRevize.ID" name="revize" size="11" type="integer"/>
+      <column name="nazev" size="50" type="string"/>
+      <column description="Foreign key to SkladDodaciList.ID" name="dodaciList" required="true" size="11" type="integer"/>
+      <column name="pocet" required="true" type="float"/>
+      <column name="jednotka" required="true" size="10" type="string"/>
+      <column name="serial" size="50" type="string"/>
+      <column default="false" description="Zaruka na vyrobek od dodavatele k nam" name="zaruka" required="true" type="boolean"/>
+      <column name="zarukaOd" type="date"/>
+      <column name="zarukaDo" type="date"/>
+      <column name="poznamka" size="255" type="string"/>
+    </table>
+    <table description="Evidence dodacich listu" name="SkladDodaciList" visPositionX="400" visPositionY="201" visSizeX="0" visSizeX2="107" visSizeY="0" visSizeY2="108">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to Adresar.ID" name="dodavatel" required="true" size="11" type="integer"/>
+      <column name="cislo" size="25" type="string"/>
+      <column name="fakturaCislo" size="25" type="string"/>
+      <column description="Foreign key to Faktura.ID" name="faktura" size="11" type="integer"/>
+      <column name="dVystaveni" type="date"/>
+      <column name="dNaskladneni" type="date"/>
+    </table>
+    <table description="Umisteni konkretni polozky ve skladu (i s historii presunu)" name="SkladPolozkaUmisteni" visPositionX="690" visPositionY="227" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="264">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to SkladPolozka.ID" name="polozka" required="true" size="11" type="integer" values=""/>
+      <column name="typ" required="true" type="enum" values="SKLAD,ZAKAZNIK,USER,RACK,REKLAMACE,ADRESAR,FAKTURA,DEAD,JINE"/>
+      <column description="Foreign key to SkladMisto.ID" name="skladMistoId" size="11" type="integer"/>
+      <column name="PorCis" size="11" type="integer"/>
+      <column name="userId" size="11" type="integer"/>
+      <column name="rackId" size="11" type="integer"/>
+      <column name="adresarId" size="11" type="integer"/>
+      <column name="fakturaId" size="11" type="integer"/>
+      <column name="poznamka" size="255" type="string"/>
+      <column name="datumOd" required="true" type="timestamp"/>
+      <column name="datumDo" type="timestamp"/>
+      <column default="false" name="aktivni" required="true" type="boolean"/>
+      <column default="0" description="Recervovane mnozstvi" name="rezervovane" required="true" type="float"/>
+      <column default="1" description="Jeste dostupne mnozstvi" name="dostupne" required="true" type="float"/>
+      <column default="false" name="vadne" required="true" type="boolean"/>
+      <column name="vadnePoznamka" size="255" type="string"/>
+      <column description="Pokud je u zakaznika, tak do kdy ma zakaznik zaruku" name="zarukaDo" type="date"/>
+      <column name="vlastnictvi" type="enum" values="PRONAJEM,ZAKOUPENO,SPLATKY,VYMENENO,NEVIM"/>
+    </table>
+    <table description="Skladova mista" name="SkladMisto" visPositionX="885" visPositionY="345" visSizeX="0" visSizeX2="98" visSizeY="0" visSizeY2="56">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column name="nazev" size="50" type="string"/>
+      <column name="poznamka" size="255" type="string"/>
+    </table>
+    <table description="Evidence Rack skrini v siti" name="Rack" visPositionX="704" visPositionY="145" visSizeX="0" visSizeX2="71" visSizeY="0" visSizeY2="43">
+      <column auto-increment="true" name="ID" primary="true" required="true" type="integer" unique="true"/>
+      <column name="nazev" size="100" type="string"/>
+    </table>
+    <table description="Presun hromadoveho zbozi z jednoho mista na druhe" name="SkladPresun" visPositionX="869" visPositionY="186" visSizeX="0" visSizeX2="103" visSizeY="0" visSizeY2="69">
+      <column name="src" type="integer"/>
+      <column name="dst" type="integer"/>
+      <column name="pocet" type="float"/>
+      <column name="datum" type="timestamp"/>
+    </table>
+    <table description="Rezervace polozky ve skladu na planovac" name="SkladRezervace" visPositionX="510" visPositionY="353" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="95">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column description="Foreign key to SkladPolozka.ID" name="polozka" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Planovac.ID" name="planovacId" required="true" size="11" type="integer"/>
+      <column name="pocet" required="true" type="float"/>
+      <column name="stav" required="true" type="enum" values="CEKA,DOKONCENO,ZRUSENO"/>
+      <column name="stavPoznamka" size="255" type="string"/>
+    </table>
+    <foreign-key from="SkladPolozka" name="FK_SkladPolozka" to="SkladVyrobek">
+      <foreign-key-column from="vyrobek" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPolozka" name="FK_SkladPolozka" to="SkladRevize">
+      <foreign-key-column from="revize" to="ID"/>
+    </foreign-key>
+    <foreign-key caption="" from="SkladPolozka" name="FK_SkladPolozka" to="SkladDodaciList">
+      <foreign-key-column from="dodaciList" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladRevize" name="FK_SkladRevize" to="SkladVyrobek">
+      <foreign-key-column from="vyrobek" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladKategorie">
+      <foreign-key-column from="SkladKategorie_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladTagTemplate">
+      <foreign-key-column from="SkladTagTemplate_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladVyrobek">
+      <foreign-key-column from="SkladVyrobek_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladRevize">
+      <foreign-key-column from="SkladRevize_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladTagTemplate">
+      <foreign-key-column from="SkladTagTemplate_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladKategorie">
+      <foreign-key-column from="SkladKategorie_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladVyrobek">
+      <foreign-key-column from="SkladVyrobek_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladRevize">
+      <foreign-key-column from="SkladRevize_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladPolozka">
+      <foreign-key-column from="SkladPolozka_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni" to="SkladPolozka">
+      <foreign-key-column from="polozka" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni" to="SkladMisto">
+      <foreign-key-column from="skladMistoId" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni" to="Rack">
+      <foreign-key-column from="rackId" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPresun" name="FK_SkladPresun" to="SkladPolozkaUmisteni">
+      <foreign-key-column from="src" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPresun" name="FK_SkladPresun" to="SkladPolozkaUmisteni">
+      <foreign-key-column from="dst" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladRezervace" name="FK_SkladRezervace" to="SkladPolozka">
+      <foreign-key-column from="polozka" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

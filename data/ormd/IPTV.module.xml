@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\iptv.yml" imported-type="YML">
+
+  <module imported-type="YML" name="IPTV" visBkColor="16186620" visSizeX="62" visSizeX2="738" visSizeY="116" visSizeY2="623">
+    <table description="Zakladni TV tarify" name="TvTarif" visPositionX="-44" visPositionY="257" visSizeX="0" visSizeX2="127" visSizeY="0" visSizeY2="82">
+      <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
+      <column name="nazev" required="true" size="50" type="string"/>
+      <column name="cenaProdejni" required="true" type="float"/>
+      <column name="cenaNakupni" required="true" type="float"/>
+      <column default="0" description="Pocet balicku, ktere jsou v cene" name="pocetZdarma" required="true" size="2" type="integer"/>
+    </table>
+    <table description="Tematicke balicky k IPTV" name="TvBalik" visPositionX="99" visPositionY="256" visSizeX="0" visSizeX2="106" visSizeY="0" visSizeY2="56">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column name="nazev" required="true" size="50" type="string"/>
+      <column name="cenaNakupni" required="true" type="float"/>
+    </table>
+    <table description="Kombinace tarifu a tematickych balicku" name="TvTarifBalik" visPositionX="2" visPositionY="390" visSizeX="0" visSizeX2="113" visSizeY="0" visSizeY2="95">
+      <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
+      <column description="Foreign key to TvTarif.ID" name="tarif" required="true" type="integer"/>
+      <column description="Foreign key to TvBalik.ID" name="balik" required="true" type="integer"/>
+      <column name="type" required="true" type="enum" values="included,allowed,disallowed"/>
+      <column default="0" name="zdarma" required="true" size="1" type="integer"/>
+      <column name="castkaProdejni" required="true" type="float"/>
+      <index name="IX_TvTarifBalik_1" unique="true">
+        <index-column name="tarif"/>
+        <index-column name="balik"/>
+      </index>
+    </table>
+    <table description="Televizni tarif zakaznika" name="ZakaznikTvTatif" visPositionX="-43" visPositionY="-76" visSizeX="0" visSizeX2="123" visSizeY="0" visSizeY2="147">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column description="Foreign key to TvTarif.ID" name="tarif" required="true" size="11" type="integer"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" type="date"/>
+      <column name="minimalniDo" required="true" type="date"/>
+      <column name="predplaceno" type="date"/>
+      <column default="true" name="aktivni" required="true" type="boolean"/>
+      <column name="providerZdarmaDo" type="date"/>
+      <column name="providerFakturovanoDo" type="date"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikTvTarif</attribute>
+      </orm-properties>
+    </table>
+    <table description="Priplatkove tematicke balicky uzivatele (pripadne i ty, ktere ma zdarma v ramci zakladniho tarifu)" name="ZakaznikTvBalik" visPositionX="136" visPositionY="-81" visSizeX="0" visSizeX2="123" visSizeY="0" visSizeY2="147">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column description="Foreign key to TvBalik" name="balik" required="true" size="11" type="integer"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" type="date"/>
+      <column name="minimalniDo" type="date"/>
+      <column name="predplaceno" type="date"/>
+      <column default="true" name="aktivni" required="true" type="boolean"/>
+      <column name="providerZdarmaDo" type="date"/>
+      <column name="providerFakturovanoDo" type="date"/>
+    </table>
+    <table description="Zakaznikovy akcni nabidky pro televizi, naparovane bud na zakladi tarif nebo tematicky balicek" name="ZakaznikTvAkce" visPositionX="430" visPositionY="371" visSizeX="0" visSizeX2="105" visSizeY="0" visSizeY2="108">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikTvTarif.ID" name="tarif" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikTvBalik.ID" name="balik" size="11" type="integer"/>
+      <column description="Kod akce" name="akce" required="true" size="50" type="string"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" required="true" type="date"/>
+    </table>
+    <table description="Automaticky pridavane televizni akce k zakaznikum" name="TvAkce" visPositionX="242" visPositionY="391" visSizeX="0" visSizeX2="76" visSizeY="0" visSizeY2="95">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to TvTarif.ID" name="tarif" size="11" type="integer"/>
+      <column description="Foreign key to TvBalik.ID" name="balik" size="11" type="integer"/>
+      <column description="Kod akce" name="akce" required="true" size="50" type="string"/>
+      <column description="O kolik dni je akce opozdena od zacatku tarifu" name="datumPosun" required="true" type="integer"/>
+      <column description="Kolik dni akce trva" name="datumDelka" required="true" type="integer"/>
+    </table>
+    <table name="TvProviderTarifReport" visPositionX="507" visPositionY="38" visSizeX="0" visSizeX2="109" visSizeY="0" visSizeY2="69">
+      <column name="report" size="11" type="integer"/>
+      <column name="tarif" size="11" type="integer"/>
+      <column name="datum" type="date"/>
+      <column name="castka" type="float"/>
+    </table>
+    <table name="TvProviderReport" visPositionX="525" visPositionY="180" visSizeX="0" visSizeX2="100" visSizeY="0" visSizeY2="95">
+      <column name="ID" primary="true" type="integer"/>
+      <column name="datum" type="date"/>
+      <column name="castkaTarif" type="float"/>
+      <column name="castkaBalik" type="float"/>
+      <column name="castkaVOD" type="float"/>
+      <column name="castka" type="float"/>
+    </table>
+    <table name="TvProviderBalikReport" visPositionX="550" visPositionY="-88" visSizeX="0" visSizeX2="112" visSizeY="0" visSizeY2="82">
+      <column description="Foreign key to TvProviderReport.ID" name="report" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikTvTarif.ID" name="tarif" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikTvBalik.ID" name="balik" size="11" type="integer"/>
+      <column name="datum" type="date"/>
+      <column name="castka" type="float"/>
+    </table>
+    <table name="TvVodKredit" visPositionX="279" visPositionY="115" visSizeX="0" visSizeX2="89" visSizeY="0" visSizeY2="56">
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" primary="true" required="true" size="11" type="integer"/>
+      <column name="castka" required="true" type="float"/>
+      <column name="expirace" required="true" type="date"/>
+      <orm-properties>
+        <attribute name="tableName">TvVodKredit</attribute>
+      </orm-properties>
+    </table>
+    <table description="Zaznam objednavek Video on demand" name="TvVodObjednano" visPositionX="233" visPositionY="203" visSizeX="0" visSizeX2="89" visSizeY="0" visSizeY2="82">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
+      <column description="Foreign key to TvProviderReport.ID" name="report" type="integer"/>
+      <column name="film" required="true" size="100" type="string"/>
+      <column description="Castka za film" name="castka" required="true" type="float"/>
+      <column description="Datum a cas objednani" name="datum" required="true" type="timestamp"/>
+      <orm-properties>
+        <attribute name="tableName">TvVodObjednano</attribute>
+      </orm-properties>
+    </table>
+    <table description="SetTopBoxy zakaznika" name="ZakaznikTvStb" visPositionX="589" visPositionY="384" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to Zakaznik" name="PorCis" size="11" type="integer"/>
+      <column name="MAC" size="20" type="string"/>
+      <column name="IP" size="20" type="string"/>
+      <column name="l2parent" size="11" type="integer"/>
+      <column name="l2parentIf" size="50" type="string"/>
+      <column name="datumOd" required="true" type="date"/>
+      <column name="datumDo" type="date"/>
+      <column default="true" name="aktivni" required="true" type="boolean"/>
+      <column default="jine" name="vlastnictvi" required="true" type="enum" values="zakoupen,pronajem,splatky,jine"/>
+      <column name="zarukaOd" required="true" type="date"/>
+      <column name="zarukaDo" required="true" type="date"/>
+      <column name="poznamka" type="string"/>
+      <column name="pin1" size="4" type="string"/>
+      <column name="pin2" size="4" type="string"/>
+      <column name="centronetProfileId" size="50" type="string" unique="true"/>
+      <column description="Foreign key to SkladPolozka" name="skladPolozka" size="11" type="integer"/>
+      <orm-properties>
+        <attribute name="tableName">ZakaznikTvStb</attribute>
+      </orm-properties>
+    </table>
+    <table name="TvAkceList" visPositionX="171" visPositionY="521" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column name="code" primary="true" required="true" size="50" type="string" unique="true"/>
+      <column name="description" size="255" type="string"/>
+    </table>
+    <foreign-key from="TvTarifBalik" name="FK_TvTarifBalik_TvTarif" to="TvTarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvTarifBalik" name="FK_TvTarifBalik_TvBalik" to="TvBalik">
+      <foreign-key-column from="balik" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvTatif" name="FK_ZakaznikTvTatif_TvTarif" to="TvTarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvTatif" name="FK_ZakaznikTvTatif_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvBalik" name="FK_ZakaznikTvBalik_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvBalik" name="FK_ZakaznikTvBalik_TvBalik" to="TvBalik">
+      <foreign-key-column from="balik" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvAkce" name="FK_ZakaznikTvAkce_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvAkce" name="FK_ZakaznikTvAkce_ZakaznikTvTatif" to="ZakaznikTvTatif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvAkce" name="FK_ZakaznikTvAkce_ZakaznikTvBalik" to="ZakaznikTvBalik">
+      <foreign-key-column from="balik" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvAkce" name="FK_TvAkce_TvTarif" to="TvTarif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvAkce" name="FK_TvAkce_TvBalik" to="TvBalik">
+      <foreign-key-column from="balik" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvProviderTarifReport" name="FK_TvProviderTarifReport_TvProviderReport" to="TvProviderReport">
+      <foreign-key-column from="report" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvProviderTarifReport" name="FK_TvProviderTarifReport_ZakaznikTvTatif" to="ZakaznikTvTatif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvProviderBalikReport" name="FK_TvProviderBalikReport_ZakaznikTvTatif" to="ZakaznikTvTatif">
+      <foreign-key-column from="tarif" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvProviderBalikReport" name="FK_TvProviderBalikReport_TvProviderReport" to="TvProviderReport">
+      <foreign-key-column from="report" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvProviderBalikReport" name="FK_TvProviderBalikReport_ZakaznikTvBalik" to="ZakaznikTvBalik">
+      <foreign-key-column from="balik" to="ID"/>
+    </foreign-key>
+    <foreign-key from="TvVodKredit" name="FK_TvVodKredit_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="TvVodObjednano" name="FK_TvVODObjednano_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="TvVodObjednano" name="FK_TvVODObjednano_TvProviderReport" to="TvProviderReport">
+      <foreign-key-column from="report" to="ID"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvStb" name="FK_ZakaznikStb_Zakaznik" to="Zakaznik">
+      <foreign-key-column from="PorCis" to="PorCis"/>
+    </foreign-key>
+    <foreign-key from="ZakaznikTvStb" name="FK_ZakaznikTvStb_SkladPolozka" to="SkladPolozka">
+      <foreign-key-column from="skladPolozka" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

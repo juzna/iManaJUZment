@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<orm-designer imported-from="export\AP.yml" imported-type="YML">
+
+  <module imported-type="YML" name="AP" visBkColor="16644344" visSizeX="7" visSizeX2="806" visSizeY="0" visSizeY2="619">
+    <table description="Seznam Access Pointu" name="AP" visPositionX="16" visPositionY="24" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
+      <column name="nazev" required="true" size="100" type="string" unique="true"/>
+      <column name="popis" size="255" type="string"/>
+      <column default="other" name="mode" required="true" type="enum" values="route,bridge,nat,complex,other"/>
+      <column description="Default IP" name="IP" required="true" size="15" type="string"/>
+      <column description="netmask of default IP" name="netmask" required="true" size="2" type="integer"/>
+      <column default="1" description="Default VLAN" name="pvid" required="true" size="4" type="integer"/>
+      <column default="false" name="snmpAllowed" required="true" type="boolean"/>
+      <column name="snmpCommunity" size="50" type="string"/>
+      <column name="snmpPassword" size="50" type="string"/>
+      <column name="snmpVersion" size="10" type="string"/>
+      <column name="realm" size="50" type="string"/>
+      <column name="username" size="50" type="string"/>
+      <column name="pass" size="50" type="string"/>
+      <column description="Operating system or firmware" name="os" required="true" size="20" type="string"/>
+      <column name="osVersion" size="20" type="string"/>
+      <column name="sshFingerprint" size="60" type="string"/>
+      <column description="Layer 3 parent, foreign key to AP.ID" name="l3parent" size="11" type="integer"/>
+      <column description="Layer 3 parent interface" name="l3parentIf" size="50" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">AP</attribute>
+        <attribute name="actAs">
+          <attribute name="Taggable">
+            <attribute name="tableName">APGroupTags</attribute>
+            <attribute name="tagTableName">APGroupTagList</attribute>
+          </attribute>
+          <attribute name="GeographicalCZ">
+            <attribute name="postal">true</attribute>
+            <attribute name="uir">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-properties>
+    </table>
+    <table description="Various parameters for AccessPoints" name="APParams" visPositionX="179" visPositionY="24" visSizeX="0" visSizeX2="116" visSizeY="0" visSizeY2="69">
+      <column description="Foreign key to AP" name="AP" primary="true" size="11" type="integer"/>
+      <column name="name" primary="true" size="50" type="string"/>
+      <column name="value" size="50" type="string"/>
+      <column name="comment" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">APParams</attribute>
+      </orm-properties>
+    </table>
+    <table description="Layer 2 relations between AP's" name="APParent" visPositionX="13" visPositionY="312" visSizeX="0" visSizeX2="136" visSizeY="0" visSizeY2="147">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column name="parentAP" required="true" size="11" type="integer"/>
+      <column name="parentInterface" size="50" type="string"/>
+      <column name="parentPort" size="50" type="string"/>
+      <column name="parentVlan" required="true" size="4" type="integer"/>
+      <column name="childAP" required="true" size="11" type="integer"/>
+      <column name="childInterface" size="50" type="string"/>
+      <column name="childPort" size="50" type="string"/>
+      <column name="childVlan" required="true" size="4" type="integer"/>
+      <column name="comment" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">APParent</attribute>
+      </orm-properties>
+    </table>
+    <table description="Access Point antennas" name="APAntena" visPositionX="362" visPositionY="19" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="134">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" size="11" type="integer"/>
+      <column description="Software interface name" name="interface" required="true" size="50" type="string"/>
+      <column name="smer" required="true" size="3" type="integer"/>
+      <column name="rozsah" required="true" size="3" type="integer"/>
+      <column name="dosah" required="true" size="4" type="integer"/>
+      <column name="polarita" required="true" type="enum" values="horizontal,vertical"/>
+      <column description="Values: 2,3,5,10...." name="pasmo" size="2" type="integer"/>
+      <column name="poznamka" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">APAntena</attribute>
+      </orm-properties>
+    </table>
+    <table description="AP software interfaces" name="APSwIf" visPositionX="215" visPositionY="123" visSizeX="0" visSizeX2="139" visSizeY="0" visSizeY2="186">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" size="11" type="integer"/>
+      <column description="Interface name" name="interface" required="true" size="50" type="string"/>
+      <column description="When virtual interface, then this is name of master if" name="masterInterface" size="50" type="string"/>
+      <column name="type" type="enum" values="wifi,ether,vlan,virtual-ap,bridge,other"/>
+      <column default="false" description="Directed to parent" name="isNet" required="true" type="boolean"/>
+      <column name="bssid" size="20" type="string"/>
+      <column name="essid" size="30" type="string"/>
+      <column description="for wifi, in MHz" name="frequency" size="4" type="integer"/>
+      <column default="true" name="enabled" required="true" type="boolean"/>
+      <column name="encType" type="enum" values="none,wep,wpa"/>
+      <column name="encKey" size="50" type="string"/>
+      <column default="1" description="Foreign key to TarifFlag.ID" name="tarifFlag" required="true" size="11" type="integer"/>
+      <index description="For AP, interface gotta be unique" name="IX_APswif_APif" unique="true">
+        <index-column name="AP"/>
+        <index-column name="interface"/>
+      </index>
+      <orm-properties>
+        <attribute name="tableName">APSwIf</attribute>
+      </orm-properties>
+    </table>
+    <table description="Hardware for AP" name="APHw" visPositionX="382" visPositionY="174" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="69">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP.ID" name="AP" required="true" size="11" type="integer"/>
+      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka" size="11" type="integer"/>
+      <column description="serial number" name="serial" size="50" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">APHw</attribute>
+      </orm-properties>
+    </table>
+    <table description="Hardware interface" name="APHwIf" visPositionX="394" visPositionY="285" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to APhw" name="APhw" required="true" size="11" type="integer"/>
+      <column name="interface" required="true" size="50" type="string"/>
+      <column name="mac" size="20" type="string"/>
+      <column name="typ" required="true" type="enum" values="ether,wifi,other"/>
+      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka" size="11" type="integer"/>
+      <orm-properties>
+        <attribute name="tableName">APHwIf</attribute>
+      </orm-properties>
+    </table>
+    <table description="AP IP address" name="APIP" visPositionX="235" visPositionY="361" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
+      <column name="interface" required="true" size="50" type="string"/>
+      <column name="ip" required="true" size="15" type="string"/>
+      <column name="netmask" required="true" size="2" type="integer"/>
+      <column name="poznamka" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">APIP</attribute>
+      </orm-properties>
+    </table>
+    <table description="Physical port's for AP" name="APPort" visPositionX="494" visPositionY="408" visSizeX="0" visSizeX2="153" visSizeY="0" visSizeY2="186">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
+      <column name="port" required="true" size="50" type="string"/>
+      <column name="typ" required="true" type="enum" values="empty,zak-inet,zak-tv,zak-voip,zak-reserved,reserved,disabled,switch,ap,other"/>
+      <column description="Foreign key to Zakaznik.PorCis" name="PorCis" size="11" type="integer"/>
+      <column description="Foreign key to ZakaznikAdresa.ID" name="odbernaAdresa" size="11" type="integer"/>
+      <column name="cisloVchodu" size="20" type="string"/>
+      <column name="cisloBytu" size="20" type="string"/>
+      <column description="AP or switch, to which is this port connected" name="connectedTo" size="11" type="integer"/>
+      <column name="connectedInterface" size="50" type="string"/>
+      <column name="connectedPort" size="50" type="string"/>
+      <column default="false" name="isUplink" required="true" type="boolean"/>
+      <column name="popis" size="255" type="string"/>
+      <orm-properties>
+        <attribute name="tableName">APPort</attribute>
+      </orm-properties>
+    </table>
+    <table description="Port to VLAN assignment" name="APPortVlan" visPositionX="8" visPositionY="499" visSizeX="0" visSizeX2="93" visSizeY="0" visSizeY2="82">
+      <column name="AP" primary="true" required="true" size="11" type="integer"/>
+      <column name="port" primary="true" required="true" size="50" type="string"/>
+      <column name="vlan" primary="true" required="true" size="4" type="integer"/>
+      <column default="false" name="tagged" required="true" type="boolean"/>
+      <column default="false" name="pvid" required="true" type="boolean"/>
+      <orm-properties>
+        <attribute name="tableName">APPortVlan</attribute>
+      </orm-properties>
+    </table>
+    <table description="Pokryti APckem" name="APPokryti" visPositionX="262" visPositionY="501" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="108">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
+      <column name="interface" size="50" type="string"/>
+      <column name="vlan" size="4" type="integer"/>
+      <column description="uir.objekt.id" name="adresa" required="true" size="11" type="integer"/>
+      <column name="poznamka" size="255" type="string"/>
+      <column default="3" description="range: 1..5" name="doporuceni" required="true" size="1" type="integer"/>
+    </table>
+    <table description="Prirazeni pouze vyhrazenych subnetu k pokryti" name="APPokrytiSubnet" visPositionX="374" visPositionY="408" visSizeX="0" visSizeX2="108" visSizeY="0" visSizeY2="69">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to APPokryti" name="pokryti" required="true" size="11" type="integer"/>
+      <column name="ip" required="true" size="15" type="string"/>
+      <column name="netmask" required="true" size="2" type="integer"/>
+    </table>
+    <table description="Route list" name="APRoute" visPositionX="624" visPositionY="35" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
+      <column name="ip" required="true" size="15" type="string"/>
+      <column name="netmask" required="true" size="2" type="integer"/>
+      <column name="gateway" required="true" size="15" type="string"/>
+      <column name="preferedSource" size="15" type="string"/>
+      <column default="1" name="distance" required="true" size="2" type="integer"/>
+      <column name="popis" size="255" type="string"/>
+      <column default="true" name="enabled" required="true" type="boolean"/>
+    </table>
+    <table description="Activated services" name="APService" visPositionX="658" visPositionY="219" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="95">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
+      <column name="service" required="true" size="50" type="string"/>
+      <column name="state" required="true" size="20" type="string"/>
+      <column name="stateText" size="100" type="string"/>
+      <column name="lastCheck" type="timestamp"/>
+      <index name="IX_APService_APservice" unique="true">
+        <index-column name="AP"/>
+        <index-column name="service"/>
+      </index>
+    </table>
+    <table description="List of available services" name="APServiceList" visPositionX="666" visPositionY="368" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+      <column name="code" primary="true" required="true" size="20" type="string"/>
+      <column name="nazev" required="true" size="50" type="string"/>
+      <column name="popis" size="255" type="string"/>
+    </table>
+    <table description="Available services for OS" name="APServiceOSList" visPositionX="665" visPositionY="457" visSizeX="0" visSizeX2="103" visSizeY="0" visSizeY2="69">
+      <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
+      <column description="service code" name="code" required="true" size="20" type="string"/>
+      <column name="os" required="true" size="20" type="string"/>
+      <column default="%" name="version" required="true" size="20" type="string"/>
+    </table>
+    <table description="Vlany aktivovane na danem AP" name="APVlan" visPositionX="118" visPositionY="502" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="56">
+      <column description="Foreign key to AP" name="AP" primary="true" required="true" size="11" type="integer"/>
+      <column name="vlan" primary="true" required="true" size="4" type="integer"/>
+      <column name="poznamka" size="255" type="string"/>
+    </table>
+    <foreign-key from="APParams" name="FK_ApParams_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APParent" name="FK_APParent_AP" to="AP">
+      <foreign-key-column from="parentAP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APParent" name="FK_APParent_AP2" to="AP">
+      <foreign-key-column from="childAP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APAntena" name="FK_APAntena_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APSwIf" name="FK_APswif_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APHw" name="FK_APhw_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APHw" name="FK_APhw_SkladPolozka" to="SkladPolozka">
+      <foreign-key-column from="skladPolozka" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APHwIf" name="FK_APhwIf_APhw" to="APHw">
+      <foreign-key-column from="APhw" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APHwIf" name="FK_APhwIf_SkladPolozka" to="SkladPolozka">
+      <foreign-key-column from="skladPolozka" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APIP" name="FK_APIP_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APPort" name="FK_APPort_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APPortVlan" name="FK_APPortVlan_AP" to="AP"/>
+    <foreign-key from="APPokryti" name="FK_APPokryti_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APPokrytiSubnet" name="FK_APPokrytiSubnet_APPokryti" to="APPokryti">
+      <foreign-key-column from="pokryti" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APRoute" name="FK_APRoute_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APService" name="FK_APService_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+    <foreign-key from="APService" name="FK_APService_APServiceList" to="APServiceList">
+      <foreign-key-column from="service" to="code"/>
+    </foreign-key>
+    <foreign-key from="APServiceOSList" name="FK_APServiceOSList_APServiceList" to="APServiceList">
+      <foreign-key-column from="code" to="code"/>
+    </foreign-key>
+    <foreign-key from="APVlan" name="FK_APVlan_AP" to="AP">
+      <foreign-key-column from="AP" to="ID"/>
+    </foreign-key>
+  </module>
+
+</orm-designer>

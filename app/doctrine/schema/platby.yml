@@ -1,0 +1,20 @@
+Platba:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+Uhrada:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    platba:
+      type: integer(11)
+  relations:
+    Platba:
+      local: platba
+      foreign: ID
