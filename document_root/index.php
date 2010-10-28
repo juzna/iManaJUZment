@@ -10,4 +10,4 @@ define('APP_DIR', WWW_DIR . '/../app');
 define('LIBS_DIR', WWW_DIR . '/../libs');
 
 // load bootstrap file
-require APP_DIR . '/bootstrap.php';
+require APP_DIR . '/bootstrap-web.php';

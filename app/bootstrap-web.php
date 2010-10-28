@@ -6,7 +6,7 @@
  * @package    MyApplication
  */
 
-
+use Nette\Environment;
 use Nette\Application\Route;
 use Nette\Application\SimpleRouter;
 
@@ -14,7 +14,7 @@ use Nette\Application\SimpleRouter;
 // Step 1: Load Nette Framework
 // this allows load Nette Framework classes automatically so that
 // you don't have to litter your code with 'require' statements
-require_once __DIR__ . 'bootstrap-common.php';
+require_once __DIR__ . '/bootstrap-common.php';
 
 
 

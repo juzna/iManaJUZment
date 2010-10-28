@@ -1,5 +1,5 @@
 # disable directory listing
-Options -Indexes
+Options +Indexes
 
 # configure PHP
 # <IfModule mod_php5.c>

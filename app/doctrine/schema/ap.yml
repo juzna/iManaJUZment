@@ -343,8 +343,8 @@ APPortVlan:
       notnull: true
   relations:
     AP:
-      local: 
-      foreign: 
+      local: AP
+      foreign: ID
 APPokryti:
   columns:
     ID:
