@@ -7,7 +7,9 @@
  * @package    MyApplication
  */
 
-/*use Nette\Debug, Nette\Application\BadRequestException;*/
+namespace Mods;
+
+use Nette\Debug, Nette\Application\BadRequestException;
 
 
 

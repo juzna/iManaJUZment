@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<menu  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns='http://develop.helemik.cz/servisweb/menu'
+    xsi:schemaLocation='http://develop.helemik.cz/servisweb/menu file:/home/juzna/NetBeansProjects/servisweb/src/menu.xsd'>
+	<menuItem text="Zákazníci" link="zakaznik;list" img="Plastic_accounting_cat_Executive.png">
+		<menuItem text="Blokování uživatelu" link="ban" img="future_networking_cat_Network_conector_cancel_.png" hide="1" />
+	</menuItem>
+	<menuItem text="Platba" link="platba;platba" img="Plastic_accounting_cat_Coins.png" hide="1">
+		<menuItem text="Přehled plateb" link="platba;list" />
+	</menuItem>
+	<menuItem text="AP" link="ap" img="future_networking_cat_Access_point_.png">
+		<menuItem text="Skupiny" __link="ap;apgroup" moduleSubMenu="ap" moduleSubMenuParam="groups"/>
+		<menuItem text="Stav site" link="nagios" hide="1" />
+		<menuItem text="Grafy" link="graf" img="Plastic_accounting_cat_Spread_sheet.png" moduleSubMenu="graf" />
+		<menuItem text="Všechny" link="ap?all=1" />
+		<menuItem text="Přidat AP" link="ap-wizard;addForm" />
+		<menuItem text="Export do nagiosu" link="nagios;export" hide="1" />
+		<menuItem text="Shaping" link="queue" />
+	</menuItem>
+	<menuItem text="Ostatní" link="pages;;odkazy" img="Plastic_accounting_cat_Barcode.png">
+		<menuItem text="Nastaveni" link="nastaveni" hide="1"/>
+		<menuItem text="Přenesená data" link="traffic" hide="1">
+			<menuItem text="Celá síť" link="traffic;show;1" />
+			<menuItem text="Vytížení sítě" link="traffic;stats" />
+		</menuItem>
+		<menuItem text="Stav pateřní sítě" link="https://bapr.juzna.cz/nagios3/" target="_blank" />
+		<menuItem text="Export do...">
+			<menuItem text="radiusu" tooltip="Kompletni nastaveni radiusu" link="radius;nastavKomplet" />
+			<menuItem text="pingeru" link="nagios;export_my" />
+			<menuItem text="nagiosu" link="nagios;export" />
+			<menuItem text="Radius (MacAuth + DHCP) na optice" link="radius;dhcp_optika" />
+		</menuItem>
+		<menuItem text="Sítové funkce" link="net">
+			<menuItem text="Ping" link="net;ping" />
+		</menuItem>
+		<menuItem text="Jine">
+			<menuItem text="Akce na pozadi" link="servisweb;deferlist" />
+		</menuItem>
+		<menuItem text="Tabulky">
+			<menuItem text="Seznam" link="tables;list" />
+			<menuItem text="Wizard" link="tables;wizard" />
+		</menuItem>
+		<menuItem text="Napoveda" link="napoveda" />
+	</menuItem>
+</menu>

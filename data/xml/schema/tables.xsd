@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://develop.helemik.cz/tables"
+    xmlns="http://develop.helemik.cz/tables"
+    elementFormDefault="qualified">
+
+    <xsd:element name="table">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice id="db" minOccurs="0">
+                    <xsd:element name="db" type="xsd:token" />
+                    <xsd:element name="database" type="xsd:token" />
+                </xsd:choice>
+                <xsd:element name="title" type="xsd:string" minOccurs="0" />
+                <xsd:choice id="params" minOccurs="0">
+                    <xsd:element name="params" type="paramsType" />
+                    <xsd:element name="parameters" type="paramsType" />
+                </xsd:choice>
+                <xsd:element name="preface" minOccurs="0" maxOccurs="1" type="prefaceType" />
+                <xsd:element name="sql" type="xsd:string" />
+                <xsd:element name="fields" type="fieldsType" minOccurs="0" maxOccurs="1"   />
+                <xsd:element name="empty" type="xsd:string" minOccurs="0" maxOccurs="1"  />
+                <xsd:element name="edit" type="editType" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="change" type="changeType" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="foot" type="html" minOccurs="0" maxOccurs="1"  />
+                <xsd:element name="menu" type="menuType" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="id" use="required" type="xsd:token" />
+            <xsd:attribute name="export" use="optional" type="xsd:int" />
+            <xsd:attribute name="height" type="xsd:int" use="optional" />
+            <xsd:attribute name="template" type="xsd:token">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        ID sablony, ktera se pouzije jako vzor. Pak se zde uvede pouze rozdil oproti teto sablone
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="paramsType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="cs">
+                Seznam parametru, ktere je potreba zadat pro vytvoreni tablky
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="param" type="paramType" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="paramType">
+        <xsd:attribute name="name" type="xsd:token" use="required" />
+        <xsd:attribute name="type" type="xsd:token" />
+        <xsd:attribute name="title" type="xsd:string" />
+        <xsd:attribute name="sql" type="xsd:string" />
+        <xsd:attribute name="format" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldsType">
+        <xsd:sequence>
+            <xsd:element name="field" type="fieldType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="index" type="xsd:token">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="cs">
+                Sloupec z databaze, ktery je unikatnim indexem pro danou tabulku
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="sort" type="xsd:token">
+            <xsd:annotation>
+                <xsd:documentation>
+                Sloupec, podle ktereho se ma defaultne radit vystup
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldType">
+        <xsd:choice>
+            <xsd:element name="filter" type="filterType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="content" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:choice>
+        <xsd:attribute name="name" type="xsd:token" use="required" />
+        <xsd:attribute name="show" type="bool" use="required" />
+        <xsd:attribute name="variable" type="xsd:token" />
+        <xsd:attribute name="title" type="xsd:string" />
+        <xsd:attribute name="width" type="xsd:int" />
+        <xsd:attribute name="icon" type="xsd:token">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Kod ikonky pro danou bunku tabulky
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="href" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Odkaz kam povede ikonka v dane bunce
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="sortBy" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Seznam sloupcu, podle kterych se ma seradit vysledek pri tomto kliku (vlozeno primo do SQL dotazu do ORDER BY)
+                </xsd:documentation>
+
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="default" type="xsd:string" />
+        <xsd:attribute name="format" type="xsd:string" />
+        <xsd:attribute name="window" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Zda se ma dany odkaz zobrazovat ve vlastnim oknde
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:simpleType name="bool">
+        <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="0" />
+            <xsd:enumeration value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="filterType">
+        <xsd:sequence>
+            <xsd:element name="option" type="filterOptionType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="type" type="filterTypeType" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="filterOptionType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="value" type="xsd:string"  use="required" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="filterTypeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="enum" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="editType">
+        <xsd:sequence>
+            <xsd:element name="default" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:attribute name="name" type="xsd:token" use="required" />
+                    <xsd:attribute name="value" type="xsd:string" />
+                    <xsd:attribute name="variable" type="xsd:token" />
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="type" type="editTypeType" use="required" />
+        <xsd:attribute name="form" type="xsd:token">
+            <xsd:annotation>
+                <xsd:documentation>
+                Pokud je type=editform, pak oznacuje jmeno formulare pro editaci
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="edit" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                URL adresa odkazujici na editaci konkretniho prvku tabulky
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="add" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                URL adresa odkazujici na pridani noveho prvku do teto tabulky
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="delete" type="xsd:string" />
+
+    </xsd:complexType>
+
+    <xsd:simpleType name="editTypeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="link" />
+            <xsd:enumeration value="editform" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="changeType">
+        <xsd:attribute name="show" type="bool" />
+        <xsd:attribute name="table" type="xsd:token" use="required" />
+        <xsd:attribute name="params" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="html" mixed="true">
+        <xsd:sequence>
+            <xsd:any minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="menuType">
+        <xsd:sequence>
+            <xsd:element name="item" type="menuItemType" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="menuItemType">
+        <xsd:attribute name="title" type="xsd:string" use="required" />
+        <xsd:attribute name="tooltip" type="xsd:string" />
+        <xsd:attribute name="onclick" type="xsd:string" />
+        <xsd:attribute name="href" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="prefaceType" mixed="true">
+        <xsd:sequence>
+            <xsd:element name="sql" type="xsd:string" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

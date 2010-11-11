@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://develop.helemik.cz/servisweb/selectbox"
+    xmlns="http://develop.helemik.cz/servisweb/selectbox"
+    elementFormDefault="qualified">
+
+<xsd:element name="selectBoxes">
+    <xsd:complexType>
+        <xsd:sequence>
+            <xsd:element name="selectBox" minOccurs="1" maxOccurs="unbounded" type="selectBoxType" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:element>
+
+<xsd:complexType name="selectBoxType">
+    <xsd:sequence>
+        <xsd:element name="source" type="sourceType" />
+        <xsd:element name="parameters" type="selectBoxParametersType" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="fields" type="selectBoxFieldsType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="sort" type="selectBoxSortType" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="width" type="xsd:integer" use="optional" />
+    <xsd:attribute name="showHeader" type="bool" use="optional" default="1" />
+</xsd:complexType>
+
+<xsd:complexType name="sourceType">
+    <xsd:choice>
+        <xsd:sequence>
+            <xsd:annotation>
+                <xsd:documentation>
+                    For source type 'module'
+                </xsd:documentation>
+            </xsd:annotation>
+            <xsd:element name="mod">
+                <xsd:complexType>
+                    <xsd:attribute name="name" type="xsd:string">
+                        <xsd:annotation>
+                                <xsd:documentation>
+                                    ServisWeb module name which generates data for this SelectBox
+                                </xsd:documentation>
+                            </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:complexType>
+            </xsd:element>
+            </xsd:sequence>
+            <xsd:sequence>
+
+            </xsd:sequence>
+    </xsd:choice>
+    <xsd:attribute name="name">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="database" />
+                <xsd:enumeration value="sql" />
+                <xsd:enumeration value="list" />
+                <xsd:enumeration value="table" />
+                <xsd:enumeration value="module" />
+                <xsd:enumeration value="files" />
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="selectBoxParametersType">
+    <xsd:annotation>
+        <xsd:documentation>
+            List of parameter which this SelectBox source can use
+        </xsd:documentation>
+    </xsd:annotation>
+ <xsd:sequence>
+     <xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="selectBoxParameterType" />
+     </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="selectBoxParameterType">
+    <xsd:attribute name="name" type="xsd:string" />
+    <xsd:attribute name="type" type="typeAttributeType" />
+    <xsd:attribute name="description" type="xsd:string" />
+    <xsd:attribute name="required" type="bool" />
+</xsd:complexType>
+
+<xsd:complexType name="selectBoxFieldsType">
+ <xsd:sequence>
+     <xsd:element name="field" minOccurs="1" maxOccurs="unbounded" type="selectBoxFieldType" />
+ </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="selectBoxFieldType">
+    <xsd:attribute name="title" type="xsd:string">
+        <xsd:annotation>
+            <xsd:documentation>
+                Title to be shown in SelectBox table header
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="variable" use="required" type="xsd:string">
+        <xsd:annotation>
+            <xsd:documentation>
+                Variable name from source to be shown in this column
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="show" type="bool" default="1">
+        <xsd:annotation>
+            <xsd:documentation>
+                Whether to show this column by default
+                </xsd:documentation>
+                
+        </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="type" use="required" type="typeAttributeType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Type of this column, used for sorting functions
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:attribute>
+    </xsd:complexType>
+
+
+<xsd:complexType name="selectBoxSortType">
+    <xsd:annotation>
+        <xsd:documentation>
+            Field to sort by
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="order">
+        <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ASC" />
+            <xsd:enumeration value="DESC" />
+        </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:attribute>
+    </xsd:complexType>
+
+
+<xsd:simpleType name="typeAttributeType" >
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="string" />
+        <xsd:enumeration value="int" />
+        <xsd:enumeration value="double" />
+        <xsd:enumeration value="date" />
+        <xsd:enumeration value="bool" />
+    </xsd:restriction>
+</xsd:simpleType>
+
+    <xsd:simpleType name="bool">
+        <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="0" />
+            <xsd:enumeration value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

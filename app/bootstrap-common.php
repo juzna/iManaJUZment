@@ -18,17 +18,16 @@ Environment::loadConfig();
 // Connect to database using Doctrine
 $dbConfig = Environment::getConfig('database');
 $conn = Doctrine_Manager::connection($dbConfig->driver . '://' . $dbConfig->username . ':' . $dbConfig->password . '@' . $dbConfig->host . '/' . $dbConfig->database);
+$conn->setCharset('utf8');
+$conn->setCollate('ut­f8_general_ci');
+
 
 // Initialize extensions
-{
-  $manager = Doctrine_Manager::getInstance();
-//  spl_autoload_register(array('Doctrine', 'extensionsAutoload'));
-  
-  $doctrineExtensionDir = LIBS_DIR . "/doctrine-ext/";
-  // Doctrine::setExtensionsPath(realpath($doctrineExtensionDir));
-  // $manager->registerExtension('Sortable');
-  //$manager->registerExtension('Taggable');
-}
+$manager = Doctrine_Manager::getInstance();
+$doctrineExtensionDir = LIBS_DIR . "/doctrine-ext/";
+// Doctrine::setExtensionsPath(realpath($doctrineExtensionDir));
+// $manager->registerExtension('Sortable');
+// $manager->registerExtension('Taggable');
 
 
 
@@ -47,3 +46,41 @@ Environment::setVariable('doctrine_config',
         ),
     )
 );
+
+
+// Run Doctrine profiler
+if ($dbConfig->profiler) {
+  $profiler = new Doctrine_Connection_Profiler();
+  $conn->setListener($profiler);
+//  Nette\Debug::enableProfiler();
+//  Nette\Debug::addColophon('fetchDoctrineEvents');
+}
+
+
+// Profiler callback
+function fetchDoctrineEvents()
+{
+    $profiler = Doctrine_Manager::getInstance()->getCurrentConnection()->getListener();
+
+    $queries = 0;
+    $out = '<br />';
+    foreach ($profiler as $event) {
+        $evName = $event->getName();
+
+        if ($evName == 'execute') {
+            $queries++;
+            $out .= '[' . number_format($event->getElapsedSecs() * 1000, 3) . 'ms]<br />'. $event->getQuery() . '<br />';
+        }
+
+        $params = $event->getParams();
+        if(!empty($params)) {
+            $out .= print_r($params, true) . '<br /><br />';
+        }
+    }
+
+    return array(
+        $profiler->count() . ' Doctrine events',
+        $queries . ' sql queries',
+        $out
+    );
+}

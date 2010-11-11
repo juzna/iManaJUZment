@@ -26,17 +26,20 @@ $application->errorPresenter = 'Error';
 //$application->catchExceptions = TRUE;
 
 
+// 3b) establish database connection
+$application->onStartup[] = 'UsersModel::initialize';
+
 
 // Step 4: Setup application router
 $router = $application->getRouter();
 
 $router[] = new Route('index.php', array(
-	'presenter' => 'Homepage',
+	'presenter' => 'Base:Homepage',
 	'action' => 'default',
 ), Route::ONE_WAY);
 
 $router[] = new Route('<presenter>/<action>/<id>', array(
-	'presenter' => 'Homepage',
+	'presenter' => 'Base:Homepage',
 	'action' => 'default',
 	'id' => NULL,
 ));

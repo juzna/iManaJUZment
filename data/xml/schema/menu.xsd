@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://develop.helemik.cz/servisweb/menu"
+    xmlns="http://develop.helemik.cz/servisweb/menu"
+    elementFormDefault="qualified">
+
+        <xsd:element name="menu">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="menuItem" minOccurs="1" maxOccurs="unbounded" type="menuItemType" />
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+
+        <xsd:complexType name="menuItemType">
+            <xsd:sequence>
+                <xsd:element name="menuItem" minOccurs="0" maxOccurs="unbounded" type="menuItemType" />
+            </xsd:sequence>
+            <xsd:attribute name="text" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Caption to be shown in menu item
+                    </xsd:documentation>
+                </xsd:annotation>
+                </xsd:attribute>
+            <xsd:attribute name="link" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Link to serviweb, can be in short form (module;function;ID)
+                    </xsd:documentation>
+                    </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="img">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Icon to be shown next to menu caption, optional
+                    </xsd:documentation>
+                </xsd:annotation>
+                </xsd:attribute>
+            <xsd:attribute name="authModul" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Module which need to be permited to user to show this menu item, corresponsd with attribute authUkol
+                    </xsd:documentation>
+                </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="authUkol" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Job of module to pass authorization to show this menu item
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+            <xsd:attribute name="show" default="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Whether the item should be displayer (default yes)
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:integer">
+                        <xsd:minInclusive value="0" />
+                        <xsd:maxInclusive value="1" />
+                        </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+
+                <xsd:attribute name="moduleSubMenu" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Name of ServisWeb module, that can generate dynamic submenu items
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
+                <xsd:attribute name="moduleSubMenuParam" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Parameter to be passed when getting dynamic item by module in attribute moduleSubMenu.
+                            </xsd:documentation>
+                    </xsd:annotation>
+                    </xsd:attribute>
+           </xsd:complexType>
+
+
+
+</xsd:schema>
