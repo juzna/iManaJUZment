@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap-hardware">
+	<db>data</db>
+	<params>
+		<param name="hw" type="int" title="Hardware interface" sql="SELECT ID FROM APhw" />
+	</params>
+	<preface><![CDATA[<h3>Hardware interface</h3>]]></preface>
+	<sql>SELECT * FROM APhwif WHERE APhw={$hw}</sql>
+	<fields index="ID">
+		<field name="id" variable="ID" title="#" show="1" />
+		<field name="name" variable="nazev" title="Rozhrani" show="1" />
+		<field name="MAC" variable="MAC" title="MAC" show="1"  />
+		<field name="comment" variable="popis" title="Popis" show="1" />
+		<field name="type" variable="Typ" title="Typ" show="1" />
+		<field name="net" variable="net" title="net" show="0" />
+		<field name="APhw" variable="APhw" title="APhw" show="0" />
+	</fields>
+</table>

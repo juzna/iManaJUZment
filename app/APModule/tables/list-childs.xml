@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap:list-childs" template="ap:list" export="1">
+	<params>
+		<param name="parent" type="int" />
+	</params>
+	<preface><![CDATA[<h3>Sitove prvky pripojene pres tento</h3>]]></preface>
+	<source type="d:model" model="AP" id="parent" property="L3Childs" />
+	<fields>
+		<field name="l3parentif" variable="parentif" title="Na rozhrani" show="1" />
+	</fields>
+</table>

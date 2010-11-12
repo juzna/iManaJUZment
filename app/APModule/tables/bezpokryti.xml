@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://develop.helemik.cz/tables"
+       xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+       id="ap-bezpokryti" template="ap-list" export="1">
+	<sql>select * from AP where typ='switch' and `group`=5 and not exists (select 1 from APPokryti where AP=AP.ID)</sql>
+</table>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://develop.helemik.cz/tables"
+       xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+	id="ap-vlan">
+	<db>data</db>
+	<title>VLANy</title>
+	<params>
+		<param name="ap" type="int" title="Sitovy prvek" />
+	</params>
+	<sql>select * from `APPortVlan` where `AP`={$ap}</sql>
+	<fields index="ID">
+		<field name="ID" title="ID" show="0" variable="ID" />
+		<field name="AP" title="AP" show="0" variable="AP" />
+		<field name="port" title="port" show="1" variable="port" />
+		<field name="vlan" title="vlan" show="1" variable="vlan" />
+		<field name="tagged" title="tagged" show="1" variable="tagged" />
+		<field name="pvid" title="pvid" show="1" variable="pvid" />
+	</fields>
+	<edit type="editform" form="APvlan">
+		<default name="AP" variable="ap" />
+	</edit>
+</table>

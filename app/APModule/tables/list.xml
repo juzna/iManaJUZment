@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap:list" export="1" height="500">
+    <preface><![CDATA[ <h1>Seznam sitovych prvku</h1> ]]></preface>
+    <source type="d:table">AP</source>
+    <fields index="ID" sort="nazev">
+        <field width="20" name="id" show="1" variable="ID" title="#" />
+        <field width="250" name="name" title="Nazev" show="1" icon="details" href="ap;detail;{$ID}" variable="nazev" />
+        <field width="120" name="comment" title="Popis" variable="popis" show="0" />
+        <field width="30" name="mode" title="Mod" variable="Mode" show="0">
+            <filter type="enum">
+                <option value="bridge">Bridge</option>
+                <option value="route">Router</option>
+                <option value="NAT">NAT</option>
+                <option value="other">Jine</option>
+            </filter>
+        </field>
+        <field width="160" name="adress" title="Adresa" sortBy="Ulice, CisloPopisne, Mesto" show="0">
+            <content>
+                <![CDATA[ <COND EXP="$Mesto">{$Ulice} {$CisloPopisne}, {$Mesto}</COND> ]]>
+            </content>
+        </field>
+        <field width="50" name="type" title="Typ" variable="Typ" show="1">
+            <filter type="enum">
+                <option value="AP">AP</option>
+                <option value="zakaznik">zakaznik</option>
+            </filter>
+        </field>
+        <field width="100" name="os" title="Operacni system" variable="os" show="0" />
+    </fields>
+</table>

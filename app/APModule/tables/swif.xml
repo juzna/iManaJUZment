@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap-swif" export="1">
+	<db>data</db>
+	<title>Softwarova rozhrani</title>
+	<params>
+		<param name="ap" type="int" title="Sitovy prvek" sql="SELECT id, nazev FROM AP" />
+	</params>
+	<source type="d:model" model="AP" id="ap" property="APSwIf" />
+	<fields index="ID">
+		<field name="id" variable="ID" title="#" show="1"/>
+		<field name="interface" variable="interface" title="Rozhrani"  show="1"/>
+		<field name="type" variable="typ" title="Typ"  show="1"/>
+		<field name="comment" variable="popis" title="Popis"  show="1"/>
+		<field name="ssid" variable="ssid" title="SSID"  show="1"/>
+		<field name="frekvence" variable="frekvence" title="Frekvence"  show="1"/>
+		<field name="enc" title="Sifrovani" show="1">
+			<content>
+				<COND EXP="$enc">{$enc}: {$enc_klic}</COND>
+			</content>
+		</field>
+		<field name="graph" title="Graf vytizeni" show="0" >
+			<content>
+				{!graf('if-bytes', "$AP-$interface", true)}
+			</content>
+		</field>
+	</fields>
+	<edit type="editform" form="APswif">
+		<default name="AP" variable="ap" />
+	</edit>
+</table>

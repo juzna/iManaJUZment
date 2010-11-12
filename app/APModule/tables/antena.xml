@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap-antena">
+	<db>data</db>
+	<params>
+		<param name="ap" type="int" title="AP" sql="SELECT ID,Nazev,popis FROM AP" />
+	</params>
+	<preface><![CDATA[<h3>Anteny na AP</h3>]]></preface>
+	<source type="d:model" model="AP" id="ap" property="APAntena" />
+	<fields index="ID">
+		<field title="#" name="ID" show="1" variable="ID" />
+		<field title="Rozhrani" name="interface" show="1" variable="interface" />
+		<field title="Smer" name="smer" show="1" variable="smer" />
+		<field title="Rozsah" name="rozsah" show="1" variable="rozsah" />
+		<field title="Dosah" name="dosah" show="1" variable="dosah" />
+		<field title="Polarita" name="polarita" show="1" variable="polarita" />
+		<field title="Frekvence" name="freq" show="1" variable="frekvence" />
+		<field title="Typ" name="typ" show="1" variable="typ" />
+		<field title="Popis" name="popis" show="1" variable="popis" />
+	</fields>
+	<empty>Zadne anteny tu jeste nejsou</empty>
+	<edit type="editform" form="APantena">
+		<default name="AP" variable="ap" />
+	</edit>
+	<foot><![CDATA[
+		<b>Nápověda</b><br />
+		Úhel se udává ve stupních při pohledu na mapu. Na východé je 0, na severu 90, západ 180, jih 270.<br />
+		Směr udává kam směruje anténa při pohledu na mapu. Rozsah je úhel, ve kterém vyzařuje signal. <br />
+		Dosah udává poloměr kruhové výseče v metrech, kde by měl být příjem bez problému.<br />
+        ]]>
+	</foot>
+</table>

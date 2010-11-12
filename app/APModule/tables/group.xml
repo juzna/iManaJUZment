@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap-group">
+	<db>data</db>
+	<sql>select * from `APgroup`</sql>
+	<fields index="ID">
+		<field name="ID" title="ID" show="1" variable="ID" />
+		<field name="Nazev" title="Nazev" show="1" variable="Nazev" />
+		<field name="Popis" title="Popis" show="1" variable="Popis" />
+		<field name="notification_interval" title="notification_interval" show="0" variable="notification_interval" />
+		<field name="notification_period" title="notification_period" show="0" variable="notification_period" />
+		<field name="contact" title="contact" show="0" variable="contact" />
+		<field name="trouble_user" title="trouble_user" show="0" variable="trouble_user" />
+		<field name="trouble_group" title="trouble_group" show="0" variable="trouble_group" />
+		<field name="defaultIP" title="Vychozi IP" show="0" variable="defaultIP" />
+	</fields>
+	<edit type="editform" form="APgroup" />	
+	<foot></foot>
+</table>

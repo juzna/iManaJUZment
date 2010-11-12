@@ -1,0 +1,21 @@
+{block #content}
+
+<h1 n:block="title">Customer list</h1>
+
+<p><a href="{link add}">Add new customer record</a></p>
+
+<table class="grid">
+<tr>
+	<th>Internal ID</th>
+	<th>Contract number</th>
+	<th>&nbsp;</th>
+</tr>
+<tr n:foreach="$customers as $customer">
+	<td>{$customer->PorCis}</td>
+	<td>{$customer->cisloSmlouvy}</td>
+	<td>
+		<a href="{link edit, $customer->PorCis}">Edit</a>
+		<a href="{link delete, $customer->PorCis}">Delete</a>
+	</td>
+</tr>
+</table>

@@ -7,7 +7,6 @@
  * @package    MyApplication
  */
 
-namespace Mods;
 
 use Nette\Application\Presenter,
   Nette\Environment;
@@ -27,7 +26,7 @@ abstract class BasePresenter extends Presenter
    * @param  string
    * @return array
    */
-  public function formatLayoutTemplateFiles($presenter, $layout)
+  public function ___formatLayoutTemplateFiles($presenter, $layout)
   {
     $appDir = Environment::getVariable('appDir') . '/../mods/';
     $path = '/' . str_replace(':', '/', $presenter);
@@ -50,7 +49,7 @@ abstract class BasePresenter extends Presenter
    * @param  string
    * @return array
    */
-  public function formatTemplateFiles($presenter, $view)
+  public function ___formatTemplateFiles($presenter, $view)
   {
     $appDir = Environment::getVariable('appDir') . '/../mods/';
     $path = '/' . str_replace(':', '/', $presenter);

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap-zakaznici">
+	<db>data</db>
+	<title>Zákazníci na tomto AP</title>
+	<params>
+		<param name="ap" type="int" title="AP " sql="SELECT ID,Nazev,popis FROM AP" />
+	</params>
+	<sql>SELECT Zakaznici.*, ZakaznikAdresa.*, ZakazniciIP.ID, IP, AP, APif, AP2, AP2if, MAC 
+		FROM `ZakazniciIP` LEFT JOIN `Zakaznici` ON Zakaznici.PorCis=ZakazniciIP.PorCis 
+		LEFT JOIN `ZakaznikAdresa` ON ZakaznikAdresa.PorCis=Zakaznici.PorCis
+		WHERE AP='{$ap}' OR AP2='{$ap}'
+		GROUP BY `ZakazniciIP`.ID ORDER BY ZakaznikAdresa.Prijmeni</sql>
+	<fields index="ID">
+		<field name="ID" variable="ID" title="#" show="0"/>
+		<field name="PorCis" variable="PorCis" title="Cislo smlouvy" show="1" />
+		<field name="zakaznik" title="Zakaznik" show="1" icon="details" href="zakaznik;detail;{$PorCis}">
+			<content>{$Jmeno} {$Prijmeni}</content>
+		</field>
+		<field name="Skupina" variable="Skupina" title="Skupina" show="0"/>
+		<field name="tarif" variable="tarif" title="tarif"  show="0" />
+		<field name="tarifSpec" variable="tarifSpec" title="Speciální tarif" show="0" />
+		<field name="IP" variable="IP" title="IP adresa"  show="1"/>
+		<field name="netmask" variable="netmask" title="Podmaska" show="0" />
+		<field name="IPold" variable="IPold" title="Ip stará" show="0" />
+		<field name="IPverejne" variable="IPverejne" title="IP veřejné" show="0" />
+		<field name="verejmask" variable="verejmask" title="Veřejná maska" show="0" />
+		<field name="MAC" variable="MAC" title="MAC" show="0" />
+		<field name="VisibleMAC" variable="VisibleMAC" title="Viditelná MAC" show="0" />
+		<field name="auto" variable="auto" title="auto" show="0" />
+		<field name="adresa" variable="adresa" title="adresa" show="0" />
+		<field name="Ulice" variable="Ulice" title="Ulice" show="0" />
+		<field name="CisloPopisne" variable="CisloPopisne" title="Cislo popisne" show="0" />
+		<field name="Mesto" variable="Mesto" title="Mesto" show="0" />
+		<field name="PSC" variable="PSC" title="PSČ" show="0" />
+		<field name="AP" variable="AP" title="AP"  show="1"/>
+		<field name="APif" variable="APif" title="AP Interface" show="1" />
+		<field name="posX" variable="posX" title="pozice X" show="0" />
+		<field name="posY" variable="posY" title="pozice Y" show="0" />
+		<field name="AP2" variable="AP2" title="AP2"  show="1"/>
+		<field name="AP2if" variable="AP2if" title="AP2 interface" show="1" />
+		<field name="Popis" variable="Popis" title="Popis" show="0" />
+		<field name="wep_use" variable="wep_use" title="Šifrování WEP" show="0" />
+		<field name="wep_key" variable="wep_key" title="Wep klíč" show="0" />
+		<field name="NAT" variable="NAT" title="NAT" show="0" />
+		<field name="voipHlas" variable="voipHlas" title="VoIP Telefon" show="0" />
+		<field name="voipData" variable="voipData" title="VoIP Fax" show="0" />
+		<field name="vlastniRychlost" variable="vlastniRychlost" title="Vlasní rychlost" show="0" />
+		<field name="txmin" variable="txmin" title="Odesílání minimální" show="0" />
+		<field name="rxmin" variable="rxmin" title="Příjem minimální" show="0" />
+		<field name="rx" variable="rx" title="prijmani" show="0" />
+		<field name="tx" variable="tx" title="odesilani" show="0" />
+		<field name="rxburst" variable="rxburst" title="Příjem burst" show="0" />
+		<field name="txburst" variable="txburst" title="Odesílání burst" show="0" />
+		<field name="rxbursttresh" variable="rxbursttresh" title="Příjem burst tresh" show="0" />
+		<field name="txbursttresh" variable="txbursttresh" title="Příjem burst trush" show="0" />
+		<field name="rxburstime" variable="rxburstime" title="Příjem burst time" show="0" />
+		<field name="txburstime" variable="txburstime" title="Příjem burst time" show="0" />
+		<field name="priority" variable="priority" title="Priority" show="0" />
+		<field name="APIP" variable="APIP" title="APIP" show="0" />
+		<field name="APMAC" variable="APMAC" title="APMAC" show="0" />
+		<field name="allowDHCP" variable="allowDHCP" title="Povolení DHCP" show="0" />
+		<field name="nazev" variable="nazev" title="Název"  show="1"/>
+		<field name="Popis" variable="Popis" title="Popis"  show="0" />
+		<field name="Mode" variable="Mode" title="Mód" show="0"/>
+		<field name="APhw" variable="APhw" title="AP hw"  show="0" />
+		<field name="parent" variable="parent" title="Rodič:)" show="0" />
+		<field name="parentif" variable="parentif" title="Rodič Interface:)" show="0"/>
+		<field name="posX" variable="posX" title="pozice X" show="0" />
+		<field name="posY" variable="posY" title="pozice Y" show="0" />
+		<field width="160" name="adress" title="Adresa" sortBy="Ulice, CisloPopisne, Mesto" show="1">
+			<content>
+				<![CDATA[<COND EXP="$Mesto">{$Ulice} {$CisloPopisne}, {$Mesto}</COND>]]>
+			</content>
+		</field>
+		<field name="Typ" variable="Typ" title="Typ"  show="1"/>
+		<field name="img" variable="img" title="Image" show="0" />
+		<field name="SNMP" variable="SMMP" title="SNMP" show="0" />
+		<field name="Comunity" variable="Comunity" title="Komunita" show="0" />
+		<field name="Realm" variable="Realm" title="Realm" show="0" />
+		<field name="username" variable="username" title="Uživatel" show="0" />
+		<field name="password" variable="password" title="heslo" show="0" />
+		<field name="os" variable="os" title="OS" show="0" />
+		<field name="osVerze" variable="osVerze" title="Verze OS" show="0" />
+		<field name="igcnt" variable="igcnt" title="igcnt" show="0"/>
+		<field name="group" variable="group" title="Skupina" show="0" />
+		<field name="ipmac_def" variable="ipmac_def" title="IP MAC" show="0"/>
+		<field name="show_in_nagios" variable="show_in_nagios" title="Nagios" show="0" />
+		<field name="bez_adresy" variable="bez_adresy" title="Bez adresy" show="0" />
+		<field name="wep_use" variable="wep_use" title="Šifrování WEP" show="0" />
+		<field name="wep_key" variable="wep_key" title="Wep klíč" show="0" />
+		<field name="fingerprint" variable="fingerprint" title="fingerprint" show="0" />
+	</fields>
+</table>

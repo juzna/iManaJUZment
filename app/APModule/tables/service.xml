@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap:service">
+	<db>data</db>
+	<title>Services</title>
+	<params>
+		<param name="ap" type="int" title="AP" />
+	</params>
+	<source type="sql" database="data">
+		SELECT *, '{$ap}' as ap FROM APServiceList
+		INNER JOIN APServiceOSList USING (code)
+		LEFT JOIN APService ON APServiceList.code=APService.service and APService.AP='{$ap}'
+		WHERE APServiceOSList.os=(select os FROM AP where AP.ID='{$ap}')
+	</source>
+	<fields index="ID">
+		<field name="nazev" variable="nazev" title="Sluzba" show="1" />
+		<field name="state" variable="state" default="UNKNOWN" title="Stav" show="1"/>
+		<field name="lastCheck" variable="lastCheck" format="date" title="Posledni kontrola"  show="1"/>
+		<field name="action" title="Akce" show="1" >
+			<content><![CDATA[
+				<a href="ap-config;service?ap={$ap}&action=activate&service={$code}" ajax="1" ajaxOnOK="tablereload" ajaxTable="ap-service" time="10">Nastavit</a>
+				<a href="ap-config;service?ap={$ap}&action=deactivate&service={$code}" ajax="1" ajaxOnOK="tablereload" ajaxTable="ap-service" time="10">Zrusit</a>
+				<a href="ap-config;service?ap={$ap}&action=check&service={$code}" ajax="1" ajaxOnOK="tablereload" ajaxTable="ap-service" time="10">Zkontrolovat</a>
+			]]></content>
+		</field>
+	</fields>
+</table>

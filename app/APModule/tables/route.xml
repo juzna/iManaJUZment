@@ -1,0 +1,21 @@
+<table id="ap-route">
+	<db>data</db>
+	<params>
+		<param name="ap" type="int" title="AP" sql="SELECT ID, Nazev FROM AP" />
+	</params>
+	<preface><h3>Routy</h3></preface>
+	<source type="d:model" model="AP" id="ap" property="APRoute" />
+	<fields index="ID">
+		<field name="id" variable="ID" title="#" />
+		<field name="cil" title="Cíl" sortBy="dst, netmask">
+			<content>{$dst} / {$netmask}</content>
+		</field>
+		<field name="ap" variable="AP" title="AP" show="0"/>
+		<field name="gw" variable="gw" title="Brána" />
+		<field name="prefsrc" variable="prefsrc" title="Preferovaný zdroj" />
+		<field name="distance" variable="distance" title="distance" show="0" />
+		<field name="comment" variable="commnet" title="Komentář" />
+		<field name="popis" variable="popis" title="Popis" />
+	</fields>
+	<edit type="editform" form="AProute" default="AP=ap" />
+</table>

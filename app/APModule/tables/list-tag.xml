@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://develop.helemik.cz/tables"
+    xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+    id="ap-list-tag" template="ap:list" export="1">
+	<params>
+		<param name="tag" type="int" title="Skupina sitovych prvku" sql="SELECT id, name FROM `APGroupTagList`" />
+	</params>
+	<preface>
+		<sql>SELECT * FROM `APGroupTagList` WHERE `id`={$tag}</sql>
+		<![CDATA[<h1>Seznam sitovych prvku - skupina {$name}</h1>]]>
+	</preface>
+	<source type="sql">select * from `AP` where exists (select 1 from `APGroupTags` as B where B.id=AP.id and `tag_id`='$tag')</source>
+	<foot>
+	<![CDATA[
+		<button onclick="EditForm.add(event, 'AP', { def : { 'tag' : '{$tag}' } } );">Pridat AP</button>
+	]]>
+	</foot>
+</table>

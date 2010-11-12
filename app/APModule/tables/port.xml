@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://develop.helemik.cz/tables"
+       xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
+	id="ap-port">
+	<db>data</db>
+	<title>Porty switche</title>
+	<params>
+		<param name="ap" type="int" title="Sitovy prvek" />
+	</params>
+	<source type="d:model" model="AP" id="ap" property="APPort" />
+	<fields index="ID">
+		<field name="ID" title="ID" show="0" variable="ID" />
+		<field name="AP" title="AP" show="0" variable="AP" />
+		<field name="port" title="port" show="1" variable="port" />
+		<field name="typ" title="typ" show="1" variable="typ" />
+		<field name="PorCis" title="PorCis" show="0" variable="PorCis" />
+		<field name="zakaznik" title="Zakaznik" show="1" variable="PorCis" format="zakaznik" icon="details" href="zakaznik;detail;{$PorCis}" />
+		<field name="odbernaAdresa" title="odbernaAdresa" show="1" variable="odbernaAdresa" />
+		<field name="cisloVchodu" title="cisloVchodu" show="1" variable="cisloVchodu" />
+		<field name="cislobytu" title="cislobytu" show="1" variable="cislobytu" />
+		<field name="connectedTo" title="connectedTo" show="1" variable="connectedTo" format="AP" />
+		<field name="connectedInterface" title="connectedInterface" show="1" variable="connectedInterface" />
+		<field name="connectedPort" title="connectedPort" show="1" variable="connectedPort" />
+		<field name="isUplink" title="isUplink" show="1" variable="isUplink" format="bool" />
+		<field name="popis" title="popis" show="1" variable="popis" />
+	</fields>
+	<edit type="editform" form="APPort">
+		<default name="AP" variable="ap" />
+	</edit>
+</table>
