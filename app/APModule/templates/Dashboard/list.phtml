@@ -1,0 +1,54 @@
+{block #content}
+
+{include #$what}
+
+{/block}
+
+
+
+
+
+{block #ap}
+<h1>Access Points list</h1>
+
+<p><a href="{link add, ap}">Add new AP</a></p>
+
+<table class="grid">
+<tr>
+	<th>Internal ID</th>
+	<th>Contract number</th>
+	<th>&nbsp;</th>
+</tr>
+<tr n:if="$list" n:foreach="$list as $ap">
+	<td>{$ap->ID}</td>
+	<td>{$ap->nazev}</td>
+	<td>
+		<a href="{link edit, ap, $ap->ID}">Edit</a>
+		<a href="{link delete, ap, $ap->ID}">Delete</a>
+	</td>
+</tr>
+</table>
+{/block}
+
+
+{block #ip}
+<h1>Access Points IP's</h1>
+
+<p><a href="{link add, ip}">Add new IP to this AP</a></p>
+
+<table class="grid">
+<tr>
+  <th>Internal ID</th>
+  <th>Contract number</th>
+  <th>&nbsp;</th>
+</tr>
+<tr n:if="$list" n:foreach="$list as $ip">
+  <td>{$ip->ID}</td>
+  <td>{$ip->ip}/{$ip->netmask}</td>
+  <td>
+    <a href="{link edit, ip, $ip->ID}">Edit</a>
+    <a href="{link delete, ip, $ip->ID}">Delete</a>
+  </td>
+</tr>
+</table>
+{/block}
