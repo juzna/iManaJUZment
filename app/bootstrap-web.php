@@ -32,7 +32,7 @@ $application->onStartup[] = 'UsersModel::initialize';
 
 // Step 4: Setup application router
 $router = $application->getRouter();
-
+/*
 $router[] = new Route('index.php', array(
 	'presenter' => 'Base:Homepage',
 	'action' => 'default',
@@ -43,7 +43,8 @@ $router[] = new Route('<presenter>/<action>/<id>', array(
 	'action' => 'default',
 	'id' => NULL,
 ));
-
+*/
+$router[] = new SimpleRouter('Base:Dashboard:default');
 
 
 // Step 5: Run the application!
