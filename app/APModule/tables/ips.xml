@@ -3,11 +3,10 @@
     xmlns="http://develop.helemik.cz/tables"
     xsi:schemaLocation="http://develop.helemik.cz/tables tables.xsd"
     id="ap-ips" export="1">
-	<db>data</db>
 	<params>
 		<param name="ap" type="int" title="Sitovy prvek" sql="SELECT ID, Nazev FROM AP" />
 	</params>
-	<preface><![CDATA[<h3>IP adresy</h3>]]></preface>
+	<title>IP adresy</title>
 	<source type="d:model" model="AP" id="ap" property="APIP" />
 	<fields index="ID">
 		<field name="id" variable="ID" title="#" show="1"/>
@@ -15,8 +14,7 @@
 			<content>{$ip}/{$netmask}</content>
 		</field>
 		<field name="interface" variable="interface" title="Rozhrani" show="1"/>
-		<field name="comment" variable="Popis" title="Popis" show="1"/>
-		<field name="type" variable="Typ" title="Typ" show="1"/>
+		<field name="comment" variable="poznamka" title="Popis" show="1"/>
 		<field name="flags" title="Priznaky" show="1">
 			<content>
 				{= $not_real ? 'Tato IP zde fyzicky neni' : ''}

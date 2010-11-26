@@ -66,6 +66,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     
     $tpl = new \Nette\Templates\FileTemplate($path);
     $tpl->registerFilter(new \Nette\Templates\LatteFilter);
+    
     return $tpl;
   }
   
@@ -94,23 +95,26 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
    */
   public function generateTemplateCode() {
     $nl = "\n";
-    echo '<fieldset id="tbl-outer" class="h3 nocollapse table_outer"  ajax="0" params="{$parameters}">' . $nl;
-    echo ' <legend>' . $this->definition->getTitle() . '</legend>' . $nl;
+    
+    echo "{block #content}\n";
+    echo '<fieldset id="tbl-outer" class="h3 nocollapse table_outer" ajax="0" params="{$parameters}">' . $nl;
+    echo ' {block #legend}<legend>' . $this->definition->getTitle() . '</legend>{/block}' . $nl;
     
     $name = $this->definition->getName();
-    echo "<table class=\"lines sortable withmenu\" id=\"tbl-{$name}-table\" name=\"{$name}\">\n";
+    echo "{block #table}<table class=\"lines sortable withmenu\" id=\"tbl-{$name}-table\" name=\"{$name}\">\n";
     
     echo "<thead><tr>\n";
     $this->renderTableHeader();
     echo "</tr></thead>\n";
     
-    echo "<tbody>\n";
+    echo "<tbody>\n{block #tbody}\n";
     $this->renderTableBody();
-    echo "</tbody>\n";
+    echo "{/block}\n</tbody>\n";
     
-    echo "</table>\n";
+    echo "</table>{/block #table}\n";
     
     echo '</fieldset>' . $nl;
+    echo "{/block #content}\n";
   }
   
   protected function renderTableHeader() {

@@ -17,6 +17,8 @@
                 <option value="other">Jine</option>
             </filter>
         </field>
-        <field width="100" name="os" title="Operacni system" variable="os" show="0" />
+        <field width="100" name="os" title="Operacni system" show="0">
+          <content><![CDATA[ {$ID} {$nazev}, {$mode} ]]></content>
+        </field>
     </fields>
 </table>

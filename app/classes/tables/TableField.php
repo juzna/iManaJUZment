@@ -36,6 +36,6 @@ class TableField {
   
   public function renderContent() {
     if($this->variable) echo '{$item->' . $this->variable . '}';
-    else echo $this->contentCode;
+    else echo preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)(\\})/i', '\\1item->\\2\\3', $this->contentCode);
   }
 }

@@ -92,7 +92,7 @@ class XMLTableDefinition extends \Nette\Object implements ITableDefinition {
       // Call loading function for that element
       $f = 'loadElement' . ucfirst($el->tagName);
       if(method_exists($this, $f)) $this->$f($el);
-      else echo "Unknown element '$el->tagName'\n";
+      else user_error("Unknown element '$el->tagName'");
     }
   }
   
@@ -187,7 +187,7 @@ class XMLTableDefinition extends \Nette\Object implements ITableDefinition {
     $code = $el->ownerDocument->saveXML($el);
     $len = strlen($el->tagName);
     
-    $ret = trim(substr($code, $len + 2, - $len - 3));
+    $ret = trim(substr($code, strpos($code, '>') + 1, - $len - 3));
     if(substr($ret, 0, 9) == '<![CDATA[') $ret = substr($ret, 9, -3);
     
     $ret = htmlspecialchars_decode($ret);

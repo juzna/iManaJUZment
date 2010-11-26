@@ -32,6 +32,13 @@ class DashboardPresenter extends BasePresenter
     $this->template->list = Doctrine::getTable($this->getEntityName($what))->findAll();
   }
   
+  public function renderTable($what) {
+    $tbl = $this->getTable($what, $_GET);
+    echo $tbl->render();
+    exit;
+  
+  }
+  
   /**
    * Form for adding new entity
    * @param string $what Entity alias
