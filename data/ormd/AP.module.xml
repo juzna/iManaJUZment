@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<orm-designer imported-from="export\AP.yml" imported-type="YML">
+<orm-designer version="1.4.2.450">
 
-  <module imported-type="YML" name="AP" visBkColor="16644344" visSizeX="7" visSizeX2="806" visSizeY="0" visSizeY2="619">
-    <table description="Seznam Access Pointu" name="AP" visPositionX="16" visPositionY="24" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
+  <module import-format="DoctrineYml" import-path="export\AP.yml" name="AP" visBkColor="16644344" visSizeX="125" visSizeX2="954" visSizeY="0" visSizeY2="619">
+    <table description="List of Access Points" name="AP" visPositionX="16" visPositionY="24" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
-      <column name="nazev" required="true" size="100" type="string" unique="true"/>
-      <column name="popis" size="255" type="string"/>
+      <column name="APNetwork_ID" required="true" type="integer"/>
+      <column name="name" required="true" size="100" type="string" unique="true"/>
+      <column name="description" size="255" type="string"/>
       <column default="other" name="mode" required="true" type="enum" values="route,bridge,nat,complex,other"/>
       <column description="Default IP" name="IP" required="true" size="15" type="string"/>
       <column description="netmask of default IP" name="netmask" required="true" size="2" type="integer"/>
@@ -60,7 +61,7 @@
         <attribute name="tableName">APParent</attribute>
       </orm-properties>
     </table>
-    <table description="Access Point antennas" name="APAntena" visPositionX="362" visPositionY="19" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="134">
+    <table description="Access Point antennas" name="APAntenna" visPositionX="362" visPositionY="19" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="134">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column description="Foreign key to AP" name="AP" size="11" type="integer"/>
       <column description="Software interface name" name="interface" required="true" size="50" type="string"/>
@@ -122,7 +123,7 @@
       <column name="interface" required="true" size="50" type="string"/>
       <column name="ip" required="true" size="15" type="string"/>
       <column name="netmask" required="true" size="2" type="integer"/>
-      <column name="poznamka" size="255" type="string"/>
+      <column name="description" size="255" type="string"/>
       <orm-properties>
         <attribute name="tableName">APIP</attribute>
       </orm-properties>
@@ -184,7 +185,7 @@
     <table description="Activated services" name="APService" visPositionX="658" visPositionY="219" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="95">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
-      <column name="service" required="true" size="50" type="string"/>
+      <column name="service" required="true" size="20" type="string"/>
       <column name="state" required="true" size="20" type="string"/>
       <column name="stateText" size="100" type="string"/>
       <column name="lastCheck" type="timestamp"/>
@@ -207,8 +208,16 @@
     <table description="Vlany aktivovane na danem AP" name="APVlan" visPositionX="118" visPositionY="502" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="56">
       <column description="Foreign key to AP" name="AP" primary="true" required="true" size="11" type="integer"/>
       <column name="vlan" primary="true" required="true" size="4" type="integer"/>
-      <column name="poznamka" size="255" type="string"/>
+      <column name="description" size="255" type="string"/>
     </table>
+    <table description="Separate networks" name="APNetwork" visPositionX="-112" visPositionY="29" visSizeX="0" visSizeX2="117" visSizeY="0" visSizeY2="59">
+      <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
+      <column name="name" required="true" size="50" type="string"/>
+      <column name="description" size="255" type="string"/>
+    </table>
+    <foreign-key caption="" from="AP" inverse-alias="network" name="FK_AP_APNetwork_ID" owning-alias="AP" to="APNetwork">
+      <foreign-key-column from="APNetwork_ID" to="ID"/>
+    </foreign-key>
     <foreign-key from="APParams" name="FK_ApParams_AP" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
@@ -218,7 +227,7 @@
     <foreign-key from="APParent" name="FK_APParent_AP2" to="AP">
       <foreign-key-column from="childAP" to="ID"/>
     </foreign-key>
-    <foreign-key from="APAntena" name="FK_APAntena_AP" to="AP">
+    <foreign-key from="APAntenna" name="FK_APAntena_AP" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
     <foreign-key from="APSwIf" name="FK_APswif_AP" to="AP">

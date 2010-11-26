@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<orm-designer imported-from="export\zakaznici.yml" imported-type="YML">
+<orm-designer version="1.4.2.450">
 
-  <module imported-type="YML" name="Zakaznici" visBkColor="16052987" visSizeX="48" visSizeX2="642" visSizeY="47" visSizeY2="704">
+  <module import-format="DoctrineYml" import-path="export\zakaznici.yml" name="Zakaznici" visBkColor="16052987" visSizeX="48" visSizeX2="642" visSizeY="47" visSizeY2="704">
     <table description="Tabulka zakazniku" name="Zakaznik" visPositionX="125" visPositionY="284" visSizeX="0" visSizeX2="192" visSizeY="0" visSizeY2="251">
       <column name="PorCis" primary="true" required="true" size="11" type="integer"/>
       <column name="cisloSmlouvy" size="11" type="integer" unique="true"/>
@@ -177,7 +177,7 @@
     <foreign-key from="ZakaznikTarif" name="FK_ZakaznikTarif" to="Zakaznik">
       <foreign-key-column from="PorCis" to="PorCis"/>
     </foreign-key>
-    <foreign-key from="ZakaznikTarif" name="FK_ZakaznikTarif" to="Tarif">
+    <foreign-key from="ZakaznikTarif" name="FK_ZakaznikTarif2" to="Tarif">
       <foreign-key-column from="tarif" to="ID"/>
     </foreign-key>
     <foreign-key from="ZakanzikTarifUhrada" name="FK_ZakanzikTarifUhrada_ZakaznikTarif" to="ZakaznikTarif">

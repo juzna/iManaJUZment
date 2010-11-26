@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<orm-designer imported-from="export\sklad.yml" imported-type="YML">
+<orm-designer version="1.4.2.450">
 
-  <module description="Sladova evidence" imported-type="YML" name="Sklad" visBkColor="15858929" visSizeX="0" visSizeX2="1022" visSizeY="-7" visSizeY2="519">
+  <module description="Sladova evidence" import-format="DoctrineYml" import-path="export\sklad.yml" name="Sklad" visBkColor="15858929" visSizeX="0" visSizeX2="1022" visSizeY="-7" visSizeY2="519">
     <table description="Rozdeleni skladove evidence do kategorii" name="SkladKategorie" visPositionX="12" visPositionY="28" visSizeX="0" visSizeX2="98" visSizeY="0" visSizeY2="56">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
       <column name="nazev" size="50" type="string"/>
@@ -48,17 +48,17 @@
       <column default="false" name="required" required="true" type="boolean"/>
     </table>
     <table description="Pripojeni tag template jednotlivym prvkum skladu" name="SkladTagAttach" visPositionX="657" visPositionY="40" visSizeX="0" visSizeX2="152" visSizeY="0" visSizeY2="69">
-      <column name="SkladTagTemplate_ID" type="integer"/>
-      <column name="SkladKategorie_ID" type="integer"/>
-      <column name="SkladVyrobek_ID" type="integer"/>
-      <column name="SkladRevize_ID" type="integer"/>
+      <column name="SkladTagTemplate_ID" size="11" type="integer"/>
+      <column name="SkladKategorie_ID" size="11" type="integer"/>
+      <column name="SkladVyrobek_ID" size="11" type="integer"/>
+      <column name="SkladRevize_ID" size="11" type="integer"/>
     </table>
     <table description="Prirazeni konkretnich hodnot tagu jednotlivym prvkum skladu" name="SkladTagValue" visPositionX="849" visPositionY="40" visSizeX="0" visSizeX2="152" visSizeY="0" visSizeY2="69">
-      <column name="SkladTagTemplate_ID" required="true" type="integer"/>
-      <column name="SkladKategorie_ID" type="integer"/>
-      <column name="SkladVyrobek_ID" type="integer"/>
-      <column name="SkladRevize_ID" type="integer"/>
-      <column name="SkladPolozka_ID" type="integer"/>
+      <column name="SkladTagTemplate_ID" required="true" size="11" type="integer"/>
+      <column name="SkladKategorie_ID" size="11" type="integer"/>
+      <column name="SkladVyrobek_ID" size="11" type="integer"/>
+      <column name="SkladRevize_ID" size="11" type="integer"/>
+      <column name="SkladPolozka_ID" size="11" type="integer"/>
       <column name="value" required="true" size="255" type="string"/>
     </table>
     <table description="Polozky skladu (konkretni fyzicke kusy)" name="SkladPolozka" visPositionX="135" visPositionY="213" visSizeX="0" visSizeX2="143" visSizeY="0" visSizeY2="173">
@@ -91,7 +91,7 @@
       <column description="Foreign key to SkladMisto.ID" name="skladMistoId" size="11" type="integer"/>
       <column name="PorCis" size="11" type="integer"/>
       <column name="userId" size="11" type="integer"/>
-      <column name="rackId" size="11" type="integer"/>
+      <column name="rackId" type="integer"/>
       <column name="adresarId" size="11" type="integer"/>
       <column name="fakturaId" size="11" type="integer"/>
       <column name="poznamka" size="255" type="string"/>
@@ -115,8 +115,8 @@
       <column name="nazev" size="100" type="string"/>
     </table>
     <table description="Presun hromadoveho zbozi z jednoho mista na druhe" name="SkladPresun" visPositionX="869" visPositionY="186" visSizeX="0" visSizeX2="103" visSizeY="0" visSizeY2="69">
-      <column name="src" type="integer"/>
-      <column name="dst" type="integer"/>
+      <column name="src" size="11" type="integer"/>
+      <column name="dst" size="11" type="integer"/>
       <column name="pocet" type="float"/>
       <column name="datum" type="timestamp"/>
     </table>
@@ -128,58 +128,58 @@
       <column name="stav" required="true" type="enum" values="CEKA,DOKONCENO,ZRUSENO"/>
       <column name="stavPoznamka" size="255" type="string"/>
     </table>
-    <foreign-key from="SkladPolozka" name="FK_SkladPolozka" to="SkladVyrobek">
-      <foreign-key-column from="vyrobek" to="ID"/>
-    </foreign-key>
-    <foreign-key from="SkladPolozka" name="FK_SkladPolozka" to="SkladRevize">
-      <foreign-key-column from="revize" to="ID"/>
-    </foreign-key>
-    <foreign-key caption="" from="SkladPolozka" name="FK_SkladPolozka" to="SkladDodaciList">
-      <foreign-key-column from="dodaciList" to="ID"/>
-    </foreign-key>
     <foreign-key from="SkladRevize" name="FK_SkladRevize" to="SkladVyrobek">
       <foreign-key-column from="vyrobek" to="ID"/>
     </foreign-key>
     <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladKategorie">
       <foreign-key-column from="SkladKategorie_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladTagTemplate">
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach2" to="SkladTagTemplate">
       <foreign-key-column from="SkladTagTemplate_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladVyrobek">
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach3" to="SkladVyrobek">
       <foreign-key-column from="SkladVyrobek_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach" to="SkladRevize">
+    <foreign-key from="SkladTagAttach" name="FK_SkladTagAttach4" to="SkladRevize">
       <foreign-key-column from="SkladRevize_ID" to="ID"/>
     </foreign-key>
     <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladTagTemplate">
       <foreign-key-column from="SkladTagTemplate_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladKategorie">
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue2" to="SkladKategorie">
       <foreign-key-column from="SkladKategorie_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladVyrobek">
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue3" to="SkladVyrobek">
       <foreign-key-column from="SkladVyrobek_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladRevize">
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue4" to="SkladRevize">
       <foreign-key-column from="SkladRevize_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladTagValue" name="FK_SkladTagValue" to="SkladPolozka">
+    <foreign-key from="SkladTagValue" name="FK_SkladTagValue5" to="SkladPolozka">
       <foreign-key-column from="SkladPolozka_ID" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPolozka" name="FK_SkladPolozka" to="SkladVyrobek">
+      <foreign-key-column from="vyrobek" to="ID"/>
+    </foreign-key>
+    <foreign-key from="SkladPolozka" name="FK_SkladPolozka2" to="SkladRevize">
+      <foreign-key-column from="revize" to="ID"/>
+    </foreign-key>
+    <foreign-key caption="" from="SkladPolozka" name="FK_SkladPolozka3" to="SkladDodaciList">
+      <foreign-key-column from="dodaciList" to="ID"/>
     </foreign-key>
     <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni" to="SkladPolozka">
       <foreign-key-column from="polozka" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni" to="SkladMisto">
+    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni2" to="SkladMisto">
       <foreign-key-column from="skladMistoId" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni" to="Rack">
+    <foreign-key from="SkladPolozkaUmisteni" name="FK_SkladPolozkaUmisteni3" to="Rack">
       <foreign-key-column from="rackId" to="ID"/>
     </foreign-key>
     <foreign-key from="SkladPresun" name="FK_SkladPresun" to="SkladPolozkaUmisteni">
       <foreign-key-column from="src" to="ID"/>
     </foreign-key>
-    <foreign-key from="SkladPresun" name="FK_SkladPresun" to="SkladPolozkaUmisteni">
+    <foreign-key from="SkladPresun" name="FK_SkladPresun2" to="SkladPolozkaUmisteni">
       <foreign-key-column from="dst" to="ID"/>
     </foreign-key>
     <foreign-key from="SkladRezervace" name="FK_SkladRezervace" to="SkladPolozka">

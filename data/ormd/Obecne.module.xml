@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<orm-designer imported-from="export\obecne.yml" imported-type="YML">
+<orm-designer version="1.4.2.450">
 
-  <module imported-type="YML" name="Obecne" visBkColor="15857662" visSizeX="0" visSizeX2="492" visSizeY="0" visSizeY2="558">
+  <module import-format="DoctrineYml" import-path="export\obecne.yml" name="Obecne" visBkColor="15857662" visSizeX="0" visSizeX2="492" visSizeY="0" visSizeY2="558">
     <table description="Seznam tarifu internetu" name="Tarif" visPositionX="20" visPositionY="40" visSizeX="0" visSizeX2="125" visSizeY="0" visSizeY2="134">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column name="nazev" required="true" size="50" type="string" unique="true"/>

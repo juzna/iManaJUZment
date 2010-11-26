@@ -1,0 +1,341 @@
+SkladKategorie:
+  actAs:
+    MultiCategory:
+      catTableName: SkladKategorie
+      relationTableName: SkladKategorieParent
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(50)
+    poznamka:
+      type: string(255)
+SkladVyrobek:
+  actAs:
+    MultiCategory:
+      catTableName: SkladKategorie
+      relationTableName: SkladVyrobekParent
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(50)
+    popis:
+      type: string(255)
+    hromadovy:
+      default: false
+      type: boolean
+      notnull: true
+    jednotka:
+      type: string(10)
+    prodejniCena:
+      type: float
+SkladRevize:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    vyrobek:
+      type: integer(11)
+    nazev:
+      type: string(50)
+    poznamka:
+      type: string(255)
+  relations:
+    SkladVyrobek:
+      local: vyrobek
+      foreign: ID
+SkladTagTemplate:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    kod:
+      unique: true
+      type: string(50)
+      notnull: true
+    nazev:
+      type: string(255)
+      notnull: true
+    popis:
+      type: string(255)
+    format:
+      type: string(50)
+      notnull: true
+    formatParameters:
+      type: string(255)
+    defaultValue:
+      type: string(255)
+    required:
+      default: false
+      type: boolean
+      notnull: true
+SkladTagAttach:
+  columns:
+    SkladTagTemplate_ID:
+      type: integer(11)
+    SkladKategorie_ID:
+      type: integer(11)
+    SkladVyrobek_ID:
+      type: integer(11)
+    SkladRevize_ID:
+      type: integer(11)
+  relations:
+    SkladKategorie:
+      local: SkladKategorie_ID
+      foreign: ID
+    SkladTagTemplate:
+      local: SkladTagTemplate_ID
+      foreign: ID
+    SkladVyrobek:
+      local: SkladVyrobek_ID
+      foreign: ID
+    SkladRevize:
+      local: SkladRevize_ID
+      foreign: ID
+SkladTagValue:
+  columns:
+    SkladTagTemplate_ID:
+      type: integer(11)
+      notnull: true
+    SkladKategorie_ID:
+      type: integer(11)
+    SkladVyrobek_ID:
+      type: integer(11)
+    SkladRevize_ID:
+      type: integer(11)
+    SkladPolozka_ID:
+      type: integer(11)
+    value:
+      type: string(255)
+      notnull: true
+  relations:
+    SkladTagTemplate:
+      local: SkladTagTemplate_ID
+      foreign: ID
+    SkladKategorie:
+      local: SkladKategorie_ID
+      foreign: ID
+    SkladVyrobek:
+      local: SkladVyrobek_ID
+      foreign: ID
+    SkladRevize:
+      local: SkladRevize_ID
+      foreign: ID
+    SkladPolozka:
+      local: SkladPolozka_ID
+      foreign: ID
+SkladPolozka:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    vyrobek:
+      type: integer(11)
+    revize:
+      type: integer(11)
+    nazev:
+      type: string(50)
+    dodaciList:
+      type: integer(11)
+      notnull: true
+    pocet:
+      type: float
+      notnull: true
+    jednotka:
+      type: string(10)
+      notnull: true
+    serial:
+      type: string(50)
+    zaruka:
+      default: false
+      type: boolean
+      notnull: true
+    zarukaOd:
+      type: date
+    zarukaDo:
+      type: date
+    poznamka:
+      type: string(255)
+  relations:
+    SkladVyrobek:
+      local: vyrobek
+      foreign: ID
+    SkladRevize:
+      local: revize
+      foreign: ID
+    SkladDodaciList:
+      local: dodaciList
+      foreign: ID
+SkladDodaciList:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    dodavatel:
+      type: integer(11)
+      notnull: true
+    cislo:
+      type: string(25)
+    fakturaCislo:
+      type: string(25)
+    faktura:
+      type: integer(11)
+    dVystaveni:
+      type: date
+    dNaskladneni:
+      type: date
+SkladPolozkaUmisteni:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    polozka:
+      type: integer(11)
+      notnull: true
+      values: []
+    typ:
+      type: enum
+      notnull: true
+      values: [SKLAD,ZAKAZNIK,USER,RACK,REKLAMACE,ADRESAR,FAKTURA,DEAD,JINE]
+    skladMistoId:
+      type: integer(11)
+    PorCis:
+      type: integer(11)
+    userId:
+      type: integer(11)
+    rackId:
+      type: integer
+    adresarId:
+      type: integer(11)
+    fakturaId:
+      type: integer(11)
+    poznamka:
+      type: string(255)
+    datumOd:
+      type: timestamp
+      notnull: true
+    datumDo:
+      type: timestamp
+    aktivni:
+      default: false
+      type: boolean
+      notnull: true
+    rezervovane:
+      default: 0
+      type: float
+      notnull: true
+    dostupne:
+      default: 1
+      type: float
+      notnull: true
+    vadne:
+      default: false
+      type: boolean
+      notnull: true
+    vadnePoznamka:
+      type: string(255)
+    zarukaDo:
+      type: date
+    vlastnictvi:
+      type: enum
+      values: [PRONAJEM,ZAKOUPENO,SPLATKY,VYMENENO,NEVIM]
+  relations:
+    SkladPolozka:
+      local: polozka
+      foreign: ID
+    SkladMisto:
+      local: skladMistoId
+      foreign: ID
+    Rack:
+      local: rackId
+      foreign: ID
+SkladMisto:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(50)
+    poznamka:
+      type: string(255)
+Rack:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(100)
+SkladPresun:
+  columns:
+    src:
+      type: integer(11)
+    dst:
+      type: integer(11)
+    pocet:
+      type: float
+    datum:
+      type: timestamp
+  relations:
+    SkladPolozkaUmisteni:
+      local: src
+      foreign: ID
+    SkladPolozkaUmisteni:
+      local: dst
+      foreign: ID
+SkladRezervace:
+  columns:
+    ID:
+      primary: true
+      unique: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    polozka:
+      type: integer(11)
+      notnull: true
+    planovacId:
+      type: integer(11)
+      notnull: true
+    pocet:
+      type: float
+      notnull: true
+    stav:
+      type: enum
+      notnull: true
+      values: [CEKA,DOKONCENO,ZRUSENO]
+    stavPoznamka:
+      type: string(255)
+  relations:
+    SkladPolozka:
+      local: polozka
+      foreign: ID

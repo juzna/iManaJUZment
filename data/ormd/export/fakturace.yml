@@ -1,0 +1,233 @@
+Faktura:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    adresar:
+      type: integer(11)
+    PorCis:
+      type: integer(11)
+    typ:
+      type: enum
+      notnull: true
+      values: [vydana,prijata]
+    typ2:
+      type: enum
+      notnull: true
+      values: [normal,zalohova,dobropis,zavazek,pohledavka]
+    ciselnaRada:
+      type: integer
+      notnull: true
+    cislo:
+      type: string(20)
+      notnull: true
+    interniCislo:
+      type: string(20)
+    dVystaveni:
+      type: date
+    dZapisu:
+      type: date
+    dSplatnosti:
+      type: date
+    dUZP:
+      type: date
+    predkontace:
+      type: string(50)
+    typDPH:
+      type: string(50)
+    text:
+      type: string(5000)
+    castkaAutoOff:
+      default: 1
+      type: boolean
+      notnull: true
+    dphSazba1:
+      default: 20
+      type: integer(2)
+      notnull: true
+    dphSazba2:
+      default: 10
+      type: integer(2)
+      notnull: true
+    castka0:
+      default: 0
+      type: float
+      notnull: true
+    castka1:
+      default: 0
+      type: float
+      notnull: true
+    dph1:
+      default: 0
+      type: float
+      notnull: true
+    castka2:
+      default: 0
+      type: float
+      notnull: true
+    dph2:
+      default: 0
+      type: float
+      notnull: true
+    castka:
+      type: float
+      notnull: true
+    mena:
+      default: CZK
+      type: string(3)
+      notnull: true
+    naZaplaceni:
+      default: 0
+      type: float
+      notnull: true
+    naPotvrzeni:
+      default: 0
+      type: float
+      notnull: true
+    zaplaceno:
+      default: 0
+      type: float
+      notnull: true
+    pouzito:
+      default: 0
+      type: float
+      notnull: true
+    formaUhrady:
+      default: predovem
+      type: enum
+      notnull: true
+      values: [dobirkou,hotove,kartou,prevodem,slozenkou,zalohou,zapoctem,jine]
+    cisloUctu:
+      type: string
+    VS:
+      type: string(10)
+    SS:
+      type: string(10)
+    KS:
+      type: string(4)
+    dOdeslano:
+      type: date
+    odeslal:
+      type: integer(11)
+    vytvoril:
+      type: integer(11)
+      notnull: true
+    vytvoreno:
+      type: timestamp
+    poznamka:
+      type: string
+    ucetniRok:
+      type: integer(4)
+    stredisko:
+      type: integer(11)
+    naSplatky:
+      default: false
+      type: boolean
+      notnull: true
+    neplatit:
+      default: false
+      type: boolean
+      notnull: true
+    neplatitCastka:
+      type: float
+    neplatitPoznamka:
+      type: string
+    uuid:
+      type: string(50)
+  relations:
+    Adresar:
+      local: adresar
+      foreign: ID
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+FakturaAdresa:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    faktura:
+      type: integer(11)
+      notnull: true
+    typ:
+      type: enum
+      notnull: true
+    adresar:
+      type: integer(11)
+    jmeno:
+      type: string
+    ulice:
+      type: string
+    CP:
+      type: string
+    mesto:
+      type: string
+    PSC:
+      type: string
+    ICO:
+      type: string
+    DIC:
+      type: string
+    poznamka:
+      type: string
+  relations:
+    Faktura:
+      local: faktura
+      foreign: ID
+    Adresar:
+      local: adresar
+      foreign: ID
+FakturaPolozka:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    faktura:
+      type: integer(11)
+    ucel:
+      type: string(50)
+    index:
+      type: integer(11)
+    text:
+      type: string(100)
+    poznamka:
+      type: string(255)
+    sn:
+      type: string(100)
+    mnozstvi:
+      default: 1
+      type: float
+      notnull: true
+    mernaJednotka:
+      default: ks
+      type: string(5)
+    jednotkovaCena:
+      type: float
+      notnull: true
+    dphSazba:
+      default: 20
+      type: integer(2)
+      notnull: true
+    caskaBezDPH:
+      type: float
+      notnull: true
+    castkaDPH:
+      type: float
+      notnull: true
+    castkaSDPH:
+      type: float
+      notnull: true
+    predkontace:
+      type: string(50)
+    typDPH:
+      type: string(50)
+  relations:
+    Faktura:
+      local: faktura
+      foreign: ID

@@ -1,5 +1,4 @@
 AP:
-  tableName: AP
   actAs:
     Taggable:
       tableName: APGroupTags
@@ -7,6 +6,7 @@ AP:
     GeographicalCZ:
       postal: true
       uir: true
+  tableName: AP
   columns:
     ID:
       primary: true
@@ -14,11 +14,14 @@ AP:
       type: integer(11)
       notnull: true
       autoincrement: true
-    nazev:
+    APNetwork_ID:
+      type: integer
+      notnull: true
+    name:
       unique: true
       type: string(100)
       notnull: true
-    popis:
+    description:
       type: string(255)
     mode:
       default: other
@@ -62,6 +65,12 @@ AP:
       type: integer(11)
     l3parentIf:
       type: string(50)
+  relations:
+    network:
+      class: APNetwork
+      foreignAlias: AP
+      local: APNetwork_ID
+      foreign: ID
 APParams:
   tableName: APParams
   columns:
@@ -116,7 +125,7 @@ APParent:
     AP:
       local: childAP
       foreign: ID
-APAntena:
+APAntenna:
   tableName: APAntena
   columns:
     ID:
@@ -270,7 +279,7 @@ APIP:
     netmask:
       type: integer(2)
       notnull: true
-    poznamka:
+    description:
       type: string(255)
   relations:
     AP:
@@ -343,8 +352,7 @@ APPortVlan:
       notnull: true
   relations:
     AP:
-      local: AP
-      foreign: ID
+      local: 
 APPokryti:
   columns:
     ID:
@@ -438,7 +446,7 @@ APService:
       type: integer(11)
       notnull: true
     service:
-      type: string(50)
+      type: string(20)
       notnull: true
     state:
       type: string(20)
@@ -500,9 +508,21 @@ APVlan:
       primary: true
       type: integer(4)
       notnull: true
-    poznamka:
+    description:
       type: string(255)
   relations:
     AP:
       local: AP
       foreign: ID
+APNetwork:
+  columns:
+    ID:
+      primary: true
+      type: integer
+      notnull: true
+      autoincrement: true
+    name:
+      type: string(50)
+      notnull: true
+    description:
+      type: string(255)

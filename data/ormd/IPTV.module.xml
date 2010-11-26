@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<orm-designer imported-from="export\iptv.yml" imported-type="YML">
+<orm-designer version="1.4.2.450">
 
-  <module imported-type="YML" name="IPTV" visBkColor="16186620" visSizeX="62" visSizeX2="738" visSizeY="116" visSizeY2="623">
+  <module import-format="DoctrineYml" import-path="export\iptv.yml" name="IPTV" visBkColor="16186620" visSizeX="62" visSizeX2="748" visSizeY="116" visSizeY2="659">
     <table description="Zakladni TV tarify" name="TvTarif" visPositionX="-44" visPositionY="257" visSizeX="0" visSizeX2="127" visSizeY="0" visSizeY2="82">
       <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
       <column name="nazev" required="true" size="50" type="string"/>
@@ -17,7 +17,7 @@
     <table description="Kombinace tarifu a tematickych balicku" name="TvTarifBalik" visPositionX="2" visPositionY="390" visSizeX="0" visSizeX2="113" visSizeY="0" visSizeY2="95">
       <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
       <column description="Foreign key to TvTarif.ID" name="tarif" required="true" type="integer"/>
-      <column description="Foreign key to TvBalik.ID" name="balik" required="true" type="integer"/>
+      <column description="Foreign key to TvBalik.ID" name="balik" required="true" size="11" type="integer"/>
       <column name="type" required="true" type="enum" values="included,allowed,disallowed"/>
       <column default="0" name="zdarma" required="true" size="1" type="integer"/>
       <column name="castkaProdejni" required="true" type="float"/>
@@ -29,7 +29,7 @@
     <table description="Televizni tarif zakaznika" name="ZakaznikTvTatif" visPositionX="-43" visPositionY="-76" visSizeX="0" visSizeX2="123" visSizeY="0" visSizeY2="147">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column description="Foreign key to Zakaznik.PorCis" name="PorCis" required="true" size="11" type="integer"/>
-      <column description="Foreign key to TvTarif.ID" name="tarif" required="true" size="11" type="integer"/>
+      <column description="Foreign key to TvTarif.ID" name="tarif" required="true" type="integer"/>
       <column name="datumOd" required="true" type="date"/>
       <column name="datumDo" type="date"/>
       <column name="minimalniDo" required="true" type="date"/>
@@ -64,14 +64,14 @@
     </table>
     <table description="Automaticky pridavane televizni akce k zakaznikum" name="TvAkce" visPositionX="242" visPositionY="391" visSizeX="0" visSizeX2="76" visSizeY="0" visSizeY2="95">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
-      <column description="Foreign key to TvTarif.ID" name="tarif" size="11" type="integer"/>
+      <column description="Foreign key to TvTarif.ID" name="tarif" type="integer"/>
       <column description="Foreign key to TvBalik.ID" name="balik" size="11" type="integer"/>
       <column description="Kod akce" name="akce" required="true" size="50" type="string"/>
       <column description="O kolik dni je akce opozdena od zacatku tarifu" name="datumPosun" required="true" type="integer"/>
       <column description="Kolik dni akce trva" name="datumDelka" required="true" type="integer"/>
     </table>
     <table name="TvProviderTarifReport" visPositionX="507" visPositionY="38" visSizeX="0" visSizeX2="109" visSizeY="0" visSizeY2="69">
-      <column name="report" size="11" type="integer"/>
+      <column name="report" type="integer"/>
       <column name="tarif" size="11" type="integer"/>
       <column name="datum" type="date"/>
       <column name="castka" type="float"/>
@@ -85,7 +85,7 @@
       <column name="castka" type="float"/>
     </table>
     <table name="TvProviderBalikReport" visPositionX="550" visPositionY="-88" visSizeX="0" visSizeX2="112" visSizeY="0" visSizeY2="82">
-      <column description="Foreign key to TvProviderReport.ID" name="report" size="11" type="integer"/>
+      <column description="Foreign key to TvProviderReport.ID" name="report" type="integer"/>
       <column description="Foreign key to ZakaznikTvTarif.ID" name="tarif" size="11" type="integer"/>
       <column description="Foreign key to ZakaznikTvBalik.ID" name="balik" size="11" type="integer"/>
       <column name="datum" type="date"/>

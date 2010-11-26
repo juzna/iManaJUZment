@@ -1,0 +1,369 @@
+TvTarif:
+  columns:
+    ID:
+      primary: true
+      type: integer
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(50)
+      notnull: true
+    cenaProdejni:
+      type: float
+      notnull: true
+    cenaNakupni:
+      type: float
+      notnull: true
+    pocetZdarma:
+      default: 0
+      type: integer(2)
+      notnull: true
+TvBalik:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    nazev:
+      type: string(50)
+      notnull: true
+    cenaNakupni:
+      type: float
+      notnull: true
+TvTarifBalik:
+  columns:
+    ID:
+      primary: true
+      type: integer
+      notnull: true
+      autoincrement: true
+    tarif:
+      type: integer
+      notnull: true
+    balik:
+      type: integer(11)
+      notnull: true
+    type:
+      type: enum
+      notnull: true
+      values: [included,allowed,disallowed]
+    zdarma:
+      default: 0
+      type: integer(1)
+      notnull: true
+    castkaProdejni:
+      type: float
+      notnull: true
+  indexes:
+    IX_TvTarifBalik_1:
+      fields: [tarif, balik]
+      type: unique
+  relations:
+    TvTarif:
+      local: tarif
+      foreign: ID
+    TvBalik:
+      local: balik
+      foreign: ID
+ZakaznikTvTatif:
+  tableName: ZakaznikTvTarif
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    tarif:
+      type: integer
+      notnull: true
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+    minimalniDo:
+      type: date
+      notnull: true
+    predplaceno:
+      type: date
+    aktivni:
+      default: true
+      type: boolean
+      notnull: true
+    providerZdarmaDo:
+      type: date
+    providerFakturovanoDo:
+      type: date
+  relations:
+    TvTarif:
+      local: tarif
+      foreign: ID
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+ZakaznikTvBalik:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    balik:
+      type: integer(11)
+      notnull: true
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+    minimalniDo:
+      type: date
+    predplaceno:
+      type: date
+    aktivni:
+      default: true
+      type: boolean
+      notnull: true
+    providerZdarmaDo:
+      type: date
+    providerFakturovanoDo:
+      type: date
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+    TvBalik:
+      local: balik
+      foreign: ID
+ZakaznikTvAkce:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    tarif:
+      type: integer(11)
+    balik:
+      type: integer(11)
+    akce:
+      type: string(50)
+      notnull: true
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+      notnull: true
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+    ZakaznikTvTatif:
+      local: tarif
+      foreign: ID
+    ZakaznikTvBalik:
+      local: balik
+      foreign: ID
+TvAkce:
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    tarif:
+      type: integer
+    balik:
+      type: integer(11)
+    akce:
+      type: string(50)
+      notnull: true
+    datumPosun:
+      type: integer
+      notnull: true
+    datumDelka:
+      type: integer
+      notnull: true
+  relations:
+    TvTarif:
+      local: tarif
+      foreign: ID
+    TvBalik:
+      local: balik
+      foreign: ID
+TvProviderTarifReport:
+  columns:
+    report:
+      type: integer
+    tarif:
+      type: integer(11)
+    datum:
+      type: date
+    castka:
+      type: float
+  relations:
+    TvProviderReport:
+      local: report
+      foreign: ID
+    ZakaznikTvTatif:
+      local: tarif
+      foreign: ID
+TvProviderReport:
+  columns:
+    ID:
+      primary: true
+      type: integer
+    datum:
+      type: date
+    castkaTarif:
+      type: float
+    castkaBalik:
+      type: float
+    castkaVOD:
+      type: float
+    castka:
+      type: float
+TvProviderBalikReport:
+  columns:
+    report:
+      type: integer
+    tarif:
+      type: integer(11)
+    balik:
+      type: integer(11)
+    datum:
+      type: date
+    castka:
+      type: float
+  relations:
+    ZakaznikTvTatif:
+      local: tarif
+      foreign: ID
+    TvProviderReport:
+      local: report
+      foreign: ID
+    ZakaznikTvBalik:
+      local: balik
+      foreign: ID
+TvVodKredit:
+  tableName: TvVodKredit
+  columns:
+    PorCis:
+      primary: true
+      type: integer(11)
+      notnull: true
+    castka:
+      type: float
+      notnull: true
+    expirace:
+      type: date
+      notnull: true
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+TvVodObjednano:
+  tableName: TvVodObjednano
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+      notnull: true
+    report:
+      type: integer
+    film:
+      type: string(100)
+      notnull: true
+    castka:
+      type: float
+      notnull: true
+    datum:
+      type: timestamp
+      notnull: true
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+    TvProviderReport:
+      local: report
+      foreign: ID
+ZakaznikTvStb:
+  tableName: ZakaznikTvStb
+  columns:
+    ID:
+      primary: true
+      type: integer(11)
+      notnull: true
+      autoincrement: true
+    PorCis:
+      type: integer(11)
+    MAC:
+      type: string(20)
+    IP:
+      type: string(20)
+    l2parent:
+      type: integer(11)
+    l2parentIf:
+      type: string(50)
+    datumOd:
+      type: date
+      notnull: true
+    datumDo:
+      type: date
+    aktivni:
+      default: true
+      type: boolean
+      notnull: true
+    vlastnictvi:
+      default: jine
+      type: enum
+      notnull: true
+      values: [zakoupen,pronajem,splatky,jine]
+    zarukaOd:
+      type: date
+      notnull: true
+    zarukaDo:
+      type: date
+      notnull: true
+    poznamka:
+      type: string
+    pin1:
+      type: string(4)
+    pin2:
+      type: string(4)
+    centronetProfileId:
+      unique: true
+      type: string(50)
+    skladPolozka:
+      type: integer(11)
+  relations:
+    Zakaznik:
+      local: PorCis
+      foreign: PorCis
+    SkladPolozka:
+      local: skladPolozka
+      foreign: ID
+TvAkceList:
+  columns:
+    code:
+      primary: true
+      unique: true
+      type: string(50)
+      notnull: true
+    description:
+      type: string(255)
