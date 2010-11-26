@@ -10,7 +10,7 @@
  * @property string $interface
  * @property string $ip
  * @property integer $netmask
- * @property string $poznamka
+ * @property string $description
  * @property AP $AP
  * 
  * @package    ##PACKAGE##
@@ -49,7 +49,7 @@ abstract class BaseAPIP extends Doctrine_Record
              'notnull' => true,
              'length' => '2',
              ));
-        $this->hasColumn('poznamka', 'string', 255, array(
+        $this->hasColumn('description', 'string', 255, array(
              'type' => 'string',
              'length' => '255',
              ));

@@ -35,10 +35,10 @@ abstract class BaseAPService extends Doctrine_Record
              'notnull' => true,
              'length' => '11',
              ));
-        $this->hasColumn('service', 'string', 50, array(
+        $this->hasColumn('service', 'string', 20, array(
              'type' => 'string',
              'notnull' => true,
-             'length' => '50',
+             'length' => '20',
              ));
         $this->hasColumn('state', 'string', 20, array(
              'type' => 'string',
