@@ -14,7 +14,7 @@
 			<content>{$ip}/{$netmask}</content>
 		</field>
 		<field name="interface" variable="interface" title="Rozhrani" show="1"/>
-		<field name="comment" variable="poznamka" title="Popis" show="1"/>
+		<field name="comment" variable="comment" title="Popis" show="1"/>
 		<field name="flags" title="Priznaky" show="1">
 			<content>
 				{= $not_real ? 'Tato IP zde fyzicky neni' : ''}

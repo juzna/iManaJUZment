@@ -1,0 +1,10 @@
+#!/bin/bash
+
+(
+  echo 'define("APP_DIR", realpath("$(dirname $0)/../app");';
+  echo 'define("LIBS_DIR", APP_DIR . "/../libs");';
+  echo 'require APP_DIR . "/bootstrap-common.php";';
+  cat
+) | php -a
+
+

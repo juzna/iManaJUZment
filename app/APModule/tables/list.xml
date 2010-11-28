@@ -7,8 +7,8 @@
     <source type="d:table">AP</source>
     <fields index="ID" sort="nazev">
         <field width="20" name="id" show="1" variable="ID" title="#" />
-        <field width="250" name="name" title="Nazev" show="1" icon="details" href="ap;detail;{$ID}" variable="nazev" />
-        <field width="120" name="comment" title="Popis" variable="popis" show="0" />
+        <field width="250" name="name" title="Nazev" show="1" icon="details" href="ap;detail;{$ID}" variable="name" />
+        <field width="120" name="comment" title="Popis" variable="description" show="0" />
         <field width="30" name="mode" title="Mod" variable="mode" show="0">
             <filter type="enum">
                 <option value="bridge">Bridge</option>
@@ -18,7 +18,7 @@
             </filter>
         </field>
         <field width="100" name="os" title="Operacni system" show="0">
-          <content><![CDATA[ {$ID} {$nazev}, {$mode} ]]></content>
+          <content><![CDATA[ {$ID} {$name}, {$mode} ]]></content>
         </field>
     </fields>
 </table>
