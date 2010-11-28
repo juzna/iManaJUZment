@@ -21,7 +21,6 @@
  * @property boolean $aktivni
  * @property boolean $zaplacenoCele
  * @property Zakaznik $Zakaznik
- * @property Tarif $Tarif
  * @property Doctrine_Collection $ZakaznikNeaktivniTarif
  * @property Doctrine_Collection $ZakanzikTarifUhrada
  * 
@@ -103,10 +102,6 @@ abstract class BaseZakaznikTarif extends Doctrine_Record
         $this->hasOne('Zakaznik', array(
              'local' => 'PorCis',
              'foreign' => 'PorCis'));
-
-        $this->hasOne('Tarif', array(
-             'local' => 'tarif',
-             'foreign' => 'ID'));
 
         $this->hasMany('ZakaznikNeaktivniTarif', array(
              'local' => 'ID',

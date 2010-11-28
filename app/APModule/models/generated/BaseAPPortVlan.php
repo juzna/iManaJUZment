@@ -53,7 +53,7 @@ abstract class BaseAPPortVlan extends Doctrine_Record
     {
         parent::setUp();
         $this->hasOne('AP', array(
-             'local' => 'a_p_id',
+             'local' => 'AP',
              'foreign' => 'id'));
     }
 }

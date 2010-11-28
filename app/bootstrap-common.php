@@ -19,7 +19,7 @@ Environment::loadConfig();
 $dbConfig = Environment::getConfig('database');
 $conn = Doctrine_Manager::connection($dbConfig->driver . '://' . $dbConfig->username . ':' . $dbConfig->password . '@' . $dbConfig->host . '/' . $dbConfig->database);
 $conn->setCharset('utf8');
-$conn->setCollate('ut­f8_general_ci');
+$conn->setCollate('utf8_general_ci');
 
 
 // Initialize extensions
@@ -35,10 +35,20 @@ $doctrineExtensionDir = LIBS_DIR . "/doctrine-ext/";
 Environment::setVariable('doctrine_config',
     array(
         'data_fixtures_path' => __DIR__ . '/doctrine/data/fixtures',
-        'models_path'        => __DIR__ . '/models',
+        'models_path'        => glob(__DIR__ . '/*Module/models'),
         'migrations_path'    => __DIR__ . '/doctrine/migrations',
         'sql_path'           => __DIR__ . '/doctrine/data/sql',
         'yaml_schema_path'   => __DIR__ . '/doctrine/schema',
+        'yaml2models_options' => array(
+          'app_dir' => __DIR__,
+          'modules_dir' => 'models',
+          'modules' => array(
+            'AP.yml'        => 'AP',
+            'zakaznici.yml' => 'Customer',
+            'platby.yml'    => 'Payments',
+            'obecne.yml'    => 'Common',
+          ),
+        ),
         'generate_models_options' => array(
           'tableClassesDirectory' => 'tables',
           'pearStyle'             => true,

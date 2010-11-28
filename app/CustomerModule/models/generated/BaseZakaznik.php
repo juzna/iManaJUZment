@@ -145,11 +145,11 @@ abstract class BaseZakaznik extends Doctrine_Record
              'local' => 'PorCis',
              'foreign' => 'PorCis'));
 
+        $timestampable0 = new Doctrine_Template_Timestampable();
         $geographical0 = new Doctrine_Template_Geographical();
         $softdelete0 = new Doctrine_Template_SoftDelete();
-        $timestampable0 = new Doctrine_Template_Timestampable();
+        $this->actAs($timestampable0);
         $this->actAs($geographical0);
         $this->actAs($softdelete0);
-        $this->actAs($timestampable0);
     }
 }
