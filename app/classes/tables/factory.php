@@ -37,6 +37,34 @@ class DataSourceFactory {
   }
   
   /**
+   * Get data source from table definition
+   * @param ITableDefinition $def
+   * @return Traversable
+   */
+  public static function fromTableDefinition(ITableDefinition $def, $variables = null) {
+    // Det DS from definition
+    $ds = $def->getDataSource();
+    
+    // array -> assume it's params for creator
+    if(is_array($ds)) {
+      $dsDef = $ds;
+      $dsType = $dsDef['type'];
+      return DataSourceFactory::create($dsType, $dsDef, $variables);
+    }
+    
+    // Traversable -> assume it's datasource already
+    elseif($ds instanceof Traversable) {
+      return $ds;
+    }
+    
+    else throw new TableException("Data source is unknown: $ds");
+  }
+  
+  
+  
+  /**************** creators ***********************/
+  
+  /**
    * Creates data source for Doctrine table
    */
   public static function doctrineTable($args, $params = null) {

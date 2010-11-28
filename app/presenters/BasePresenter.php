@@ -40,11 +40,7 @@ abstract class BasePresenter extends Presenter
     $def->load();
     
     // Get data source
-    if(empty($ds)) {
-      $dsDef = $def->getDataSource();
-      $dsType = $dsDef['type'];
-      $ds = Tables\DataSourceFactory::create($dsType, $dsDef, $variables);
-    }
+    if(empty($ds)) $ds = DataSourceFactory::fromTableDefinition($def);
     elseif(!($ds instanceof Traversable)) throw new Exception("Data source is not Traversable");
     
     // Prepare renderer

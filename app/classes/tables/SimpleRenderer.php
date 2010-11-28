@@ -48,6 +48,9 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
    * @return string
    */
   public function render($offset = 0, $limit = 0) {
+    // Create data source if needed
+    if(empty($this->dataSource)) $this->dataSource = DataSourceFactory::fromTableDefinition($this->definition, $this->variables);
+  
     $tpl = $this->getTemplate();
     $tpl->dataSource = $this->dataSource;
     $tpl->parameters = '';
