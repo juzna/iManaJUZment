@@ -1,0 +1,135 @@
+APNetwork:
+  APNetwork_KM:
+    name: Kromeriz
+    description: 'Hlavni sit'
+AP:
+  AP_main:
+    APNetwork_ID: '1'
+    name: core
+    description: 'Main router'
+    mode: other
+    IP: ''
+    netmask: '0'
+    pvid: '1'
+    snmpAllowed: false
+    snmpCommunity: null
+    snmpPassword: null
+    snmpVersion: null
+    realm: null
+    username: null
+    pass: null
+    os: ''
+    osVersion: null
+    sshFingerprint: null
+    l3parent: null
+    l3parentIf: null
+    posX: null
+    posY: null
+    ulice: null
+    cisloPopisne: null
+    mesto: null
+    PSC: null
+    stat: null
+    uir_obec: null
+    uir_cobce: null
+    uir_ulice: null
+    uir_objekt: null
+    uir_special: null
+  AP_shaperII:
+    APNetwork_ID: '1'
+    name: 'Shaper II'
+    description: 'Mikrotik pro shaping'
+    mode: other
+    IP: ''
+    netmask: '0'
+    pvid: '1'
+    snmpAllowed: false
+    snmpCommunity: null
+    snmpPassword: null
+    snmpVersion: null
+    realm: null
+    username: null
+    pass: null
+    os: ''
+    osVersion: null
+    sshFingerprint: null
+    l3parent: null
+    l3parentIf: null
+    posX: null
+    posY: null
+    ulice: null
+    cisloPopisne: null
+    mesto: null
+    PSC: null
+    stat: null
+    uir_obec: null
+    uir_cobce: null
+    uir_ulice: null
+    uir_objekt: null
+    uir_special: null
+APIP:
+  APIP_1:
+    AP: '1'
+    interface: eth0
+    ip: 1.1.1.1
+    netmask: '30'
+    description: 'internet connection'
+  APIP_2:
+    AP: '1'
+    interface: eth1
+    ip: 192.168.0.1
+    netmask: '24'
+    description: 'local subnet'
+APSwIf:
+  APSwIf_1:
+    AP: '1'
+    interface: eth0
+    masterInterface: null
+    type: ethernet
+    isNet: false
+    bssid: null
+    essid: null
+    frequency: null
+    enabled: true
+    encType: null
+    encKey: null
+    tarifFlag: '1'
+  APSwIf_2:
+    AP: '1'
+    interface: eth1
+    masterInterface: null
+    type: ethernet
+    isNet: false
+    bssid: null
+    essid: null
+    frequency: null
+    enabled: true
+    encType: null
+    encKey: null
+    tarifFlag: '1'
+Zakaznik:
+  Zakaznik_123:
+    PorCis: '123'
+    cisloSmlouvy: '123'
+    heslo: ahoj
+    aktivniOd: null
+    accepted: false
+    acceptedUser: null
+    acceptedTime: null
+    predplaceno: null
+    aktivni: true
+    staryDluh: '0'
+    nepocitatPredplatne: false
+    nepocitatPredplatneDuvod: null
+    instalacniPoplatek: null
+    doporucitel: null
+    sepsaniSmlouvy: null
+    neplaticSkupina: null
+    neplaticTolerance: null
+    neplaticNeresitDo: null
+    vychoziAdresa: null
+    created_at: '0000-00-00 00:00:00'
+    updated_at: '0000-00-00 00:00:00'
+    latitude: null
+    longitude: null
+    deleted_at: null
