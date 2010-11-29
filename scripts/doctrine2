@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php
+define('APP_DIR', __DIR__ . '/../app/');
+define('LIBS_DIR', APP_DIR . '../libs/');
+require_once APP_DIR . '/bootstrap-common.php';
+
+$helperSet = new \Symfony\Component\Console\Helper\HelperSet();
+\Doctrine\ORM\Tools\Console\ConsoleRunner::run($helperSet);
