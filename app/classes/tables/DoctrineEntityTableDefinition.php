@@ -5,12 +5,12 @@ use Doctrine;
 
 
 class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefinition {
-  private $entityName;
   private $entity;
+  private $metadata;
   
   public function __construct($name) {
-    $this->entityName = $name;
-    $this->entity = Doctrine::getTable($name);
+    $this->entity = $name;
+    $this->metadata = \ActiveEntity\Entity::getClassMetadata($name);
   }
 
   /**
@@ -26,7 +26,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
    * @return string
    */
   public function getName() {
-    return "doctrine-$this->entityName";
+    return "doctrine-$this->entity";
   }
 
   /**
@@ -34,7 +34,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
    * @return string
    */
   public function getTitle() {
-    return $this->entityName;
+    return $this->metadata->getTitle();
   }
   
   /**
@@ -52,7 +52,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
   public function getDataSource() {
     return array(
       'type'  => 'd:table',
-      'value' => $this->entityName,
+      'value' => $this->entity,
     );
   }
   
@@ -62,13 +62,20 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
    */
   public function getFields() {
     $ret = array();
+    $cntVisible = 0;
     
-    foreach($this->entity->getFieldNames() as $i => $colName) {
+    foreach($this->metadata->getFieldDefinitions() as $colName => $definition) {
       $ret[$colName] = new TableField($colName, array(
-        'title'     => $colName,
+        'title'     => isset($definition['title']) ? $definition['title'] : ucfirst($colName),
         'variable'  => $colName,
-        'show'      => ($i != 0 && $i < 8) ? 1 : 0,
+        'show'      => $show = !empty($definition['showByDefault']),
       ));
+      if($show) $cntVisible++;
+    }
+    
+    // No cols have show parameter -> try to guess
+    if(!$cntVisible) {
+      foreach(array_keys($ret) as $i => $name) $ret[$name]->show = ($i != 0 && $i < 8) ? 1 : 0;
     }
     
     return $ret;
@@ -79,7 +86,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
    * @return string
    */
   public function getFieldIndex() {
-    $keys = $this->entity->getFieldNames();
+    $keys = $this->metadata->getFieldNames();
     return $keys[0];
   }
   

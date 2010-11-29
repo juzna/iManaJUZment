@@ -77,6 +77,10 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
           case 'Format':
             $field['format'] = $annot->value;
             break;
+            
+          case 'Show':
+            $field['showByDefault'] = true;
+            break;
         }
       }
     }

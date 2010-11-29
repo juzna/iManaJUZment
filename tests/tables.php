@@ -15,7 +15,7 @@ $def->load();
 //print_r(APIP::getClassMetadata()); echo "AHOJ";  exit;
 
 
-$ds = AP::findAll();
+$ds = null; //AP::findAll();
 //$ds = $em->getRepository('AP')->findAll();
 //echo '<pre>'; print_r($ds); echo '</pre>';
 

@@ -147,7 +147,9 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     echo '<tr index="{$item->' . $this->definition->getFieldIndex() . '}">' . $nl;
     
     foreach($fields as $k => $field) {
-      echo "  <td col=\"$k\">";
+      $show = $field->show ? '' : 'display: none;';
+      
+      echo "  <td col=\"$k\" style=\"$show\">";
       echo $field->renderContent();
       echo "</td>\n";
     }

@@ -68,7 +68,7 @@ class DataSourceFactory {
    * Creates data source for Doctrine table
    */
   public static function doctrineTable($args, $params = null) {
-    return \Doctrine::getTable($args['value'])->findAll();
+    return em()->getRepository($args['value'])->findAll();
   }
   
   public static function doctrineModel($args, $params) {
@@ -81,10 +81,17 @@ class DataSourceFactory {
     if(!isset($params[$id])) throw new \Exception("Missing index variable: '$id'");
     $index = $params[$id];
     
-    $item = \Doctrine::getTable($model)->find($index);
+    $item = em()->find($model, $index);
     if(!$item) throw new \NotFoundException("Entity '$model' with ID '$id' not found");
     
     return $item->$property;
+  }
+  
+  /**
+   * Get data source from DQL
+   */
+  public static function doctrineDQL($args, $params = null) {
+    
   }
   
   /**

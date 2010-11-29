@@ -46,3 +46,4 @@ $database = (array) Environment::getConfig('database');
 $em = EntityManager::create($database, $config);
 ActiveEntity\Entity::setEntityManager($em);
 
+function em() { return $GLOBALS['em']; }

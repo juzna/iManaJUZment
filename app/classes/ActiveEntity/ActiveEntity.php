@@ -25,7 +25,7 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
    * Finds static entity manager to be used by default
    * @return EntityManager
    */
-  private static function getEntityManager() {
+  public static function getEntityManager() {
       if (!self::$entityManager === null) {
           throw Exception::noEntityManager();
       }
@@ -78,9 +78,13 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
   
   
   /************ Magic methods ***************/
-
-  public static function getClassMetadata() {
-    return self::getEntityManager()->getClassMetadata(get_called_class());
+  
+  /**
+   * Get's medatada describing this class
+   * @return ActiveEntity\ClassMetadata
+   */
+  public static function getClassMetadata($className = null) {
+    return self::getEntityManager()->getClassMetadata(isset($className) ? $className : get_called_class());
   }
   
   public function &__get($name) {
