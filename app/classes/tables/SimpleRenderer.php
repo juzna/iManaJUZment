@@ -7,7 +7,13 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
   private $dataSource;
   private $variables;
   
-  public function __construct(ITableDefinition $def = null, \Traversable $source = null, $variables = null) {
+  /**
+   * Simple renderer for tables, which creates HTML layout
+   * @param ITabledefinition $def Table definition
+   * @param Traversable $source Data source, array or Traversable class
+   * @param array $variables Variables for creating datasource
+   */
+  public function __construct(ITableDefinition $def = null, $source = null, $variables = null) {
     $this->definition = $def;
     $this->dataSource = $source;
     $this->variables = (array) $variables;

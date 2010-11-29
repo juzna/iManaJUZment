@@ -16,81 +16,33 @@ Environment::loadConfig();
 
 
 // Connect to database using Doctrine
-$dbConfig = Environment::getConfig('database');
-$conn = Doctrine_Manager::connection($dbConfig->driver . '://' . $dbConfig->username . ':' . $dbConfig->password . '@' . $dbConfig->host . '/' . $dbConfig->database);
-$conn->setCharset('utf8');
-$conn->setCollate('utf8_general_ci');
+use Doctrine\ORM\Configuration,
+  Doctrine\ORM\EntityManager;
+  
+$config = new Configuration;
 
-
-// Initialize extensions
-$manager = Doctrine_Manager::getInstance();
-$doctrineExtensionDir = LIBS_DIR . "/doctrine-ext/";
-// Doctrine::setExtensionsPath(realpath($doctrineExtensionDir));
-// $manager->registerExtension('Sortable');
-// $manager->registerExtension('Taggable');
-
-
-
-// Set up config variables for Doctrine
-Environment::setVariable('doctrine_config',
-    array(
-        'data_fixtures_path' => __DIR__ . '/doctrine/data/fixtures',
-        'models_path'        => glob(__DIR__ . '/*Module/models'),
-        'migrations_path'    => __DIR__ . '/doctrine/migrations',
-        'sql_path'           => __DIR__ . '/doctrine/data/sql',
-        'yaml_schema_path'   => __DIR__ . '/doctrine/schema',
-        'yaml2models_options' => array(
-          'app_dir' => __DIR__,
-          'modules_dir' => 'models',
-          'modules' => array(
-            'AP.yml'        => 'AP',
-            'zakaznici.yml' => 'Customer',
-            'platby.yml'    => 'Payments',
-            'obecne.yml'    => 'Common',
-          ),
-        ),
-        'generate_models_options' => array(
-          'tableClassesDirectory' => 'tables',
-          'pearStyle'             => true,
-          'generateTableClasses'	=> true,
-        ),
-    )
-);
-
-
-// Run Doctrine profiler
-if ($dbConfig->profiler) {
-  $profiler = new Doctrine_Connection_Profiler();
-  $conn->setListener($profiler);
-//  Nette\Debug::enableProfiler();
-//  Nette\Debug::addColophon('fetchDoctrineEvents');
-}
-
-
-// Profiler callback
-function fetchDoctrineEvents()
+// Metadata driver - annotations
 {
-    $profiler = Doctrine_Manager::getInstance()->getCurrentConnection()->getListener();
+  $modelDirs = glob(APP_DIR . "/*Module/models/") + array(APP_DIR . '/models/');
 
-    $queries = 0;
-    $out = '<br />';
-    foreach ($profiler as $event) {
-        $evName = $event->getName();
+  $config->setClassMetadataFactoryName('ActiveEntity\ClassMetadataFactory');
 
-        if ($evName == 'execute') {
-            $queries++;
-            $out .= '[' . number_format($event->getElapsedSecs() * 1000, 3) . 'ms]<br />'. $event->getQuery() . '<br />';
-        }
-
-        $params = $event->getParams();
-        if(!empty($params)) {
-            $out .= print_r($params, true) . '<br /><br />';
-        }
-    }
-
-    return array(
-        $profiler->count() . ' Doctrine events',
-        $queries . ' sql queries',
-        $out
-    );
+  $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+  $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
+  $reader->setAnnotationNamespaceAlias('ActiveEntity\Annotations\\', 'ae');
+  $reader->setAutoloadAnnotations(true);
+  
+  $metadata = new \ActiveEntity\AnnotationDriver($reader, (array) $modelDirs);
+  
+  $config->setMetadataDriverImpl($metadata);
 }
+
+// Proxy
+$config->setProxyNamespace('Proxy');
+$config->setProxyDir(__DIR__ . '/temp/proxy');
+
+// Database
+$database = (array) Environment::getConfig('database');
+$em = EntityManager::create($database, $config);
+ActiveEntity\Entity::setEntityManager($em);
+

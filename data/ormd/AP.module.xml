@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <orm-designer version="1.4.2.450">
 
-  <module import-format="DoctrineYml" import-path="export\AP.yml" name="AP" visBkColor="16644344" visSizeX="125" visSizeX2="954" visSizeY="0" visSizeY2="619">
+  <module import-format="DoctrineYml" name="AP" visBkColor="16644344" visSizeX="125" visSizeX2="954" visSizeY="0" visSizeY2="729">
     <table description="List of Access Points" name="AP" visPositionX="16" visPositionY="24" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
       <column name="APNetwork_ID" required="true" type="integer"/>
@@ -100,7 +100,7 @@
     <table description="Hardware for AP" name="APHw" visPositionX="382" visPositionY="174" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="69">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column description="Foreign key to AP.ID" name="AP" required="true" size="11" type="integer"/>
-      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka" size="11" type="integer"/>
+      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka"/>
       <column description="serial number" name="serial" size="50" type="string"/>
       <orm-properties>
         <attribute name="tableName">APHw</attribute>
@@ -112,7 +112,7 @@
       <column name="interface" required="true" size="50" type="string"/>
       <column name="mac" size="20" type="string"/>
       <column name="typ" required="true" type="enum" values="ether,wifi,other"/>
-      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka" size="11" type="integer"/>
+      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka"/>
       <orm-properties>
         <attribute name="tableName">APHwIf</attribute>
       </orm-properties>

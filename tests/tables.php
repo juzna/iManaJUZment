@@ -12,11 +12,16 @@ $def->load();
 //print_r($def); exit;
 
 // Datasource
-$ds = Doctrine::getTable('AP')->findAll();
+//print_r(APIP::getClassMetadata()); echo "AHOJ";  exit;
+
+
+$ds = AP::findAll();
+//$ds = $em->getRepository('AP')->findAll();
+//echo '<pre>'; print_r($ds); echo '</pre>';
 
 // Renderer
 $rend = new Tables\SimpleRenderer($def, $ds);
-//$rend->generateTemplateCode(); exit;
+echo "<!--\n\n"; $rend->generateTemplateCode(); echo "\n-->\n\n";
 
 // Create output
 echo $rend->render();

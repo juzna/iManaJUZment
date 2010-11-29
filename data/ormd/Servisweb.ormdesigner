@@ -15,7 +15,7 @@
 
   <include name="Platby.module.xml"/>
 
-  <project code-name="ServisWeb" name="ServisWeb" orm="Doctrine" visSizeX="54" visSizeX2="3404" visSizeY="105" visSizeY2="1443">
+  <project code-name="ServisWeb" name="ServisWeb" orm="Doctrine2" visSizeX="54" visSizeX2="3404" visSizeY="105" visSizeY2="1443">
     <module-position name="Zakaznici" visPositionX="50" visPositionY="50"/>
     <module-position name="IPTV" visPositionX="991" visPositionY="79"/>
     <module-position name="Obecne" visPositionX="1461" visPositionY="-38"/>
