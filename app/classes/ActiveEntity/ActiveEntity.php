@@ -87,9 +87,39 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
     return self::getEntityManager()->getClassMetadata(isset($className) ? $className : get_called_class());
   }
   
+  /**
+   * Get list of field names
+   * @return array
+   */
+  public static function getFieldNames($className = null) {
+    return self::getClassMetadata($className)->getFieldNames();
+  }
+  
+  public static function getFieldDefinitions($className = null) {
+    return self::getClassMetadata($className)->getFieldDefinitions();
+  }
+  
   public function &__get($name) {
     if(property_exists($this, $name)) return $this->$name;
     else throw new \Exception("Property $name not exists");
+  }
+  
+  /**
+   * Converts entity to array
+   * @return array
+   */
+  public function toArray($withRelations = false) {
+    $ret = array();
+    foreach(self::getClassMetadata()->getFieldDefinitions() as $fieldName => $def) {
+      if(isset($def)) $ret[$fieldName] = $this->$fieldName;
+      elseif($withRelations && $this->$fieldName instanceof \Doctrine\ORM\Proxy\Proxy) {
+        $prop = new \ReflectionProperty($this->$fieldName, '_identifier');
+        $prop->setAccessible(true);
+        $x = $prop->getValue($this->$fieldName);
+        $ret[$fieldName] = $x['ID'];
+      }
+    }
+    return $ret;
   }
   
   /**

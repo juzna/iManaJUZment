@@ -40,7 +40,7 @@ abstract class BasePresenter extends Presenter
     $def->load();
     
     // Get data source
-    if(empty($ds)) $ds = DataSourceFactory::fromTableDefinition($def);
+    if(empty($ds)) $ds = Tables\DataSourceFactory::fromTableDefinition($def);
     elseif(!($ds instanceof Traversable)) throw new Exception("Data source is not Traversable");
     
     // Prepare renderer
@@ -61,50 +61,5 @@ abstract class BasePresenter extends Presenter
     
     return $renderer;
   }
-
-
-  /**
-   * Formats layout template file names.
-   * @param  string
-   * @param  string
-   * @return array
-   */
-  public function ___formatLayoutTemplateFiles($presenter, $layout)
-  {
-    $appDir = Environment::getVariable('appDir') . '/../mods/';
-    $path = '/' . str_replace(':', '/', $presenter);
-    $pathP = substr_replace($path, '/templates', strrpos($path, '/'), 0);
-    $list = array(
-      "$appDir$pathP/@$layout.phtml",
-      "$appDir$pathP.@$layout.phtml",
-    );
-    while (($path = substr($path, 0, strrpos($path, '/'))) !== FALSE) {
-      $list[] = "$appDir$path/templates/@$layout.phtml";
-    }
-    return $list;
-  }
-
-
-
-  /**
-   * Formats view template file names.
-   * @param  string
-   * @param  string
-   * @return array
-   */
-  public function ___formatTemplateFiles($presenter, $view)
-  {
-    $appDir = Environment::getVariable('appDir') . '/../mods/';
-    $path = '/' . str_replace(':', '/', $presenter);
-    $pathP = substr_replace($path, '/templates', strrpos($path, '/'), 0);
-    $path = substr_replace($path, '/templates', strrpos($path, '/'));
-    return array(
-      "$appDir$pathP/$view.phtml",
-      "$appDir$pathP.$view.phtml",
-      "$appDir$path/@global.$view.phtml",
-    );
-  }
-
-
-
 }
+

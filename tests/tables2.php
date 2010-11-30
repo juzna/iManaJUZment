@@ -1,8 +1,5 @@
 <?php
-define('APP_DIR', __DIR__ . '/../app');
-define('LIBS_DIR', __DIR__ . '/../libs');
-
-require_once APP_DIR . '/bootstrap-common.php';
+require_once __DIR__ . '/bootstrap.php';
 
 // Input parameters
 $variables = array();

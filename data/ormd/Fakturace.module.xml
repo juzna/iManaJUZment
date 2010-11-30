@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <orm-designer version="1.4.2.450">
 
-  <module import-format="DoctrineYml" import-path="export\fakturace.yml" name="Fakturace" visBkColor="15923959" visSizeX="0" visSizeX2="577" visSizeY="0" visSizeY2="721">
+  <module import-format="Doctrine2Yml" import-path="export2\Fakturace\" name="Fakturace" visBkColor="15923959" visSizeX="0" visSizeX2="577" visSizeY="0" visSizeY2="721">
     <table name="Faktura" visPositionX="20" visPositionY="40" visSizeX="0" visSizeX2="87" visSizeY="0" visSizeY2="30">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column description="Foreign key to Adresar" name="adresar" size="11" type="integer"/>

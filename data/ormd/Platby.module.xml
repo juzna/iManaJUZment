@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <orm-designer version="1.4.2.450">
 
-  <module import-format="DoctrineYml" import-path="export\platby.yml" name="Platby" visBkColor="15857406" visSizeX="0" visSizeX2="269" visSizeY="0" visSizeY2="103">
+  <module import-format="Doctrine2Yml" import-path="export2\Payments\" name="Platby" visBkColor="15857406" visSizeX="0" visSizeX2="269" visSizeY="0" visSizeY2="103">
     <table description="Seznam vsech plateb" name="Platba" visPositionX="20" visPositionY="40" visSizeX="0" visSizeX2="87" visSizeY="0" visSizeY2="30">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
     </table>

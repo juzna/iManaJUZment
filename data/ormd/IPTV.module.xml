@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <orm-designer version="1.4.2.450">
 
-  <module import-format="DoctrineYml" import-path="export\iptv.yml" name="IPTV" visBkColor="16186620" visSizeX="62" visSizeX2="748" visSizeY="116" visSizeY2="659">
+  <module import-format="Doctrine2Yml" import-path="export2\IPTV\" name="IPTV" visBkColor="16186620" visSizeX="62" visSizeX2="748" visSizeY="116" visSizeY2="659">
     <table description="Zakladni TV tarify" name="TvTarif" visPositionX="-44" visPositionY="257" visSizeX="0" visSizeX2="127" visSizeY="0" visSizeY2="82">
       <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
       <column name="nazev" required="true" size="50" type="string"/>

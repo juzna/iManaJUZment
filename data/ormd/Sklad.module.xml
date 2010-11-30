@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <orm-designer version="1.4.2.450">
 
-  <module description="Sladova evidence" import-format="DoctrineYml" import-path="export\sklad.yml" name="Sklad" visBkColor="15858929" visSizeX="0" visSizeX2="1022" visSizeY="-7" visSizeY2="519">
+  <module description="Sladova evidence" import-format="Doctrine2Yml" import-path="export2\Sklad\" name="Sklad" visBkColor="15858929" visSizeX="0" visSizeX2="1022" visSizeY="-7" visSizeY2="519">
     <table description="Rozdeleni skladove evidence do kategorii" name="SkladKategorie" visPositionX="12" visPositionY="28" visSizeX="0" visSizeX2="98" visSizeY="0" visSizeY2="56">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
       <column name="nazev" size="50" type="string"/>

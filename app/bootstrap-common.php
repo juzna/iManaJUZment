@@ -18,32 +18,34 @@ Environment::loadConfig();
 // Connect to database using Doctrine
 use Doctrine\ORM\Configuration,
   Doctrine\ORM\EntityManager;
-  
-$config = new Configuration;
+{   
+  $config = new Configuration;
 
-// Metadata driver - annotations
-{
-  $modelDirs = glob(APP_DIR . "/*Module/models/") + array(APP_DIR . '/models/');
+  // Metadata driver - annotations
+  {
+    $modelDirs = glob(APP_DIR . "/*Module/models/") + array(APP_DIR . '/models/');
 
-  $config->setClassMetadataFactoryName('ActiveEntity\ClassMetadataFactory');
+    $config->setClassMetadataFactoryName('ActiveEntity\ClassMetadataFactory');
 
-  $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-  $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-  $reader->setAnnotationNamespaceAlias('ActiveEntity\Annotations\\', 'ae');
-  $reader->setAutoloadAnnotations(true);
-  
-  $metadata = new \ActiveEntity\AnnotationDriver($reader, (array) $modelDirs);
-  
-  $config->setMetadataDriverImpl($metadata);
+    $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+    $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
+    $reader->setAnnotationNamespaceAlias('ActiveEntity\Annotations\\', 'ae');
+    $reader->setAutoloadAnnotations(true);
+    
+    $metadata = new \ActiveEntity\AnnotationDriver($reader, (array) $modelDirs);
+    
+    $config->setMetadataDriverImpl($metadata);
+  }
+
+  // Proxy
+  $config->setProxyNamespace('Proxy');
+  $config->setProxyDir(__DIR__ . '/temp/proxy');
+
+  // Database
+  $database = (array) Environment::getConfig('database');
+  $em = EntityManager::create($database, $config);
+  ActiveEntity\Entity::setEntityManager($em);
+
+  function em() { return $GLOBALS['em']; }
 }
 
-// Proxy
-$config->setProxyNamespace('Proxy');
-$config->setProxyDir(__DIR__ . '/temp/proxy');
-
-// Database
-$database = (array) Environment::getConfig('database');
-$em = EntityManager::create($database, $config);
-ActiveEntity\Entity::setEntityManager($em);
-
-function em() { return $GLOBALS['em']; }

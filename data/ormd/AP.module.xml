@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <orm-designer version="1.4.2.450">
 
-  <module import-format="DoctrineYml" name="AP" visBkColor="16644344" visSizeX="125" visSizeX2="954" visSizeY="0" visSizeY2="729">
+  <module import-format="Doctrine2Yml" import-path="export2\AP\" name="AP" visBkColor="16644344" visSizeX="125" visSizeX2="954" visSizeY="0" visSizeY2="729">
     <table description="List of Access Points" name="AP" visPositionX="16" visPositionY="24" visSizeX="0" visSizeX2="20" visSizeY="0" visSizeY2="20">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer" unique="true"/>
       <column name="APNetwork_ID" required="true" type="integer"/>
@@ -38,7 +38,7 @@
       </orm-properties>
     </table>
     <table description="Various parameters for AccessPoints" name="APParams" visPositionX="179" visPositionY="24" visSizeX="0" visSizeX2="116" visSizeY="0" visSizeY2="69">
-      <column description="Foreign key to AP" name="AP" primary="true" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" primary="true" required="true" size="11" type="integer"/>
       <column name="name" primary="true" size="50" type="string"/>
       <column name="value" size="50" type="string"/>
       <column name="comment" size="255" type="string"/>
@@ -63,7 +63,7 @@
     </table>
     <table description="Access Point antennas" name="APAntenna" visPositionX="362" visPositionY="19" visSizeX="0" visSizeX2="119" visSizeY="0" visSizeY2="134">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
-      <column description="Foreign key to AP" name="AP" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
       <column description="Software interface name" name="interface" required="true" size="50" type="string"/>
       <column name="smer" required="true" size="3" type="integer"/>
       <column name="rozsah" required="true" size="3" type="integer"/>
@@ -77,7 +77,7 @@
     </table>
     <table description="AP software interfaces" name="APSwIf" visPositionX="215" visPositionY="123" visSizeX="0" visSizeX2="139" visSizeY="0" visSizeY2="186">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
-      <column description="Foreign key to AP" name="AP" size="11" type="integer"/>
+      <column description="Foreign key to AP" name="AP" required="true" size="11" type="integer"/>
       <column description="Interface name" name="interface" required="true" size="50" type="string"/>
       <column description="When virtual interface, then this is name of master if" name="masterInterface" size="50" type="string"/>
       <column name="type" type="enum" values="wifi,ether,vlan,virtual-ap,bridge,other"/>
@@ -100,7 +100,7 @@
     <table description="Hardware for AP" name="APHw" visPositionX="382" visPositionY="174" visSizeX="0" visSizeX2="131" visSizeY="0" visSizeY2="69">
       <column auto-increment="true" name="ID" primary="true" required="true" size="11" type="integer"/>
       <column description="Foreign key to AP.ID" name="AP" required="true" size="11" type="integer"/>
-      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka"/>
+      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka" size="11" type="integer"/>
       <column description="serial number" name="serial" size="50" type="string"/>
       <orm-properties>
         <attribute name="tableName">APHw</attribute>
@@ -112,7 +112,7 @@
       <column name="interface" required="true" size="50" type="string"/>
       <column name="mac" size="20" type="string"/>
       <column name="typ" required="true" type="enum" values="ether,wifi,other"/>
-      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka"/>
+      <column description="Foreign key to SkladPolozka.ID" name="skladPolozka" size="11" type="integer"/>
       <orm-properties>
         <attribute name="tableName">APHwIf</attribute>
       </orm-properties>
@@ -210,7 +210,7 @@
       <column name="vlan" primary="true" required="true" size="4" type="integer"/>
       <column name="description" size="255" type="string"/>
     </table>
-    <table description="Separate networks" name="APNetwork" visPositionX="-112" visPositionY="29" visSizeX="0" visSizeX2="117" visSizeY="0" visSizeY2="59">
+    <table description="Separate networks" name="APNetwork" visPositionX="-120" visPositionY="25" visSizeX="0" visSizeX2="117" visSizeY="0" visSizeY2="59">
       <column auto-increment="true" name="ID" primary="true" required="true" type="integer"/>
       <column name="name" required="true" size="50" type="string"/>
       <column name="description" size="255" type="string"/>
@@ -218,7 +218,7 @@
     <foreign-key caption="" from="AP" inverse-alias="network" name="FK_AP_APNetwork_ID" owning-alias="AP" to="APNetwork">
       <foreign-key-column from="APNetwork_ID" to="ID"/>
     </foreign-key>
-    <foreign-key from="APParams" name="FK_ApParams_AP" to="AP">
+    <foreign-key from="APParams" inverse-alias="AO" name="FK_ApParams_AP" owning-alias="Params" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
     <foreign-key from="APParent" name="FK_APParent_AP" to="AP">
@@ -227,13 +227,13 @@
     <foreign-key from="APParent" name="FK_APParent_AP2" to="AP">
       <foreign-key-column from="childAP" to="ID"/>
     </foreign-key>
-    <foreign-key from="APAntenna" name="FK_APAntena_AP" to="AP">
+    <foreign-key from="APAntenna" inverse-alias="AP" name="FK_APAntena_AP" owning-alias="Antennas" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
-    <foreign-key from="APSwIf" name="FK_APswif_AP" to="AP">
+    <foreign-key from="APSwIf" inverse-alias="AP" name="FK_APswif_AP" owning-alias="SwInterfaces" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
-    <foreign-key from="APHw" name="FK_APhw_AP" to="AP">
+    <foreign-key from="APHw" inverse-alias="AP" name="FK_APhw_AP" owning-alias="Hardware" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
     <foreign-key from="APHw" name="FK_APhw_SkladPolozka" to="SkladPolozka">
@@ -258,19 +258,19 @@
     <foreign-key from="APPokrytiSubnet" name="FK_APPokrytiSubnet_APPokryti" to="APPokryti">
       <foreign-key-column from="pokryti" to="ID"/>
     </foreign-key>
-    <foreign-key from="APRoute" name="FK_APRoute_AP" to="AP">
+    <foreign-key from="APRoute" inverse-alias="AP" name="FK_APRoute_AP" owning-alias="Routes" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
-    <foreign-key from="APService" name="FK_APService_AP" to="AP">
+    <foreign-key from="APService" inverse-alias="AP" name="FK_APService_AP" owning-alias="Services" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
-    <foreign-key from="APService" name="FK_APService_APServiceList" to="APServiceList">
+    <foreign-key from="APService" inverse-alias="Definition" name="FK_APService_APServiceList" to="APServiceList">
       <foreign-key-column from="service" to="code"/>
     </foreign-key>
     <foreign-key from="APServiceOSList" name="FK_APServiceOSList_APServiceList" to="APServiceList">
       <foreign-key-column from="code" to="code"/>
     </foreign-key>
-    <foreign-key from="APVlan" name="FK_APVlan_AP" to="AP">
+    <foreign-key from="APVlan" inverse-alias="AP" name="FK_APVlan_AP" owning-alias="Vlans" to="AP">
       <foreign-key-column from="AP" to="ID"/>
     </foreign-key>
   </module>
