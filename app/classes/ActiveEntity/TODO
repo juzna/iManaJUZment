@@ -1,0 +1,19 @@
+Behaviours
+  - hooks
+  - testing
+
+Write basic behaviours
+  - Geographical
+  - InetSpeed
+  -
+
+
+AcviteEntity
+ - get+set methods based on Get/Set annotations of properties
+
+
+Refactor: General, modulable and extendable metadata config + annotation reader
+ - ActiveEntity, TableRenderer, FormRenderer
+ - defined by annotation namespace
+ - metadata has map of registered modules
+

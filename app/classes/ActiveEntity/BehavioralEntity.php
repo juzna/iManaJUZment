@@ -2,7 +2,8 @@
 
 namespace ActiveEntity;
 
-interface IBehavioralEntity {}
+interface IBehavioralEntity {} // Just for easy detection in reflection
+
 
 class BehavioralEntity extends Entity implements IBehavioralEntity {
   /**
@@ -86,7 +87,9 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
       // Call behavioral register
       $behavClassName = static::_formatBehavioralClassName($behav);
       if(!class_exists($behavClassName)) throw new \Exception("Behaviour class '$behavClassName' for behaviour '$behav' not exists");
-      $behavClassName::register($className, $args);
+      if(is_callable(array($behavClassName, 'register'), false)) {
+        $behavClassName::register($className, $args);
+      }
     }
     
     // Mark as loaded
@@ -113,6 +116,29 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
    */
   public static function _formatBehavioralClassName($name) {
     return "$name";
+  }
+  
+  public static function _setupBehavioralMetadata(\Doctrine\ORM\Mapping\ClassMetadataInfo $metadata) {
+    // Initialize all behaviours
+    $className = get_called_class();
+    if(is_array(static::$_behaviours)) foreach(static::$_behaviours as $k => $v) {
+      // Decode config item - what is behaviour name and what are arguments
+      if(is_numeric($k)) {
+        $behav = $v;
+        $args = null;
+      }
+      else {
+        $behav = $k;
+        $args = $v;
+      }
+      
+      // Call behavioral register
+      $behavClassName = static::_formatBehavioralClassName($behav);
+      if(!class_exists($behavClassName)) throw new \Exception("Behaviour class '$behavClassName' for behaviour '$behav' not exists");
+      if(is_callable(array($behavClassName, 'setUpMetadata'), false)) {
+        $behavClassName::setUpMetadata($metadata, $className, $args);
+      }
+    }
   }
 }
 
