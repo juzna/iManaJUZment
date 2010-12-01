@@ -1,6 +1,9 @@
 <?php
 
 namespace ActiveEntity;
+use ActiveEntity\Reflection\ReflectionClass,
+  ActiveEntity\Reflection\ReflectionProperty;
+
 
 /**
  * Extended metadata for ActiveEntity's
@@ -31,6 +34,27 @@ class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
   public function getFieldDefinitions() {
     return $this->fieldMappings;
   }
+
+  /**
+   * Gets the ReflectionClass instance of the mapped class.
+   * @return ReflectionClass
+   */
+  public function getReflectionClass() {
+    if(!$this->reflClass) {
+      $this->reflClass = new ReflectionClass($this->name);
+    }
+    return $this->reflClass;
+  }
+
+  public function _getNewReflectionProperty($class, $property) {
+    return new ReflectionProperty($class, $property);
+  }
   
+  
+/*  protected function _validateAndCompleteFieldMapping(array &$mapping) {
+    \Doctrine\ORM\Mapping\ClassMetadataInfo::_validateAndCompleteFieldMapping($mapping);
+    // Skip saving reflection property
+  }
+  */
 }
 

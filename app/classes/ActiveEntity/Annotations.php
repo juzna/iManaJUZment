@@ -25,4 +25,8 @@ class Set extends Annotation {}
 class Get extends Annotation {}
 class Format extends Annotation {}
 class Show extends Annotation {}
+class Behaviour extends Annotation {
+  public $name;
+  public $params;
+}
 

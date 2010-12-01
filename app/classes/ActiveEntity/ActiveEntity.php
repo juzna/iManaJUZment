@@ -10,7 +10,6 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
   private static $entityManager;
   
   
-  
   /************ Entity Manager configuration ***************/
   
   /**
@@ -103,6 +102,11 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
     if(property_exists($this, $name)) return $this->$name;
     else throw new \Exception("Property $name not exists");
   }
+  
+  public function __set($name, $value) {
+    if(property_exists($this, $name)) $this->$name = $value;
+    else throw new \Exception("Property $name not exists");
+  }  
   
   /**
    * Converts entity to array

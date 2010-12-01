@@ -37,6 +37,10 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
           $metadata->listable = true;
           break;
           
+        case 'Behaviour':
+          $this->setUpBehaviour($className, $metadata, $annot);
+          break;
+          
         case 'NotFound':
           $metadata->notFoundAction = $annot->action;
           $metadata->notFoundParams = (array) $annot;
@@ -84,6 +88,26 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
         }
       }
     }
-    
+  }
+  
+  /**
+   * Set up new behaviour for entity
+   */
+  private function setUpBehaviour($className, \Doctrine\ORM\Mapping\ClassMetadataInfo $metadata, Annotations\Behaviour $annot) {
+    $metadata->mapField(array(
+      'fieldName'   => 'behav_f1',
+      'type'        => 'string',
+      'length'      => 100,
+      'nullable'    => true,
+      'columnName'  => 'behav_col1',
+    ));
+
+    $metadata->mapField(array(
+      'fieldName'   => 'behav_f2',
+      'type'        => 'integer',
+      'nullable'    => true,
+      'columnName'  => 'behav_col2',
+    ));
   }
 }
+
