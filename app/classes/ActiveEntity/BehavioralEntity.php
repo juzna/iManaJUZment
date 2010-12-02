@@ -7,15 +7,15 @@ interface IBehavioralEntity {} // Just for easy detection in reflection
 
 class BehavioralEntity extends Entity implements IBehavioralEntity {
   /**
-   * @var array Data storage for behaviours
+   * @var array Data storage for behaviours, per instance
    */
   public $_behavioralStorage;
   
-  public static $_behaviours = false; // Configuration
-  public static $_behavioralConfigLoaded = false;
-  public static $_behavioralProperties; // List of properties
-  public static $_behavioralMethods; // Map: method name -> static class
-  public static $_behavioralStaticMethods; // Map: method name -> static class
+  public static $_behaviours = false; // Configuration, per class (i.e. has to use static::)
+  private static $_behavioralConfigLoaded = array(); // Map: class -> bool
+  private static $_behavioralProperties; // Map: class -> (property name -> params)
+  private static $_behavioralMethods; // Map: class -> (method name -> static class)
+  private static $_behavioralStaticMethods; // Map: class -> (method name -> static class)
   
   
   /***************** Magic methods **************/
@@ -41,7 +41,7 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
   
   public function __call($method, $args) {
     if(static::_hasBehavioralMethod($method)) {
-      $cb = array(static::$_behavioralMethods[$method], 'call' . ucfirst($method));
+      $cb = self::$_behavioralMethods[get_class($this)][$method];
       if(!is_callable($cb, false, $cbOut)) throw new \Exception("Behavioral method '$method' has no callable implementation $cbOut");
       array_unshift($args, get_called_class(), $this);
       return call_user_func_array($cb, $args);
@@ -51,7 +51,7 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
   
   public static function __callStatic($method, $args) {
     if(static::_hasBehavioralStaticMethod($method)) {
-      $cb = array(static::$_behavioralStaticMethods[$method], 'callStatic' . ucfirst($method));
+      $cb = self::$_behavioralStaticMethods[get_called_class()][$method];
       if(!is_callable($cb, false, $cbOut)) throw new \Exception("Behavioral method '$method' has no callable implementation $cbOut");
       array_unshift($args, get_called_class());
       return call_user_func_array($cb, $args);
@@ -59,20 +59,39 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
     else return parent::__callStatic($method, $args);
   }
   
+  /********** Manipulating with behaviours **************/
+
+  /**
+   * Add new property
+   * @param string $name Column name
+   * @param array $params Metadata parameters
+   */
+  public static function _addBehavioralProperty($name, $params = null) {
+    self::$_behavioralProperties[get_called_class()][$name] = $params;
+  }
+  
+  public static function _addBehavioralMethod($name, $cb) {
+    self::$_behavioralMethods[get_called_class()][$name] = $cb;
+  }
+
+  public static function _addBehavioralStaticMethod($name, $cb) {
+    self::$_behavioralStaticMethods[get_called_class()][$name] = $cb;
+  }
+  
   
   /********** Behavioral implementation ***************/
   
   protected static function _loadBehavioralConfig() {
-    if(static::$_behavioralConfigLoaded) return; // Already loaded
+    $cc = get_called_class();
+    if(isset(self::$_behavioralConfigLoaded[$cc])) return; // Already loaded
     
     if(static::$_behaviours === false) throw new \Exception("Behavioral configuraion not set, please set up static variable \$_behaviours in class " . get_called_class());
 
-    static::$_behavioralProperties = array();
-    static::$_behavioralMethods = array();
-    static::$_behavioralStaticMethods = array();
+    self::$_behavioralProperties[$cc] = array();
+    self::$_behavioralMethods[$cc] = array();
+    self::$_behavioralStaticMethods[$cc] = array();
     
     // Initialize all behaviours
-    $className = get_called_class();
     if(is_array(static::$_behaviours)) foreach(static::$_behaviours as $k => $v) {
       // Decode config item - what is behaviour name and what are arguments
       if(is_numeric($k)) {
@@ -88,27 +107,27 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
       $behavClassName = static::_formatBehavioralClassName($behav);
       if(!class_exists($behavClassName)) throw new \Exception("Behaviour class '$behavClassName' for behaviour '$behav' not exists");
       if(is_callable(array($behavClassName, 'register'), false)) {
-        $behavClassName::register($className, $args);
+        $behavClassName::register($cc, $args);
       }
     }
     
     // Mark as loaded
-    static::$_behavioralConfigLoaded = true;
+    self::$_behavioralConfigLoaded[$cc] = true;
   }
   
   public static function _hasBehavioralProperty($name) {
     static::_loadBehavioralConfig();
-    return in_array($name, static::$_behavioralProperties);
+    return isset(self::$_behavioralProperties[get_called_class()][$name]);
   }
   
   public static function _hasBehavioralMethod($name) {
     static::_loadBehavioralConfig();
-    return isset(static::$_behavioralMethods[$name]);
+    return isset(self::$_behavioralMethods[get_called_class()][$name]);
   }
   
   public static function _hasBehavioralStaticMethod($name) {
     static::_loadBehavioralConfig();
-    return isset(static::$_behavioralStaticMethods[$name]);
+    return isset(self::$_behavioralStaticMethods[get_called_class()][$name]);
   }
   
   /**

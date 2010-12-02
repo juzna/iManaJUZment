@@ -9,6 +9,8 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
    */
   private static $entityManager;
   
+  public function __construct() {}
+  
   
   /************ Entity Manager configuration ***************/
   
