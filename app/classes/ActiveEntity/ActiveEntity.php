@@ -78,26 +78,6 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
   
   /************ Magic methods ***************/
   
-  /**
-   * Get's medatada describing this class
-   * @return ActiveEntity\ClassMetadata
-   */
-  public static function getClassMetadata($className = null) {
-    return self::getEntityManager()->getClassMetadata(isset($className) ? $className : get_called_class());
-  }
-  
-  /**
-   * Get list of field names
-   * @return array
-   */
-  public static function getFieldNames($className = null) {
-    return self::getClassMetadata($className)->getFieldNames();
-  }
-  
-  public static function getFieldDefinitions($className = null) {
-    return self::getClassMetadata($className)->getFieldDefinitions();
-  }
-  
   public function &__get($name) {
     if(property_exists($this, $name)) return $this->$name;
     else throw new \Exception("Property $name not exists");
@@ -135,5 +115,32 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
         $arguments
     );
   }
+  
+  public function __toString() {
+    return get_class($this) . '@' . $this->ID;
+  }
+  
+  
+  /***************** Metadata methods ****************/
+  
+  /**
+   * Get's medatada describing this class
+   * @return ActiveEntity\ClassMetadata
+   */
+  public static function getClassMetadata($className = null) {
+    return self::getEntityManager()->getClassMetadata(isset($className) ? $className : get_called_class());
+  }
+  
+  /**
+   * Get list of field names
+   * @return array
+   */
+  public static function getFieldNames($className = null) {
+    return self::getClassMetadata($className)->getFieldNames();
+  }
+  
+  public static function getFieldDefinitions($className = null) {
+    return self::getClassMetadata($className)->getFieldDefinitions();
+  }  
 }
 
