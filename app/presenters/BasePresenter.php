@@ -7,8 +7,11 @@ use Nette\Application\Presenter,
 /**
  * Base class for all application presenters.
  */
-abstract class BasePresenter extends Presenter
-{
+abstract class BasePresenter extends Presenter {
+  // Parameters for creating templates
+  protected $_templateFactory = 'default';
+  protected $_templateFactoryParams = null;
+  
   /**
    * Get specific path for actual module
    * @param string $dir Requested subdirectory
@@ -21,6 +24,42 @@ abstract class BasePresenter extends Presenter
 		
 		return realpath($appDir . '/' . $path . ($dir ? "$dir/" : ''));
 	}
+	
+	/************ Template factory ****************/
+	
+	/**
+	 * Configure template factory
+	 * @param string $name Name of factory: default, code, or any method createTemplate<name>
+	 * @param mixed $params Whatever parameters, which are passed to factory
+	 */
+	protected function setTemplateFactory($name, $params = null) {
+	  $this->_templateFactory = $name;
+	  $this->_templateFactoryParams = $params;
+  }
+	
+	/**
+	 * Create template based on how factory's configuration
+	 * @see setTemplateFactory
+	 * @return Nette\Templates\ITemplate
+	 */
+	protected function createTemplate() {
+	  switch($this->_templateFactory) {
+	    case 'default':
+	    case '':
+  	    return parent::createTemplate();
+  	    
+	    case 'code':
+	      return new \CodeTemplate(parent::createTemplate());
+	      
+      default:
+        $method = 'createTemplate' . ucfirst($this->_templateFactory);
+        if(method_exists($this, $method)) return $this->$method($this->_templateFactoryParams);
+        throw new \Exception("Invalid template factory: '$this->_templateFactory'");
+	  }
+  }
+	
+	
+	/******************** Tables *********************/
   
   /**
    * Get table renderer
@@ -31,13 +70,10 @@ abstract class BasePresenter extends Presenter
    * @return Tables\ITableRenderer
    */
   public function getTable($name, $variables = null, $renderer = null, $ds = null) {
-    $path = $this->getModulePath('tables') . '/' . $name;
-    if(substr($name, -4) != '.xml') $path .= '.xml';
-    if(!is_readable($path)) throw new Exception("Table not found: '$path'");
-    
-    // Load definition    
-    $def = new Tables\XMLTableDefinition($path);
-    $def->load();
+    // Try to look for XML definition
+    $def = $this->getTableDefinitionFromXML($name) or
+      $def = $this->getTableDefinitionFromModel($name);
+    if(!$def) throw new \Exception("Table '$name' not found");
     
     // Get data source
     if(empty($ds)) $ds = Tables\DataSourceFactory::fromTableDefinition($def);
@@ -60,6 +96,37 @@ abstract class BasePresenter extends Presenter
     echo "\n\n-->\n";
     
     return $renderer;
+  }
+  
+  /**
+   * Gets table definition loaded from XML file
+   * @param string $name Table definition file
+   * @return Tables\ITableDefinition
+   */
+  protected function getTableDefinitionFromXML($name) {
+    $path = $this->getModulePath('tables') . '/' . $name;
+    if(substr($name, -4) != '.xml') $path .= '.xml';
+    if(!is_readable($path)) return false;
+    
+    // Load definition    
+    $def = new Tables\XMLTableDefinition($path);
+    $def->load();
+    
+    return $def;
+  }
+  
+  /**
+   * Get table definition based on Doctrine 2 model
+   * @param string $modelName Class name of model
+   * @return Tables\ITableDefinition
+   */
+  protected function getTableDefinitionFromModel($modelName) {
+    if(!class_exists($modelName)) return false;
+    
+    $reflClass = new \ReflectionClass($modelName);
+    if(!$reflClass->isSubclassOf('ActiveEntity\Entity')) return false;
+    
+    return new \Tables\DoctrineEntityTableDefinition($modelName);
   }
 }
 
