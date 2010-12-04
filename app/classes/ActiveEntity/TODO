@@ -1,12 +1,5 @@
 Behaviours
-  - hooks
-  - testing
-
-Write basic behaviours
-  - Geographical
-  - InetSpeed
-  -
-
+  - unit tests
 
 AcviteEntity
  - get+set methods based on Get/Set annotations of properties
