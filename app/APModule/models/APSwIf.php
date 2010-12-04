@@ -6,11 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APSwIf
  *
- * @Table()
- * @Entity
+ * @Table @Entity @ae:Behaviour
  */
-class APSwIf extends \ActiveEntity\Entity
+class APSwIf extends \ActiveEntity\BehavioralEntity
 {
+  public static $_behaviours = array(
+    'ActiveEntity\\Behaviours\\InetSpeed',
+  );
+
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer")

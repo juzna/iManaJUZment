@@ -13,14 +13,12 @@ class AP extends \ActiveEntity\BehavioralEntity
 {
   public static $_behaviours = array(
     'ActiveEntity\\Behaviours\\GeographicalCZ',
-//    'ActiveEntity\\Behaviours\\InetSpeed',
     'ActiveEntity\\Behaviours\\Timestampable',
     'ActiveEntity\\Behaviours\\SoftDelete',
     'ActiveEntity\\Behaviours\\Taggable' => array(
       'targetEntity'  => 'APTag',
       'targetEntityProperty'  => 'AP',
     ),
-    'Behav2',
   );
 
   /**
