@@ -7,15 +7,27 @@ use Doctrine\Common\Collections\ArrayCollection;
  * AP
  *
  * @Table()
- * @Entity
+ * @Entity @ae:Behaviour
  */
-class AP extends \ActiveEntity\Entity
+class AP extends \ActiveEntity\BehavioralEntity
 {
+  public static $_behaviours = array(
+    'ActiveEntity\\Behaviours\\GeographicalCZ',
+//    'ActiveEntity\\Behaviours\\InetSpeed',
+    'ActiveEntity\\Behaviours\\Timestampable',
+    'ActiveEntity\\Behaviours\\SoftDelete',
+    'ActiveEntity\\Behaviours\\Taggable' => array(
+      'targetEntity'  => 'APTag',
+      'targetEntityProperty'  => 'AP',
+    ),
+    'Behav2',
+  );
+
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer")
    * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @GeneratedValue
    */
   protected $ID;
 
@@ -33,31 +45,31 @@ class AP extends \ActiveEntity\Entity
 
   /**
    * @var enum $mode
-   * @Column(name="mode", type="enum", nullable=false)
+   * @Column(name="mode", type="enum", nullable=true)
    */
   protected $mode;
 
   /**
    * @var string $IP
-   * @Column(name="IP", type="string", length=15, nullable=false)
+   * @Column(name="IP", type="string", length=15, nullable=true)
    */
   protected $IP;
 
   /**
    * @var integer $netmask
-   * @Column(name="netmask", type="integer", length=2, nullable=false)
+   * @Column(name="netmask", type="integer", length=2, nullable=true)
    */
   protected $netmask;
 
   /**
    * @var integer $pvid
-   * @Column(name="pvid", type="integer", length=4, nullable=false)
+   * @Column(name="pvid", type="integer", length=4, nullable=true)
    */
   protected $pvid;
 
   /**
    * @var boolean $snmpAllowed
-   * @Column(name="snmpAllowed", type="boolean", nullable=false)
+   * @Column(name="snmpAllowed", type="boolean", nullable=true)
    */
   protected $snmpAllowed;
 
@@ -99,7 +111,7 @@ class AP extends \ActiveEntity\Entity
 
   /**
    * @var string $os
-   * @Column(name="os", type="string", length=20, nullable=false)
+   * @Column(name="os", type="string", length=20, nullable=true)
    */
   protected $os;
 
@@ -213,12 +225,17 @@ class AP extends \ActiveEntity\Entity
    * })
    */
   protected $network;
+  
+  /**
+   * @var APTag
+   * @OneToMany(targetEntity="APTag", mappedBy="AP", cascade={"all"})
+   */
+  protected $Tags;
 
   /**
    * 
    */
-  public function __construct()
-  {
+  public function __construct() {
     parent::__construct();
     $this->Params = new ArrayCollection;
     $this->Parent = new ArrayCollection;
@@ -233,5 +250,6 @@ class AP extends \ActiveEntity\Entity
     $this->Routes = new ArrayCollection;
     $this->Services = new ArrayCollection;
     $this->Vlans = new ArrayCollection;
+    $this->Tags = new ArrayCollection;
   }
 }
