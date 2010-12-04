@@ -37,11 +37,11 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
 
   /************ Persistance ***************/
   
-  public function save() {
+  public function persist() {
     return self::getEntityManager()->persist($this);
   }
 
-  public function delete() {
+  public function remove() {
     return self::getEntityManager()->remove($this);
   }
   

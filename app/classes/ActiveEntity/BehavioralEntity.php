@@ -16,9 +16,16 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
   private static $_behavioralProperties; // Map: class -> (property name -> params)
   private static $_behavioralMethods; // Map: class -> (method name -> static class)
   private static $_behavioralStaticMethods; // Map: class -> (method name -> static class)
+  private static $_behavioralClasses; // Map: class -> (array of behavioral classes)
+  private static $_behavioralConfig; // Map: class -> (behav -> hashmap)
   
   
   /***************** Magic methods **************/
+  
+  public function __construct() {
+    static::_loadBehavioralConfig();
+    self::getEntityManager()->getEventManager()->dispatchEvent('create', new \Doctrine\ORM\Event\LifeCycleEventArgs($this, self::getEntityManager()));
+  }
   
   public function &__get($name) {
     if(static::_hasBehavioralProperty($name)) return $this->_behavioralStorage[$name];
@@ -27,7 +34,7 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
   
   public function __set($name, $value) {
     if(static::_hasBehavioralProperty($name)) $this->_behavioralStorage[$name] = $value;
-    else parent::__set($name);
+    else parent::__set($name, $value);
   }
   
   public function __isset($name) {
@@ -46,6 +53,23 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
       array_unshift($args, get_called_class(), $this);
       return call_user_func_array($cb, $args);
     }
+    
+    // Setter/getter for behavioral property
+    elseif(preg_match('/^(set|get|is)([A-Z][A-Za-z0-9_]*)$/', $method, $match) && static::_hasBehavioralProperty(lcfirst($match[2]))) {
+      $name = lcfirst($match[2]);
+      switch($match[1]) {
+        case 'get':
+        case 'is':
+          if(sizeof($args) != 0) throw new \Exception("Expected not arguments");
+          return $this->_behavioralStorage[$name];
+          
+        case 'set':
+          if(sizeof($args) != 1) throw new \Exception("Expected one argument");
+          $this->_behavioralStorage[$name] = $args[0];
+          return $this; // Supports fluent interface
+      }
+    }
+    
     else return parent::__call($method, $args);
   }
   
@@ -103,9 +127,13 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
         $args = $v;
       }
       
+      // Set default config
+      self::$_behavioralConfig[$cc][$behav] = $args;
+      
       // Call behavioral register
       $behavClassName = static::_formatBehavioralClassName($behav);
       if(!class_exists($behavClassName)) throw new \Exception("Behaviour class '$behavClassName' for behaviour '$behav' not exists");
+      self::$_behavioralClasses[$cc][] = $behavClassName; // Add to known behaviours of this class
       if(is_callable(array($behavClassName, 'register'), false)) {
         $behavClassName::register($cc, $args);
       }
@@ -128,6 +156,11 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
   public static function _hasBehavioralStaticMethod($name) {
     static::_loadBehavioralConfig();
     return isset(self::$_behavioralStaticMethods[get_called_class()][$name]);
+  }
+  
+  public static function _hasBehaviour($className) {
+    static::_loadBehavioralConfig();
+    return in_array($className, self::$_behavioralClasses[get_called_class()]);
   }
   
   /**
@@ -158,6 +191,20 @@ class BehavioralEntity extends Entity implements IBehavioralEntity {
         $behavClassName::setUpMetadata($metadata, $className, $args);
       }
     }
+  }
+  
+  /***************** Config variables *****************/
+  
+  public static function _getBehavioralConfigVar($behav, $name) {
+    return self::$_behavioralConfig[get_called_class()][$behav][$name];
+  }
+  
+  public static function _setBehavioralConfigVar($behav, $name, $value) {
+    self::$_behavioralConfig[get_called_class()][$behav][$name] = $value;
+  }
+  
+  public static function &_getBehavioralConfig($behav) {
+    return self::$_behavioralConfig[get_called_class()][$behav];
   }
 }
 
