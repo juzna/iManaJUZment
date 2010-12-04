@@ -2,8 +2,8 @@
 
 namespace ActiveEntity\Behaviours;
 
-class Geographical extends BaseBehaviour{
-  public static function setDefinition() {
+class Geographical extends BaseBehaviour {
+  public static function setDefinition($className, $args) {
     self::hasColumn('latitude', 'decimal');
     self::hasColumn('longitude', 'decimal');
     

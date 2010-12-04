@@ -3,7 +3,7 @@
 namespace ActiveEntity\Behaviours;
 
 class GeographicalCZ extends BaseBehaviour{
-  public static function setDefinition() {
+  public static function setDefinition($className, $args) {
     self::hasColumn('posX', 'integer', 11, array());
     self::hasColumn('posY', 'integer', 11, array());
 
@@ -18,7 +18,7 @@ class GeographicalCZ extends BaseBehaviour{
     self::hasColumn('uir_cobce', 'integer', 11, array());
     self::hasColumn('uir_ulice', 'integer', 11, array());
     self::hasColumn('uir_objekt', 'integer', 11, array());
-    self::hasColumn('uir_special', 'bool', null, array()); // Specialni adresa (neni z UIR)
+    self::hasColumn('uir_special', 'boolean', null, array()); // Specialni adresa (neni z UIR)
   }
 }
 

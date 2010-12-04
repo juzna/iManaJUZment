@@ -3,7 +3,7 @@
 namespace ActiveEntity\Behaviours;
 
 class InetSpeed extends Basebehaviour {
-  public static function setDefinition() {
+  public static function setDefinition($className, $args) {
   	// Inet speeds
   	$fields = array('min', 'max', 'burst', 'tresh', 'time');
   	$types = array('tx', 'rx');
