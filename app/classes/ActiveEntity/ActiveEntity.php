@@ -53,6 +53,10 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
     return self::getEntityManager()->merge($this);
   }
   
+  public function flush() {
+    return self::getEntityManager()->flush();
+  }
+  
   public function getState() {
     return self::getEntityManager()->getUnitOfWork()->getEntityState($this);
   }
