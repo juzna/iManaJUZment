@@ -60,6 +60,7 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
       
       unset($field);
       $name = $property->getName();
+      if(!isset($metadata->fieldMappings[$name])) continue;
       $field = &$metadata->fieldMappings[$name];
       
       foreach($this->_reader->getPropertyAnnotations($property) as $annotName => $annot) {
