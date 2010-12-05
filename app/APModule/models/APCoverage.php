@@ -14,11 +14,19 @@ class APCoverage extends \ActiveEntity\Entity
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Id @GeneratedValue
    */
   protected $ID;
 
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Coverages")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   */
+  protected $AP;
+  
   /**
    * @var string $interface
    * @Column(name="interface", type="string", length=50, nullable=true)
@@ -50,19 +58,10 @@ class APCoverage extends \ActiveEntity\Entity
   protected $doporuceni;
 
   /**
-   * @var APPokrytiSubnet
-   * @OneToMany(targetEntity="APPokrytiSubnet", mappedBy="Coverage")
+   * @var APCoverageSubnet
+   * @OneToMany(targetEntity="APCoverageSubnet", mappedBy="Coverage")
    */
   protected $Subnets;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Coverages")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
 
   /**
    * 

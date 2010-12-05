@@ -14,10 +14,18 @@ class APAntenna extends \ActiveEntity\Entity
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Antennas")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   */
+  protected $AP;
 
   /**
    * @var string $interface
@@ -60,15 +68,6 @@ class APAntenna extends \ActiveEntity\Entity
    * @Column(name="poznamka", type="string", length=255, nullable=true)
    */
   protected $poznamka;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Antennas")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
 
   /**
    * 

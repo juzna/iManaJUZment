@@ -14,10 +14,18 @@ class APRoute extends \ActiveEntity\Entity
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Routes")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   */
+  protected $AP;
 
   /**
    * @var string $ip
@@ -60,15 +68,6 @@ class APRoute extends \ActiveEntity\Entity
    * @Column(name="enabled", type="boolean", nullable=false)
    */
   protected $enabled;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Routes")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
 
   /**
    * 

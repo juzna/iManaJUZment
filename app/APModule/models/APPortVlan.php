@@ -12,26 +12,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 class APPortVlan extends \ActiveEntity\Entity
 {
   /**
-   * @var integer $AP
-   * @Column(name="AP", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @var integer $ID
+   * @Column(name="ID", type="integer")
+   * @Id @GeneratedValue
+   */
+  protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="PortVlans")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
    */
   protected $AP;
 
   /**
    * @var string $port
    * @Column(name="port", type="string")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
    */
   protected $port;
 
   /**
    * @var integer $vlan
    * @Column(name="vlan", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
    */
   protected $vlan;
 
@@ -46,15 +50,6 @@ class APPortVlan extends \ActiveEntity\Entity
    * @Column(name="pvid", type="boolean", nullable=false)
    */
   protected $pvid;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="PortVlans")
-   * @JoinColumns({
-   *   @JoinColumn(name="APx_id", referencedColumnName="id")
-   * })
-   */
-  protected $APx;
 
   /**
    * 

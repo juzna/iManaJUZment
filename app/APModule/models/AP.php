@@ -139,7 +139,7 @@ class AP extends \ActiveEntity\BehavioralEntity
 
   /**
    * @var APParams
-   * @OneToMany(targetEntity="APParams", mappedBy="AP")
+   * @OneToMany(targetEntity="APParams", mappedBy="AP", cascade={"all"})
    */
   protected $Params;
 
@@ -157,61 +157,61 @@ class AP extends \ActiveEntity\BehavioralEntity
 
   /**
    * @var APAntenna
-   * @OneToMany(targetEntity="APAntenna", mappedBy="AP")
+   * @OneToMany(targetEntity="APAntenna", mappedBy="AP", cascade={"all"})
    */
   protected $Antennas;
 
   /**
    * @var APSwIf
-   * @OneToMany(targetEntity="APSwIf", mappedBy="AP")
+   * @OneToMany(targetEntity="APSwIf", mappedBy="AP", cascade={"all"})
    */
   protected $SwInterfaces;
 
   /**
    * @var APHw
-   * @OneToMany(targetEntity="APHw", mappedBy="AP")
+   * @OneToMany(targetEntity="APHw", mappedBy="AP", cascade={"all"})
    */
   protected $Hardware;
 
   /**
    * @var APIP
-   * @OneToMany(targetEntity="APIP", mappedBy="AP")
+   * @OneToMany(targetEntity="APIP", mappedBy="AP", cascade={"all"})
    */
   protected $IPs;
 
   /**
    * @var APPort
-   * @OneToMany(targetEntity="APPort", mappedBy="AP")
+   * @OneToMany(targetEntity="APPort", mappedBy="AP", cascade={"all"})
    */
   protected $Ports;
 
   /**
    * @var APPortVlan
-   * @OneToMany(targetEntity="APPortVlan", mappedBy="APx")
+   * @OneToMany(targetEntity="APPortVlan", mappedBy="AP", cascade={"all"})
    */
   protected $PortVlans;
 
   /**
    * @var APCoverage
-   * @OneToMany(targetEntity="APCoverage", mappedBy="AP")
+   * @OneToMany(targetEntity="APCoverage", mappedBy="AP", cascade={"all"})
    */
   protected $Coverages;
 
   /**
    * @var APRoute
-   * @OneToMany(targetEntity="APRoute", mappedBy="AP")
+   * @OneToMany(targetEntity="APRoute", mappedBy="AP", cascade={"all"})
    */
   protected $Routes;
 
   /**
    * @var APService
-   * @OneToMany(targetEntity="APService", mappedBy="AP")
+   * @OneToMany(targetEntity="APService", mappedBy="AP", cascade={"all"})
    */
   protected $Services;
 
   /**
    * @var APVlan
-   * @OneToMany(targetEntity="APVlan", mappedBy="APx")
+   * @OneToMany(targetEntity="APVlan", mappedBy="AP", cascade={"all"})
    */
   protected $Vlans;
 
@@ -249,5 +249,23 @@ class AP extends \ActiveEntity\BehavioralEntity
     $this->Services = new ArrayCollection;
     $this->Vlans = new ArrayCollection;
     $this->Tags = new ArrayCollection;
+  }
+
+  /**
+   * Get list of parents on Layer 2 of OSI
+   * @return array of AP
+   */
+  public function getL2Parents() {
+    // TODO: implement this
+    return array();
+  }
+
+  /**
+   * Get list of parents on Layer 3 of OSI
+   * @return array of AP
+   */
+  public function getL3Parents() {
+    // TODO: implement this
+    return array();
   }
 }

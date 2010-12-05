@@ -12,26 +12,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 class APVlan extends \ActiveEntity\Entity
 {
   /**
-   * @var integer $AP
-   * @Column(name="AP", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @var integer $ID
+   * @Column(name="ID", type="integer")
+   * @Id @GeneratedValue
    */
-  protected $AP;
-
-  /**
-   * @var integer $vlan
-   * @Column(name="vlan", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
-   */
-  protected $vlan;
-
-  /**
-   * @var string $description
-   * @Column(name="description", type="string", length=255, nullable=true)
-   */
-  protected $description;
+  protected $ID;
 
   /**
    * @var AP
@@ -40,7 +25,19 @@ class APVlan extends \ActiveEntity\Entity
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
    */
-  protected $APx;
+  protected $AP;
+
+  /**
+   * @var integer $vlan
+   * @Column(name="vlan", type="integer")
+   */
+  protected $vlan;
+
+  /**
+   * @var string $description
+   * @Column(name="description", type="string", length=255, nullable=true)
+   */
+  protected $description;
 
   /**
    * 

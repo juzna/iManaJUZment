@@ -6,16 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APPokrytiSubnet
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
-class APPokrytiSubnet extends \ActiveEntity\Entity
+class APCoverageSubnet extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Id @GeneratedValue
    */
   protected $ID;
 
@@ -35,7 +33,7 @@ class APPokrytiSubnet extends \ActiveEntity\Entity
    * @var APCoverage
    * @ManyToOne(targetEntity="APCoverage", inversedBy="Subnets")
    * @JoinColumns({
-   *   @JoinColumn(name="pokryti", referencedColumnName="ID")
+   *   @JoinColumn(name="coverage", referencedColumnName="ID")
    * })
    */
   protected $Coverage;
@@ -46,6 +44,5 @@ class APPokrytiSubnet extends \ActiveEntity\Entity
   public function __construct()
   {
     parent::__construct();
-  
   }
 }
