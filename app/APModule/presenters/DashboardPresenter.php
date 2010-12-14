@@ -4,142 +4,165 @@ namespace APModule;
 
 use Nette\Application\AppForm,
 	Nette\Forms\Form,
-	Doctrine;
-
+  Nette\Forms,
+  DoctrineForm,
+  ActiveEntity\Entity;
 
 
 class DashboardPresenter extends BasePresenter
 {
   // List of entity aliases (for listing, adding, editing, removing)
-  private $entityAliases = array(
+  protected $entityAliases = array(
     'ap'    => 'AP',
     'ip'    => 'APIP',
     'swif'  => 'APSwIf',
   );
-  
-  protected function getEntityName($alias) {
-    if(isset($this->entityAliases[$alias])) return $this->entityAliases[$alias];
-    else throw new \Exception("Entity alias not found");
+
+  /**
+   * Renders Access point's detail page
+   * @param int $id ID of access point
+   */
+  public function renderDetail($id) {
+    $this->template->AP = \AP::find($id);
   }
-  
+
   /**
    * Show list of entities
    * @param string $what Entity alias
    */
-  public function renderList($what)
-  {
-    $this->template->what = $what;
-    $this->template->list = Doctrine::getTable($this->getEntityName($what))->findAll();
+  public function renderList($what) {
+    $this->setTemplateFactory('code');
+
+    $tbl = $this->getTable($this->getEntityName($what), $_GET);
+    $this->template->content = $tbl->render();
+    $this->template->title = $what;
   }
-  
-  public function renderTable($what) {
-    $tbl = $this->getTable($what, $_GET);
-    echo $tbl->render();
-    exit;
-  
-  }
-  
+
   /**
-   * Form for adding new entity
-   * @param string $what Entity alias
+   * Show form for adding new item
+   * @param string $what
    */
-  public function renderAdd($what)
-  {
+  public function renderAdd($what) {
     $this->template->what = $what;
+
+    $frm = $this->getForm($what);
+    $frm['action']->setValue('add');
+    $frm['save']->caption = 'Add!';
+  }
+
+  /**
+   * Shows form for editing entity
+   * @throws BadRequestException
+   * @param string $what Entity alias
+   * @param int $id Entity ID
+   * @return void
+   */
+  public function renderEdit($what, $id) {
+    $this->template->what = $what;
+
+    // Set-up form
+    $frm = $this->getForm($what);
+    if(!$frm->isSubmitted()) {
+      $frm['action']->setValue('edit');
+
+      // Find entity
+      $cls = $this->getEntityName($what);
+      $row = Entity::find($id, $cls);
+      if(!$row) throw new Nette\Application\BadRequestException('Record not found');
+
+      // Set item's index
+      $indexField = Entity::getClassMetadata($cls)->getSingleIdentifierFieldName();
+      $frm['index']->setValue($row->$indexField);
+
+      $frm->setDefaults($row->toArray());
+    }
+  }
+
+  /**
+   * Shows form for cloning entity
+   * @throws BadRequestException
+   * @param string $what Entity alias
+   * @param int $id Entity ID
+   * @return void
+   */
+  public function renderClone($what, $id) {
+    $this->template->what = $what;
+
+    // Set-up form
+    $frm = $this->getForm($what);
+    if(!$frm->isSubmitted()) {
+      $frm['action']->setValue('clone');
+      $frm['save']->caption = 'Clone!';
+
+      // Find entity
+      $cls = $this->getEntityName($what);
+      $row = Entity::find($id, $cls);
+      if(!$row) throw new Nette\Application\BadRequestException('Record not found');
+
+      // Set item's index
+      $indexField = Entity::getClassMetadata($cls)->getSingleIdentifierFieldName();
+      $frm['index']->setValue($row->$indexField);
+
+      $frm->setDefaults($row->toArray());
+    }
+  }
+
+  public function renderMetadata($what) {
     
-    // Change button
-    $wg = $this->getWidget($what);
-    $wg['save']->caption = 'Add';
   }
 
 
 
-	public function renderEdit($what, $id)
-	{
-    $row = Doctrine::getTable($what)->findOneByID($id);
-    return;
-	
-		$form = $this['ap'];
-		if (!$form->isSubmitted()) {
-			$row = Doctrine::getTable('AP')->findOneByID($id);
-			if (!$row) {
-				throw new Nette\Application\BadRequestException('Record not found');
-			}
-			$form->setDefaults($row);
-		}
-	}
 
-
-
-	/********************* view delete *********************/
-
-
-
-	public function renderDelete($id = 0)
-	{
-		$album = new Albums;
-		$this->template->customer = $row = Doctrine::getTable('Zakaznik')->findOneByPorCis($id);
-		if (!$this->template->customer) {
-			throw new Nette\Application\BadRequestException('Record not found');
-		}
-	}
-
-
-
-  /********************* component factories *********************/
-  protected function createComponentAp() {
-    $form = new AppForm;
-    $form->addText('nazev', 'Name')->addRule(Form::FILLED, 'Enter AP name');
-    $form->addText('popis', 'Description')->addRule(Form::FILLED, 'Enter description');
-
-    $form->addSubmit('save', 'Save')->setAttribute('class', 'default');
-    $form->addSubmit('cancel', 'Cancel')->setValidationScope(NULL);
-    
-    die($form);
-    
-    return $form;
+  /**
+   * Creates new component by name
+   * @param string $name Name of component
+   * @return AppForm|IComponent
+   */
+  protected function createComponent($name) {
+    if(preg_match('/^([a-z]+)Form$/', $name, $match)) return $this->createForm($match[1]);
+    else return parent::createComponent($name);
   }
 
+  /**
+   * @param  $alias
+   * @return DoctrineForm
+   */
+  function getForm($alias) {
+    return $this->getComponent($alias . 'Form');
+  }
 
+  /**
+   * Creates new form for a given entity
+   * @param string $alias Name of entity
+   * @return DoctrineForm Created form
+   */
+  protected function createForm($alias, $addSubmitAction = true) {
+    $entity = $this->getEntityName($alias);
+    $frm = new DoctrineForm($entity);
 
-	/**
-	 * Album edit form component factory.
-	 * @return mixed
-	 */
-	protected function createComponentCustomer()
-	{
-		$form = new AppForm;
-		$form->addText('PorCis', 'Internal ID:')
-			->addRule(Form::FILLED, 'Please enter an artist.');
+    // Add buttons
+    $frm->addSubmit('save', 'Save')->setAttribute('class', 'default');
+    $frm->addSubmit('cancel', 'Cancel')->setValidationScope(NULL);
 
-		$form->addText('cisloSmlouvy', 'Contract no:')
-			->addRule(Form::FILLED, 'Please enter contract number.');
+    // Add protection
+    $frm->addProtection('Please submit this form again (security token has expired).');
 
-		$form->addSubmit('save', 'Save')->setAttribute('class', 'default');
-		$form->addSubmit('cancel', 'Cancel')->setValidationScope(NULL);
-		$form->onSubmit[] = callback($this, 'customerFormSubmitted');
+    if($addSubmitAction) {
+      $frm->onSubmit[] = callback($this, 'onFormSubmitted');
+    }
 
-		$form->addProtection('Please submit this form again (security token has expired).');
-		return $form;
-	}
+    return $frm;
+  }
 
-
-
-	public function customerFormSubmitted(AppForm $form)
-	{
-		if ($form['save']->isSubmittedBy()) {
-			$id = (int) $this->getParam('id');
-			//$album = new Albums;
-			if ($id > 0) {
-				//$album->update($id, $form->values);
-				$this->flashMessage('The album has been updated.');
-			} else {
-				//$album->insert($form->values);
-				$this->flashMessage('The album has been added.');
-			}
-		}
-
-		$this->redirect('default');
-	}
-
-}
+  /**
+   * Callback when form is submitted
+   */
+  public function onFormSubmitted(DoctrineForm $frm) {
+    if($frm['save']->isSubmittedBy()) {
+      $frm->saveForm();
+      $this->flashMessage('Saved!');
+      $this->redirect('default');
+    }
+  }
+}  

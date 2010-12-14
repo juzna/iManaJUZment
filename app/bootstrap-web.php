@@ -44,7 +44,7 @@ $router[] = new Route('<presenter>/<action>/<id>', array(
 	'id' => NULL,
 ));
 */
-$router[] = new SimpleRouter('Base:Dashboard:default');
+$router[] = new SimpleRouter('Base:Homepage:default');
 
 
 // Step 5: Run the application!

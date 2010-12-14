@@ -1,0 +1,80 @@
+{block #content}
+
+<h1>AP: {$AP->name}</h1>
+<div class="description">{$AP->description}</div>
+
+<strong>Tags: </strong>
+<ul>
+  <li n:foreach="$AP->Tags as $tag">{$tag->name}</li>
+</ul>
+
+<strong>Layer 3 parents:</strong>
+<ul>
+  <li n:foreach="$AP->getL3Parents() as $ap">
+    <a href="{link detail, $ap->ID}">{$ap->name}</a>
+  </li>
+</ul>
+
+<strong>Layer 2 parents</strong>
+<ul>
+  <li n:foreach="$AP->getL2Parents() as $ap">
+    <a href="{link detail, $ap->ID}">{$ap->name}</a>
+  </li>
+</ul>
+
+<fieldset>
+  <legend>Basic info</legend>
+  <table>
+    <tr><th>ID:</th>              <td>{$AP->ID}</td></tr>
+    <tr><th>Network:</th>         <td>{$AP->network->name} ({$AP->network->ID})</td></tr>
+    <tr><th>name:</th>            <td>{$AP->name}</td></tr>
+    <tr><th>description:</th>     <td>{$AP->description}</td></tr>
+    <tr><th>mode:</th>            <td>{$AP->mode}</td></tr>
+    <tr><th>IP:</th>              <td>{$AP->IP}</td></tr>
+    <tr><th>netmask:</th>         <td>{$AP->netmask}</td></tr>
+    <tr><th>pvid:</th>            <td>{$AP->pvid}</td></tr>
+    <tr><th>snmpAllowed:</th>     <td>{$AP->snmpAllowed}</td></tr>
+    <tr><th>snmpCommunity:</th>   <td>{$AP->snmpCommunity}</td></tr>
+    <tr><th>snmpPassword:</th>    <td>{$AP->snmpPassword}</td></tr>
+    <tr><th>snmpVersion:</th>     <td>{$AP->snmpVersion}</td></tr>
+    <tr><th>realm:</th>           <td>{$AP->realm}</td></tr>
+    <tr><th>username:</th>        <td>{$AP->username}</td></tr>
+    <tr><th>pass:</th>            <td>{$AP->pass}</td></tr>
+    <tr><th>os:</th>              <td>{$AP->os}</td></tr>
+    <tr><th>osVersion:</th>       <td>{$AP->osVersion}</td></tr>
+    <tr><th>sshFingerprint:</th>  <td>{$AP->sshFingerprint}</td></tr>
+    <tr><th>l3parent:</th>        <td>{$AP->l3parent}</td></tr>
+    <tr><th>l3parentIf:</th>      <td>{$AP->l3parentIf}</td></tr>
+    <tr><th>posX:</th>            <td>{$AP->posX}</td></tr>
+    <tr><th>posY:</th>            <td>{$AP->posY}</td></tr>
+    <tr><th>ulice:</th>           <td>{$AP->ulice}</td></tr>
+    <tr><th>cisloPopisne:</th>    <td>{$AP->cisloPopisne}</td></tr>
+    <tr><th>mesto:</th>           <td>{$AP->mesto}</td></tr>
+    <tr><th>PSC:</th>             <td>{$AP->PSC}</td></tr>
+    <tr><th>stat:</th>            <td>{$AP->stat}</td></tr>
+    <tr><th>uir_obec:</th>        <td>{$AP->uir_obec}</td></tr>
+    <tr><th>uir_cobce:</th>       <td>{$AP->uir_cobce}</td></tr>
+    <tr><th>uir_ulice:</th>       <td>{$AP->uir_ulice}</td></tr>
+    <tr><th>uir_objekt:</th>      <td>{$AP->uir_objekt}</td></tr>
+    <tr><th>uir_special:</th>     <td>{$AP->uir_special}</td></tr>
+    <tr><th>created:</th>         <td>{$AP->created}</td></tr>
+    <tr><th>updated:</th>         <td>{$AP->updated}</td></tr>
+    <tr><th>isDeleted:</th>       <td>{$AP->isDeleted}</td></tr>
+    <tr><th>deleted:</th>         <td>{$AP->deleted}</td></tr>
+  </table>
+</fieldset>
+
+{table APParams, $AP->Params}
+{table APSwIf, $AP->SwInterfaces}
+{table APIP, $AP->IPs}
+{*table AP, $AP->getL3Children()*}
+{*table AP, $AP->getL2Children()*}
+{table APPort, $AP->Ports}
+{table APAntenna, $AP->Antennas}
+{table APHw, $AP->Hardware}
+{table APPort, $AP->Ports}
+{table APPortVlan, $AP->PortVlans}
+{table APCoverage, $AP->Coverages}
+{table APRoute, $AP->Routes}
+{table APService, $AP->Services}
+{table APVlan, $AP->Vlans}

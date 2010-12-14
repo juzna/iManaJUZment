@@ -18,7 +18,7 @@ class BehaviourProperty {
   }
 
   public function getValue($entity = null) {
-    return $entity->_behavioralStorage[$this->name];
+    return isset($entity->_behavioralStorage[$this->name]) ? $entity->_behavioralStorage[$this->name] : null;
   }
 }
 

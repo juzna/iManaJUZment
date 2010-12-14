@@ -36,6 +36,11 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
 
 
   /************ Persistance ***************/
+
+  public function find($id, $className = null) {
+    if(!isset($className)) $className = get_called_class();
+    return self::getEntityManager()->getRepository($className)->find($id);
+  }
   
   public function persist() {
     return self::getEntityManager()->persist($this);
@@ -112,6 +117,18 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
     return $ret;
   }
   
+  public static function fromArray($arr) {
+    $cls = get_called_class();
+    $fields = self::getFieldNames($cls);
+    $obj = new $cls;
+
+    foreach($arr as $k => $v) {
+      if(in_array($k, $fields)) $obj->$k = $v;
+    }
+
+    return $obj;
+  }
+
   /**
    * Map static calls to repository
    */

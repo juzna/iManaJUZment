@@ -57,8 +57,17 @@ abstract class BasePresenter extends Presenter {
         throw new \Exception("Invalid template factory: '$this->_templateFactory'");
 	  }
   }
-	
-	
+
+  /**
+   * Set-up basic latte filters and add own specific macros
+   */
+  public function templatePrepareFilters($template) {
+    $latte = new Nette\Templates\LatteFilter;
+    $latte->setHandler(new \LatteMacros()); // Set my extended macros
+    $template->registerFilter($latte);
+  }
+
+
 	/******************** Tables *********************/
   
   /**
@@ -128,5 +137,18 @@ abstract class BasePresenter extends Presenter {
     
     return new \Tables\DoctrineEntityTableDefinition($modelName);
   }
+
+  public function drawTable($name, $ds) {
+    echo $this->getTable($name, null, null, $ds)->render();
+  }
+
+  /*********  Entity work *******/
+
+  protected function getEntityName($alias) {
+    if(isset($this->entityAliases[$alias])) return $this->entityAliases[$alias];
+    else throw new \Exception("Entity alias '$alias' not found");
+  }
+
+
 }
 
