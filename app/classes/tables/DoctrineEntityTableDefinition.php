@@ -63,13 +63,16 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
   public function getFields() {
     $ret = array();
     $cntVisible = 0;
-    
+
+    \Nette\Debug::barDump($this->metadata->getFieldDefinitions(), 'Field def');
+
     foreach($this->metadata->getFieldDefinitions() as $colName => $definition) {
-      $ret[$colName] = new TableField($colName, array(
+      $ret[$colName] = $field = new TableField($colName, array(
         'title'     => isset($definition['title']) ? $definition['title'] : ucfirst($colName),
         'variable'  => $colName,
         'show'      => $show = !empty($definition['showByDefault']),
       ));
+      $this->_setupTableFieldFromMetadata($field, $definition);
       if($show) $cntVisible++;
     }
     
@@ -79,6 +82,14 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
     }
     
     return $ret;
+  }
+
+  protected function _setupTableFieldFromMetadata(TableField $field, array $def) {
+    if(!$md = @$def['fieldMetadata']) return;
+
+    if($link = @$md['ActiveEntity\\Annotations\\Link']) {
+      $field->parameters['link'] = $link;
+    }
   }
   
   /**

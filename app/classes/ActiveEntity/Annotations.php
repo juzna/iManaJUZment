@@ -31,4 +31,8 @@ class Behaviour extends Annotation {
   public $name;
   public $params;
 }
-
+class Link extends Annotation {
+  public $presenter;
+  public $view;
+  public $params;
+}

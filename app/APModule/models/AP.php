@@ -32,6 +32,7 @@ class AP extends \ActiveEntity\BehavioralEntity
   /**
    * @var string $name
    * @Column(name="name", type="string", length=100, nullable=false, unique=true)
+   * @ae:link(presenter="AP:Dashboard", view="detail", params={"$ID"})
    */
   protected $name;
 

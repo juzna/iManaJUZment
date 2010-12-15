@@ -11,11 +11,21 @@ use Nette\Application\AppForm,
 class TestPresenter extends BasePresenter
 {
   // List of entity aliases (for listing, adding, editing, removing)
-  private $entityAliases = array(
+  protected $entityAliases = array(
     'ap'    => 'AP',
     'ip'    => 'APIP',
     'swif'  => 'APSwIf',
   );
+
+  function renderTableDefinition($what) {
+    $name = $this->getEntityName($what);
+    /** @var ITableDefinition  */
+    $def = $this->getTableDefinitionFromModel($name);
+
+    $this->setTemplateFactory('code');
+    $this->template->content = array('dump', $def);
+  }
+
   
   /**
    * Renders Access point's detail page

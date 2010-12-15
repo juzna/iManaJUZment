@@ -33,8 +33,34 @@ class TableField {
     if(property_exists($this, $name)) $this->$name = $value;
     else $this->parameters[$name] = $value;
   }
-  
+
   public function renderContent() {
+    if(!empty($this->parameters['link'])) $this->_renderLink();
+    else $this->_render();
+  }
+
+  protected function _renderLink() {
+    /** @var $link ActiveEntity\Annotations\Link */
+    $link = $this->parameters['link'];
+    if($link->presenter) {
+      if(strpos($link->presenter, ':') === -1) $target = "$link->presenter:$link->view";
+      else $target = ":$link->presenter:$link->view";
+    }
+    else $target = $link->view;
+
+    $params = array();
+    foreach($params as $p) {
+      if(substr($p, 0, 1) === '$') $params[] = '$item->' . substr($params, 1);
+      else $params = var_export($p, true);
+    }
+    $params = implode(', ', $link->params);
+
+    echo '<a href="{plink ' . $target . ($params ? ", $params" : '') . '}">';
+    $this->_render();
+    echo '</a>';
+  }
+
+  protected function _render() {
     if($this->variable) echo '{$item->' . $this->variable . '}';
     else echo preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)(\\})/i', '\\1item->\\2\\3', $this->contentCode);
   }

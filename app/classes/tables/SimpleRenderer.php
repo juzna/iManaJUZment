@@ -6,7 +6,8 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
   private $definition;
   private $dataSource;
   private $variables;
-  
+  private $presenter;
+
   /**
    * Simple renderer for tables, which creates HTML layout
    * @param ITabledefinition $def Table definition
@@ -48,6 +49,18 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
   public function setVariables(array $arr) {
     foreach($arr as $k => $v) $this->variables[$k] = $v;
   }
+
+  public function setPresenter(\Nette\Application\Presenter $presenter) {
+    $this->presenter = $presenter;
+    return $this;
+  }
+
+  /**
+   * @return Nette\Application\Presenter
+   */
+  public function getPresenter() {
+    return $this->presenter;
+  }
   
   /**
    * Renders template and returns HTML code
@@ -60,6 +73,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     $tpl = $this->getTemplate();
     $tpl->dataSource = $this->dataSource;
     $tpl->parameters = '';
+    $tpl->presenter = $this->presenter;
     
     return $tpl->__toString();
   }
@@ -150,7 +164,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
       $show = $field->show ? '' : 'display: none;';
       
       echo "  <td col=\"$k\" style=\"$show\">";
-      echo $field->renderContent();
+      $field->renderContent();
       echo "</td>\n";
     }
     

@@ -95,6 +95,7 @@ abstract class BasePresenter extends Presenter {
       else throw new Exception("Renderer class not found");
     }
     if(!($renderer instanceof Tables\ITableRenderer)) throw new Exception("Renderer is not valid");
+    $renderer->setPresenter($this);;
     
     // Set renderer variables
     if(!empty($variables)) $renderer->setVariables($variables);

@@ -8,6 +8,12 @@ use Nette\Templates\ITemplate,
 /**
  * Template which consists of explicitly defined blocks
  * Should be extended by layout template to render these blocks
+ *
+ * A block can be:
+ * - closure - then is executed
+ * - object with render() method
+ * - array with method name as first element and then with arguments for this method
+ * - string or whatever is echo-able
  */
 class CodeTemplate extends \Nette\Object implements ITemplate {
   protected $blocks;
@@ -71,7 +77,12 @@ class CodeTemplate extends \Nette\Object implements ITemplate {
     // Set-up blocks
     $l = (object) null;
     foreach($this->blocks as $name => $content) {
-      $l->blocks[$name][] = function() use ($content) { echo $content; };
+      $l->blocks[$name][] = function() use ($content) {
+        if($content instanceof \Closure) $content();
+        elseif(is_object($content) && method_exists($content, 'render')) $content->render();
+        elseif(is_array($content) && is_callable($content[0])) call_user_func_array('call_user_func', $content);
+        else echo $content;
+      };
     }
     $tpl->_l = $l;
     

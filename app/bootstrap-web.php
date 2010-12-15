@@ -31,20 +31,22 @@ $application->onStartup[] = 'UsersModel::initialize';
 
 
 // Step 4: Setup application router
+$allowCoolUrl = true;
 $router = $application->getRouter();
-/*
-$router[] = new Route('index.php', array(
-	'presenter' => 'Base:Homepage',
-	'action' => 'default',
-), Route::ONE_WAY);
-
-$router[] = new Route('<presenter>/<action>/<id>', array(
-	'presenter' => 'Base:Homepage',
-	'action' => 'default',
-	'id' => NULL,
-));
+if($allowCoolUrl) {
+/*  $router[] = new Route('index.php', array(
+    'presenter' => 'Base:Homepage',
+    'action' => 'default',
+  ), Route::ONE_WAY);
 */
-$router[] = new SimpleRouter('Base:Homepage:default');
+  $router[] = new Route('<presenter>/<action>/<id>', array(
+    'presenter' => 'Base:Homepage',
+    'action' => 'default',
+    'id' => NULL,
+  ));
+}
+$router[] = new SimpleRouter('Base:Homepage:default', $allowCoolUrl ? Route::ONE_WAY : 0);
+
 
 
 // Step 5: Run the application!
