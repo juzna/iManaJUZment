@@ -4,7 +4,9 @@ namespace APModule;
 
 use Nette\Application\AppForm,
 	Nette\Forms\Form,
-	Doctrine;
+	ActiveEntity\Entity;
+
+
 
 
 
@@ -17,6 +19,7 @@ class TestPresenter extends BasePresenter
     'swif'  => 'APSwIf',
   );
 
+  // Dump table definition
   function renderTableDefinition($what) {
     $name = $this->getEntityName($what);
     /** @var ITableDefinition  */
@@ -26,7 +29,22 @@ class TestPresenter extends BasePresenter
     $this->template->content = array('dump', $def);
   }
 
-  
+
+  // Dump entity
+  function renderEntity($what, $id) {
+    if(!$obj = \ActiveEntity\Entity::find($id, $this->getEntityName($what))) throw new \NotFoundException("Entity not found");
+    dump($obj);
+    exit;
+  }
+
+  // Show metadata of entity
+  public function renderMetadata($what) {
+    $cls = $this->getEntityName($what);
+    dump(Entity::getClassMetadata($cls), true, 5);
+    exit;
+  }
+
+
   /**
    * Renders Access point's detail page
    * @param int $id ID of access point
