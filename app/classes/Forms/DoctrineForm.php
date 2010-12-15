@@ -53,6 +53,10 @@ class DoctrineForm extends AppForm {
         default:
           $el = $this->addText($fieldName, $label);
           break;
+
+        case 'boolean':
+          $el = $this->addCheckBox($fieldName, $label);
+          break;
       }
 
       // Set description
@@ -97,6 +101,8 @@ class DoctrineForm extends AppForm {
   }
 
 
+
+
   /************  Saving form  *****************/
 
   /**
@@ -139,12 +145,12 @@ class DoctrineForm extends AppForm {
     if(!$values) $values = $this->getValues();
 
     $cls = $this->entityName;
+    $orig = \ActiveEntity\Entity::find($values['index'], $cls);
     if(method_exists($cls, 'clone')) {
-      $orig = \ActiveEntity\Entity::find($values['index'], $cls);
-      $cls = $orig->clone();
+      $obj = $orig->clone();
     }
     else {
-      $obj = new $cls;
+      $obj = clone $orig;
     }
 
     // Set values

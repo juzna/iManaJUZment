@@ -49,11 +49,11 @@ class TableField {
     else $target = $link->view;
 
     $params = array();
-    foreach($params as $p) {
-      if(substr($p, 0, 1) === '$') $params[] = '$item->' . substr($params, 1);
-      else $params = var_export($p, true);
+    foreach($link->params as $p) {
+      if(substr($p, 0, 1) === '$') $params[] = '$item->' . substr($p, 1);
+      else $params[] = var_export($p, true);
     }
-    $params = implode(', ', $link->params);
+    $params = implode(', ', $params);
 
     echo '<a href="{plink ' . $target . ($params ? ", $params" : '') . '}">';
     $this->_render();
@@ -62,6 +62,6 @@ class TableField {
 
   protected function _render() {
     if($this->variable) echo '{$item->' . $this->variable . '}';
-    else echo preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)(\\})/i', '\\1item->\\2\\3', $this->contentCode);
+    else echo preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)/i', '\\1item->\\2', $this->contentCode);
   }
 }

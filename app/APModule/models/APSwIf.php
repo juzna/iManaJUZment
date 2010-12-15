@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * APSwIf
  *
  * @Table @Entity @ae:Behaviour
+ * @ae:links(module="AP", presenter="dashboard", alias="swif", common={ "add", "edit", "clone", "delete" })
  */
 class APSwIf extends \ActiveEntity\BehavioralEntity
 {
@@ -16,15 +17,24 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
 
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 
   /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="SwInterfaces")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   * @ae:immutable @ae:show @ae:title("AP#")
+   */
+  protected $AP;
+
+  /**
    * @var string $interface
    * @Column(name="interface", type="string", length=50, nullable=false)
+   * @ae:show
    */
   protected $interface;
 
@@ -37,6 +47,7 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
   /**
    * @var enum $type
    * @Column(name="type", type="enum", nullable=true)
+   * @ae:show
    */
   protected $type;
 
@@ -55,6 +66,7 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
   /**
    * @var string $essid
    * @Column(name="essid", type="string", length=30, nullable=true)
+   * @ae:show
    */
   protected $essid;
 
@@ -87,15 +99,6 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
    * @Column(name="tarifFlag", type="integer", length=11, nullable=false)
    */
   protected $tarifFlag;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="SwInterfaces")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
 
   /**
    * 

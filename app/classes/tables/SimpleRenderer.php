@@ -3,6 +3,7 @@
 namespace Tables;
 
 class SimpleRenderer extends \Nette\Object implements ITableRenderer {
+  /** @var ITableDefinition */
   private $definition;
   private $dataSource;
   private $variables;
@@ -122,7 +123,11 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     echo "{block #content}\n";
     echo '<fieldset id="tbl-outer" class="h3 nocollapse table_outer" ajax="0" params="{$parameters}">' . $nl;
     echo ' {block #legend}<legend>' . $this->definition->getTitle() . '</legend>{/block}' . $nl;
-    
+
+    echo "{block #headerLinks}\n";
+    $this->renderHeaderLinks();
+    echo "{/block}\n\n";
+
     $name = $this->definition->getName();
     echo "{block #table}<table class=\"lines sortable withmenu\" id=\"tbl-{$name}-table\" name=\"{$name}\">\n";
     
@@ -151,6 +156,9 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
       
       echo "  <th name=\"$name\" width=\"$width\" style=\"$show\">$title</th>\n";
     }
+
+    // Col for links
+    if($this->definition->getLinks()) echo '  <th name="_links">Akce</th>';
   }
   
   protected function renderTableBody() {
@@ -167,8 +175,49 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
       $field->renderContent();
       echo "</td>\n";
     }
-    
+
+    // Render links for this row
+    if($links = $this->definition->getLinks()) {
+      echo "  <td>\n";
+      foreach($links as $link) {
+        $this->renderLink($link);
+        echo "\n";
+      }
+      echo "  </td>\n";
+    }
+
     echo "</tr>\n";
     echo "{/foreach}\n";
+  }
+
+  protected function renderLink(\ActiveEntity\Annotations\Link $link) {
+    // Prepare target
+    $target = $link->module ? ":$link->module:" : '';
+    $target .= $link->presenter . ':';
+    $target .= $link->action ? "$link->action!" : $link->view;
+
+    // Prepare parameters
+    $params = array();
+    foreach($link->params as $p) {
+      if(substr($p, 0, 1) === '$') $params[] = '$item->' . substr($p, 1);
+      else $params[] = var_export($p, true);
+    }
+    $params = implode(', ', $params);
+
+    $href = '{plink ' . $target . ($params ? ", $params" : '') . '}';
+    echo '    <a href="' . $href . '">' . $link->title . '</a>';
+  }
+
+  /**
+   * Render links shown before the table
+   * @return void
+   */
+  protected function renderHeaderLinks() {
+    if(!$links = $this->definition->getHeaderLinks()) return;
+    
+    foreach($links as $link) {
+      $this->renderLink($link);
+      echo "\n";
+    }    
   }
 }

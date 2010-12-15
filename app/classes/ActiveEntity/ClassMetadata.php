@@ -26,6 +26,10 @@ class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
     elseif(!empty($this->title)) return $this->title;
     else return $this->name;
   }
+
+  public function getAllFieldNames() {
+    return array_keys($this->reflFields);
+  }
   
   public function getFieldNames() {
     return array_keys($this->fieldMappings);

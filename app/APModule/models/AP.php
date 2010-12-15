@@ -8,6 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @Table @Entity
  * @ae:behaviour @ae:editable @ae:title("Access points", single="Access Point")
+ * @ae:links(module="AP", presenter="dashboard", alias="ap", common={"add"}, {
+ *  @ae:link(title="detail", view="detail", params={"$ID"}),
+ *  @ae:link(title="edit", view="edit", params={"ap", "$ID"}),
+ *  @ae:link(title="clone", view="clone", params={"ap", "$ID"})
+ * })
  */
 class AP extends \ActiveEntity\BehavioralEntity
 {
@@ -23,9 +28,7 @@ class AP extends \ActiveEntity\BehavioralEntity
 
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 

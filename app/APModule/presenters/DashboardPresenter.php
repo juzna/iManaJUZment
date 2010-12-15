@@ -103,16 +103,10 @@ class DashboardPresenter extends BasePresenter
       $indexField = Entity::getClassMetadata($cls)->getSingleIdentifierFieldName();
       $frm['index']->setValue($row->$indexField);
 
+      \Nette\Debug::dump($row->toArray());
       $frm->setDefaults($row->toArray());
     }
   }
-
-  public function renderMetadata($what) {
-    $cls = $this->getEntityName($what);
-    $this->template->metadata = Entity::getClassMetadata($cls);
-  }
-
-
 
 
   /**

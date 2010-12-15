@@ -1,5 +1,8 @@
 <?php
+
 namespace ActiveEntity;
+use Doctrine\ORM\Proxy\Proxy;
+
 
 class Helper {
   /**
@@ -47,6 +50,17 @@ class Helper {
       $te = $item['targetEntity'];
 
       echo "{table $te, {$var}->$fieldName}\n";
+    }
+  }
+
+  public static function DoctrineProxyIdentifier($item, $fieldName) {
+    if(!isset($item)) return;
+
+    if($item instanceof Proxy) {
+      $prop = new \ReflectionProperty($item, '_identifier');
+      $prop->setAccessible(true);
+      $ret = $prop->getValue($item);
+      return $ret[$fieldName];
     }
   }
 

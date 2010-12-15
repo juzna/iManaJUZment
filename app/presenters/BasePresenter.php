@@ -145,9 +145,14 @@ abstract class BasePresenter extends Presenter {
 
   /*********  Entity work *******/
 
+  /**
+   * @throws InvalidArgumentException
+   * @param string $alias Alias of entity in module
+   * @return string 
+   */
   protected function getEntityName($alias) {
     if(isset($this->entityAliases[$alias])) return $this->entityAliases[$alias];
-    else throw new \Exception("Entity alias '$alias' not found");
+    else throw new \InvalidArgumentException("Entity alias '$alias' not found");
   }
 
 

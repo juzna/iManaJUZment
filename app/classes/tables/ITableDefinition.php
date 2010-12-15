@@ -61,4 +61,12 @@ interface ITableDefinition {
    * @return int timesamp
    */
   public function getMTime();
+
+  /**
+   * Get list of links for each row
+   * @return array [ { title, module, presenter, view?, action?, params[] } ]
+   */
+  public function getLinks();
+
+  public function getHeaderLinks();
 }
