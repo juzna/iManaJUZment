@@ -3,6 +3,11 @@
 use Nette\Application\AppForm;
 
 class DoctrineForm extends AppForm {
+  public static $metadataNamespaces = array(
+    'Doctrine\ORM\Mapping'     => '',
+    'ActiveEntity\Annotations' => 'ae',
+  );
+
   /**
    * @var ClassMetadata
    */
@@ -16,7 +21,12 @@ class DoctrineForm extends AppForm {
     parent::__construct($parent, $name);
     if($entity) $this->setEntity($entity);
   }
-  
+
+  /**
+   * Set entity name for this form
+   * @param string $name
+   * @return void
+   */
   public function setEntity($name) {
     $this->entityName = $name;
     $this->metadata = \ActiveEntity\Entity::getClassMetadata($name);
@@ -33,15 +43,66 @@ class DoctrineForm extends AppForm {
 
     // Add all fields
     foreach($this->metadata->getFieldDefinitions() as $def) {
+      if(!$this->isFieldEditable($def)) continue;
+      $label = $this->_getLabel($def, $description);
+      $fieldName = $def['fieldName'];
+      $el = null;
+
       switch($def['type']) {
         case 'string':
         default:
-          $this->addText($def['fieldName'], $def['fieldName']);
+          $el = $this->addText($fieldName, $label);
           break;
       }
+
+      // Set description
+      if($el && !empty($description)) $el->setDescription($description);
     }
   }
 
+  /**
+   * Get label for a field
+   * @param array $def Definition of a field
+   * @return string
+   */
+  protected function _getLabel($def, &$description = null) {
+    $md = $this->_getFieldMetadata($def);
+
+    $description = isset($md['ae:description']) ? $md['ae:description']->value : ''; 
+
+    if(isset($md['ae:title']) && $md['ae:title']->value) return $md['ae:title']->value;
+    else return ucfirst(preg_replace('/[-_]/', ' ', String::uncamelize($def['fieldName']))) . ($def['type'] == 'boolean' ? '?' : '');
+  }
+
+  /**
+   * Get metadata of a field while translating namespaces
+   * @param array $def
+   * @return array
+   */
+  protected function _getFieldMetadata($def) {
+    if(empty($def['fieldMetadata'])) return array();
+    $ret = array();
+    foreach($def['fieldMetadata'] as $key => $val) {
+      if($pos = strrpos($key, '\\')) {
+        $ns = substr($key, 0, $pos);
+        $name = lcfirst(substr($key, $pos + 1));
+
+        if(isset(self::$metadataNamespaces[$ns])) {
+          $ns = self::$metadataNamespaces[$ns];
+          $ret[$ns ? "$ns:$name" : $name] = $val;
+        }
+      }
+    }
+    return $ret;
+  }
+
+
+  /************  Saving form  *****************/
+
+  /**
+   * General action for saving this form, which decides what to do next
+   * @return void
+   */
   public function saveForm() {
     switch($action = $this['action']->getValue()) {
       case 'add': return $this->saveAdd();
@@ -51,18 +112,29 @@ class DoctrineForm extends AppForm {
     }
   }
 
+  /**
+   * Saved form which add new entity
+   * @param array $values Values to be saved
+   * @return void
+   */
   public function saveAdd($values = null) {
     if(!$values) $values = $this->getValues();
 
     $cls = $this->entityName;
     $obj = new $cls;
 
+    // Set values
     $this->_setEntityValues($obj, $values);
 
     $obj->persist();
     $obj->flush();
   }
 
+  /**
+   * Saves form which clones an existing entity
+   * @param array $values Values to be saved
+   * @return void
+   */
   public function saveClone($values = null) {
     if(!$values) $values = $this->getValues();
 
@@ -83,6 +155,23 @@ class DoctrineForm extends AppForm {
   }
 
   /**
+   * Saves form which edits an existing entity
+   * @param array $values Values to be saved
+   * @return void
+   */
+  public function saveEdit($values = null) {
+    if(!$values) $values = $this->getValues();
+
+    $cls = $this->entityName;
+    if(!$obj = \ActiveEntity\Entity::find($values['index'], $cls)) throw new NotFoundException;
+
+    // Set values
+    $this->_setEntityValues($obj, $values);
+
+    $obj->flush();
+  }
+
+  /**
    * Set values of an entity from form, it uses metadata to discover type
    * @param Entity $obj
    * @param array $values
@@ -92,7 +181,7 @@ class DoctrineForm extends AppForm {
     // Update values
     foreach($this->metadata->getFieldDefinitions() as $def) {
       $fieldName = $def['fieldName'];
-      if(!array_key_exists($fieldName, $values)) continue;
+      if(!array_key_exists($fieldName, $values) || !$this->isFieldEditable($def)) continue;
       $value = $values[$fieldName];
 
       switch($def['type']) {
@@ -121,6 +210,17 @@ class DoctrineForm extends AppForm {
           break;
       }
     }
+  }
+
+  /**
+   * Checks if field is editable
+   * @param array $def Field definition
+   * @return bool
+   */
+  protected function isFieldEditable($def) {
+    if(!empty($def['id'])) return false; // It's index of table -> not editable
+
+    return true; // Editable by default
   }
   
   

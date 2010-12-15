@@ -8,9 +8,11 @@ use \Doctrine\Common\Annotations\Annotation;
 
 class Title extends Annotation {
   public $list;
+  public $single;
   public $add;
   public $edit;
 }
+class Description extends Annotation {}
 class Listable extends Annotation {}
 class Editable extends Annotation {}
 class NotFound extends Annotation {

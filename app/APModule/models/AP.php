@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * AP
  *
- * @Table()
- * @Entity @ae:Behaviour
+ * @Table @Entity
+ * @ae:behaviour @ae:editable @ae:title("Access points", single="Access Point")
  */
 class AP extends \ActiveEntity\BehavioralEntity
 {
@@ -50,6 +50,7 @@ class AP extends \ActiveEntity\BehavioralEntity
   /**
    * @var string $IP
    * @Column(name="IP", type="string", length=15, nullable=true)
+   * @ae:title("IP address")
    */
   protected $IP;
 
@@ -62,6 +63,7 @@ class AP extends \ActiveEntity\BehavioralEntity
   /**
    * @var integer $pvid
    * @Column(name="pvid", type="integer", length=4, nullable=true)
+   * @ae:title("PVID") @ae:description("Default VLAN ID")
    */
   protected $pvid;
 
@@ -104,18 +106,21 @@ class AP extends \ActiveEntity\BehavioralEntity
   /**
    * @var string $pass
    * @Column(name="pass", type="string", length=50, nullable=true)
+   * @ae:title("Password")
    */
   protected $pass;
 
   /**
    * @var string $os
    * @Column(name="os", type="string", length=20, nullable=true)
+   * @ae:title("Operating system")
    */
   protected $os;
 
   /**
    * @var string $osVersion
    * @Column(name="osVersion", type="string", length=20, nullable=true)
+   * @ae:title("OS Version")
    */
   protected $osVersion;
 

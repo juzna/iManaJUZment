@@ -108,7 +108,8 @@ class DashboardPresenter extends BasePresenter
   }
 
   public function renderMetadata($what) {
-    
+    $cls = $this->getEntityName($what);
+    $this->template->metadata = Entity::getClassMetadata($cls);
   }
 
 
