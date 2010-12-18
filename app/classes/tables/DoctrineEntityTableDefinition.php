@@ -49,7 +49,14 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
    * @return array of TableParameter
    */
   public function getParameters() {
-    return array();
+    $ret = array();
+    foreach($this->metadata->getAssociationMappings() as $def) {
+      if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) {
+        $ret[] = new TableParameter($def['fieldName'], array('required' => true));
+      }
+    }
+
+    return $ret;
   }
   
   /**
@@ -241,6 +248,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
               $links->alias,
             )
           );
+          $this->_getMoreParamsForAddLink($linkDefinition['params']);
           break;
       }
 
@@ -263,5 +271,12 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
     }
 
     return $this->_cache['headerLinks'] = $ret;
+  }
+
+  private function _getMoreParamsForAddLink(&$list) {
+    foreach($this->metadata->getAssociationMappings() as $def) {
+      $fieldName = $def['fieldName'];
+      if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) $list[$fieldName] = "\$variables['$fieldName']";
+    }
   }
 }

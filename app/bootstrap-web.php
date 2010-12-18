@@ -39,10 +39,9 @@ if($allowCoolUrl) {
     'action' => 'default',
   ), Route::ONE_WAY);
 */
-  $router[] = new Route('<module>/<presenter>/<action>/<id>', array(
+  $router[] = new Route('<module>/<presenter>/<action>', array(
     'presenter' => 'Base:Homepage',
     'action' => 'default',
-    'id' => NULL,
   ));
 }
 $router[] = new SimpleRouter('Base:Homepage:default', $allowCoolUrl ? Route::ONE_WAY : 0);

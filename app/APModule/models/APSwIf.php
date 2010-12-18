@@ -27,7 +27,7 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
    * @JoinColumns({
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
-   * @ae:immutable @ae:show @ae:title("AP#")
+   * @ae:immutable @ae:required @ae:show @ae:title("AP#")
    */
   protected $AP;
 
@@ -98,7 +98,7 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
    * @var integer $tarifFlag
    * @Column(name="tarifFlag", type="integer", length=11, nullable=false)
    */
-  protected $tarifFlag;
+  //protected $tarifFlag;
 
   /**
    * 

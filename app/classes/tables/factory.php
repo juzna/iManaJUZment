@@ -23,17 +23,17 @@ class DataSourceFactory {
    * Creates data source defined by parameters
    * @param string $type Type of DataSource to be used
    * @param array $definition Definition parameters
-   * @param array $params List of arguments for generating the source
+   * @param array $variables List of arguments for generating the source
    * @return Traversable
    */
-  public static function create($type, $definition, $params = null) {
+  public static function create($type, $definition, $variables = null) {
     if(!isset(self::$implementations[$type])) throw new \Exception("Data source type is unknown: '$type'");
     
     $cb = self::$implementations[$type];
     if(is_string($cb) && is_callable($cb2 = "\\Tables\\DataSourceFactory::$cb")) $cb = $cb2;
     if(!is_callable($cb)) throw new \Exception("Data source is not callable: '$cb'");
     
-    return call_user_func($cb, $definition, $params);
+    return call_user_func($cb, $definition, $variables);
   }
   
   /**
@@ -67,7 +67,7 @@ class DataSourceFactory {
   /**
    * Creates data source for Doctrine table
    */
-  public static function doctrineTable($args, $params = null) {
+  public static function doctrineTable($args, $variables = null) {
     return em()->getRepository($args['value'])->findAll();
   }
   

@@ -65,7 +65,7 @@
 </fieldset>
 
 {table APParams, $AP->Params}
-{table APSwIf, $AP->SwInterfaces}
+{table APSwIf, $AP->SwInterfaces, AP => $AP->ID }
 {table APIP, $AP->IPs}
 {*table AP, $AP->getL3Children()*}
 {*table AP, $AP->getL2Children()*}

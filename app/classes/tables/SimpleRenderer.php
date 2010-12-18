@@ -75,6 +75,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     $tpl->dataSource = $this->dataSource;
     $tpl->parameters = '';
     $tpl->presenter = $this->presenter;
+    $tpl->variables = $this->variables;
     
     return $tpl->__toString();
   }
@@ -190,7 +191,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     echo "{/foreach}\n";
   }
 
-  protected function renderLink(\ActiveEntity\Annotations\Link $link) {
+  protected function renderLink(\ActiveEntity\Annotations\Link $link, $fixVariableNames = true) {
     // Prepare target
     $target = $link->module ? ":$link->module:" : '';
     $target .= $link->presenter . ':';
@@ -198,9 +199,14 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
 
     // Prepare parameters
     $params = array();
-    foreach($link->params as $p) {
-      if(substr($p, 0, 1) === '$') $params[] = '$item->' . substr($p, 1);
-      else $params[] = var_export($p, true);
+    foreach($link->params as $k => $p) {
+      $prefix = is_int($k) ? '' : "$k => ";
+      
+      if(substr($p, 0, 1) === '$') {
+        if($fixVariableNames) $params[] = $prefix . '$item->' . substr($p, 1);
+        else $params[] = $prefix . $p;
+      }
+      else $params[] = $prefix . var_export($p, true);
     }
     $params = implode(', ', $params);
 
@@ -216,7 +222,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     if(!$links = $this->definition->getHeaderLinks()) return;
     
     foreach($links as $link) {
-      $this->renderLink($link);
+      $this->renderLink($link, false);
       echo "\n";
     }    
   }

@@ -80,12 +80,18 @@ abstract class BasePresenter extends Presenter {
    */
   public function getTable($name, $variables = null, $renderer = null, $ds = null) {
     // Try to look for XML definition
+    /** @var \Tables\ITableDefinition */
     $def = $this->getTableDefinitionFromXML($name) or
       $def = $this->getTableDefinitionFromModel($name);
     if(!$def) throw new \Exception("Table '$name' not found");
+
+    // Check, if we got all variables
+    foreach($def->getParameters() as $param) {
+      if($param->required && !isset($variables[$param->name])) throw new \InvalidArgumentException("Needed parameter $param->name, but not given");
+    }
     
     // Get data source
-    if(empty($ds)) $ds = Tables\DataSourceFactory::fromTableDefinition($def);
+    if(empty($ds)) $ds = Tables\DataSourceFactory::fromTableDefinition($def, $variables);
     elseif(!($ds instanceof Traversable)) throw new Exception("Data source is not Traversable");
     
     // Prepare renderer
@@ -139,8 +145,8 @@ abstract class BasePresenter extends Presenter {
     return new \Tables\DoctrineEntityTableDefinition($modelName);
   }
 
-  public function drawTable($name, $ds) {
-    echo $this->getTable($name, null, null, $ds)->render();
+  public function drawTable($name, $ds, $variables = null) {
+    echo $this->getTable($name, $variables, null, $ds)->render();
   }
 
   /*********  Entity work *******/

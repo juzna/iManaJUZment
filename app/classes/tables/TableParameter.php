@@ -10,6 +10,7 @@ class TableParameter {
   public $type;
   public $title;
   public $format;
+  public $required;
   public $parameters = array();
   
   /**

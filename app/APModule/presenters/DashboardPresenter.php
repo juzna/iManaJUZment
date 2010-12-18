@@ -48,6 +48,7 @@ class DashboardPresenter extends BasePresenter
     $frm = $this->getForm($what);
     $frm['action']->setValue('add');
     $frm['save']->caption = 'Add!';
+    $frm->setDefaults($_GET);
   }
 
   /**
@@ -121,7 +122,7 @@ class DashboardPresenter extends BasePresenter
 
   /**
    * @param  $alias
-   * @return DoctrineForm
+   * @return \DoctrineForm
    */
   function getForm($alias) {
     return $this->getComponent($alias . 'Form');

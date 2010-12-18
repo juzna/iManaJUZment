@@ -9,7 +9,7 @@ class DoctrineForm extends AppForm {
   );
 
   /**
-   * @var ClassMetadata
+   * @var \ActiveEntity\ClassMetadata
    */
   private $metadata;
   private $entityName;
@@ -41,22 +41,34 @@ class DoctrineForm extends AppForm {
     $this->addHidden('action'); // Action to be done
     $this->addHidden('index');  // Index of an item (for edit, clone or delete)
 
-    // Add all fields
-    foreach($this->metadata->getFieldDefinitions() as $def) {
-      if(!$this->isFieldEditable($def)) continue;
-      $label = $this->_getLabel($def, $description);
-      $fieldName = $def['fieldName'];
-      $el = null;
+    foreach($this->metadata->getAllFieldNames() as $fieldName) {
+      $el = $description = null;
 
-      switch($def['type']) {
-        case 'string':
-        default:
-          $el = $this->addText($fieldName, $label);
-          break;
+      // It's simple field
+      if($this->metadata->hasField($fieldName)) {
+        $def = $this->metadata->getFieldMapping($fieldName);
+        if(!$this->isFieldEditable($def)) continue;
+        $label = $this->_getLabel($def, $description);
+        $fieldName = $def['fieldName'];
 
-        case 'boolean':
-          $el = $this->addCheckBox($fieldName, $label);
-          break;
+        switch($def['type']) {
+          case 'string':
+          default:
+            $el = $this->addText($fieldName, $label);
+            break;
+
+          case 'boolean':
+            $el = $this->addCheckBox($fieldName, $label);
+            break;
+        }
+      }
+
+      // It's mapping
+      elseif($this->metadata->hasAssociation($fieldName)) {
+        $def = $this->metadata->getAssociationMapping($fieldName);
+        if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) {
+          $this->addHidden($fieldName);
+        }
       }
 
       // Set description
@@ -130,7 +142,7 @@ class DoctrineForm extends AppForm {
     $obj = new $cls;
 
     // Set values
-    $this->_setEntityValues($obj, $values);
+    $this->_setEntityValues($obj, $values, 'add');
 
     $obj->persist();
     $obj->flush();
@@ -154,7 +166,7 @@ class DoctrineForm extends AppForm {
     }
 
     // Set values
-    $this->_setEntityValues($obj, $values);
+    $this->_setEntityValues($obj, $values, 'clone');
 
     $obj->persist();
     $obj->flush();
@@ -172,7 +184,7 @@ class DoctrineForm extends AppForm {
     if(!$obj = \ActiveEntity\Entity::find($values['index'], $cls)) throw new NotFoundException;
 
     // Set values
-    $this->_setEntityValues($obj, $values);
+    $this->_setEntityValues($obj, $values, 'edit');
 
     $obj->flush();
   }
@@ -181,9 +193,10 @@ class DoctrineForm extends AppForm {
    * Set values of an entity from form, it uses metadata to discover type
    * @param Entity $obj
    * @param array $values
+   * @param string $action What action if performed: add, edit, clone
    * @return void
    */
-  protected function _setEntityValues($obj, $values) {
+  protected function _setEntityValues($obj, $values, $action) {
     // Update values
     foreach($this->metadata->getFieldDefinitions() as $def) {
       $fieldName = $def['fieldName'];
@@ -216,6 +229,18 @@ class DoctrineForm extends AppForm {
           break;
       }
     }
+
+    // Update mappings
+    foreach($this->metadata->getAssociationMappings() as $def) {
+      if(($def['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE) === 0) continue; // It's mapping to many, dont process it by default
+      $fieldName = $def['fieldName'];
+      if(!array_key_exists($fieldName, $values) || !$this->isAssociationEditable($def, $action)) continue;
+      $value = $values[$fieldName];
+
+      // Find target entity and associate it
+      $target = \ActiveEntity\Entity::find($value, $def['targetEntity']);
+      $obj->$fieldName = $target;
+    }
   }
 
   /**
@@ -227,6 +252,19 @@ class DoctrineForm extends AppForm {
     if(!empty($def['id'])) return false; // It's index of table -> not editable
 
     return true; // Editable by default
+  }
+
+  /**
+   * @param array $def
+   * @param string $action
+   * @return bool
+   */
+  protected function isAssociationEditable($def, $action) {
+    if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Immutable']) && $action != 'add') return false; // Immutable field and we are editing -> not possible
+    if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) return true;
+    if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Editable'])) return true;
+
+    return false;
   }
   
   
