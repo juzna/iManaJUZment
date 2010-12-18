@@ -6,15 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APPortVlan
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
 class APPortVlan extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id @GeneratedValue
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 

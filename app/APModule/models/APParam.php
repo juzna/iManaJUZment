@@ -4,20 +4,26 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * APParams
+ * APParam
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
 class APParams extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Params")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   */
+  protected $AP;
 
   /**
    * @var string $name
@@ -36,15 +42,6 @@ class APParams extends \ActiveEntity\Entity
    * @Column(name="comment", type="string", length=255, nullable=true)
    */
   protected $comment;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Params")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
 
   /**
    * 

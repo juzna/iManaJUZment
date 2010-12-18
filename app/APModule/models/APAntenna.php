@@ -24,6 +24,7 @@ class APAntenna extends \ActiveEntity\Entity
    * @JoinColumns({
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
+   * @ae:immutable @ae:required @ae:show @ae:title("AP#")
    */
   protected $AP;
 

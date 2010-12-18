@@ -13,9 +13,7 @@ class APServiceOSList extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 

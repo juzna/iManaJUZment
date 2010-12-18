@@ -6,18 +6,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APParent
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
 class APParent extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Parent")
+   * @JoinColumns({
+   *   @JoinColumn(name="parentAP", referencedColumnName="ID")
+   * })
+   */
+  protected $Parent;
 
   /**
    * @var string $parentInterface
@@ -36,6 +42,18 @@ class APParent extends \ActiveEntity\Entity
    * @Column(name="parentVlan", type="integer", length=4, nullable=false)
    */
   protected $parentVlan;
+
+
+
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Children")
+   * @JoinColumns({
+   *   @JoinColumn(name="childAP", referencedColumnName="ID")
+   * })
+   */
+  protected $Children;
 
   /**
    * @var string $childInterface
@@ -60,24 +78,6 @@ class APParent extends \ActiveEntity\Entity
    * @Column(name="comment", type="string", length=255, nullable=true)
    */
   protected $comment;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Parent")
-   * @JoinColumns({
-   *   @JoinColumn(name="parentAP", referencedColumnName="ID")
-   * })
-   */
-  protected $Parent;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Children")
-   * @JoinColumns({
-   *   @JoinColumn(name="childAP", referencedColumnName="ID")
-   * })
-   */
-  protected $Children;
 
   /**
    * 

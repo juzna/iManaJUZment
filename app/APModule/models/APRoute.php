@@ -6,15 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APRoute
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
 class APRoute extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id @GeneratedValue
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 
@@ -46,10 +44,10 @@ class APRoute extends \ActiveEntity\Entity
   protected $gateway;
 
   /**
-   * @var string $preferedSource
-   * @Column(name="preferedSource", type="string", length=15, nullable=true)
+   * @var string $preferredSource
+   * @Column(name="preferredSource", type="string", length=15, nullable=true)
    */
-  protected $preferedSource;
+  protected $preferredSource;
 
   /**
    * @var integer $distance
@@ -58,10 +56,10 @@ class APRoute extends \ActiveEntity\Entity
   protected $distance;
 
   /**
-   * @var string $popis
-   * @Column(name="popis", type="string", length=255, nullable=true)
+   * @var string $description
+   * @Column(name="description", type="string", length=255, nullable=true)
    */
-  protected $popis;
+  protected $description;
 
   /**
    * @var boolean $enabled

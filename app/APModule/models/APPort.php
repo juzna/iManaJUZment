@@ -6,17 +6,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APPort
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
 class APPort extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id @GeneratedValue
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Ports")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   */
+  protected $AP;
 
   /**
    * @var string $port
@@ -83,15 +90,6 @@ class APPort extends \ActiveEntity\Entity
    * @Column(name="popis", type="string", length=255, nullable=true)
    */
   protected $popis;
-
-  /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Ports")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
 
   /**
    * 

@@ -33,6 +33,16 @@ class AP extends \ActiveEntity\BehavioralEntity
   protected $ID;
 
   /**
+   * @var APNetwork
+   * @ManyToOne(targetEntity="APNetwork", inversedBy="AP")
+   * @JoinColumns({
+   *   @JoinColumn(name="APNetwork_ID", referencedColumnName="ID")
+   * })
+   * @ae:required @ae:immutable
+   */
+  protected $network;
+
+  /**
    * @var string $name
    * @Column(name="name", type="string", length=100, nullable=false, unique=true)
    * @ae:link(presenter="AP:Dashboard", view="detail", params={"$ID"})
@@ -225,17 +235,12 @@ class AP extends \ActiveEntity\BehavioralEntity
   protected $Vlans;
 
   /**
-   * @var APNetwork
-   * @ManyToOne(targetEntity="APNetwork", inversedBy="AP")
-   * @JoinColumns({
-   *   @JoinColumn(name="APNetwork_ID", referencedColumnName="ID")
-   * })
-   */
-  protected $network;
-  
-  /**
    * @var APTag
-   * @OneToMany(targetEntity="APTag", mappedBy="AP", cascade={"all"})
+   * @ManyToMany(targetEntity="APTag", cascade={"all"})
+   * @JoinTable(name="APTagMapping",
+   *   joinColumns={@JoinColumn(name="AP_id", referencedColumnName="ID")},
+   *   inverseJoinColumns={@JoinColumn(name="APTag_id", referencedColumnName="ID")}
+   * ) 
    */
   protected $Tags;
 

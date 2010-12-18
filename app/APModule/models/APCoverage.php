@@ -13,8 +13,7 @@ class APCoverage extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id @GeneratedValue
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 
@@ -24,6 +23,7 @@ class APCoverage extends \ActiveEntity\Entity
    * @JoinColumns({
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
+   * @ae:immutable @ae:required @ae:show @ae:title("AP#")
    */
   protected $AP;
   

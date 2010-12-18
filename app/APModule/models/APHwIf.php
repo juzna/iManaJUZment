@@ -13,11 +13,18 @@ class APHwIf extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var Hw
+   * @ManyToOne(targetEntity="APHw", inversedBy="HwIfs")
+   * @JoinColumns({
+   *   @JoinColumn(name="APHw", referencedColumnName="ID")
+   * })
+   */
+  protected $Hw;
 
   /**
    * @var string $interface

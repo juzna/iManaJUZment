@@ -6,18 +6,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APService
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
 class APService extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
+
+  /**
+   * @var AP
+   * @ManyToOne(targetEntity="AP", inversedBy="Services")
+   * @JoinColumns({
+   *   @JoinColumn(name="AP", referencedColumnName="ID")
+   * })
+   */
+  protected $AP;
 
   /**
    * @var string $state
@@ -38,17 +44,8 @@ class APService extends \ActiveEntity\Entity
   protected $lastCheck;
 
   /**
-   * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Services")
-   * @JoinColumns({
-   *   @JoinColumn(name="AP", referencedColumnName="ID")
-   * })
-   */
-  protected $AP;
-
-  /**
    * @var APServiceList
-   * @ManyToOne(targetEntity="APServiceList")
+   * @ManyToOne(targetEntity="APServiceDefinition")
    * @JoinColumns({
    *   @JoinColumn(name="service", referencedColumnName="code")
    * })

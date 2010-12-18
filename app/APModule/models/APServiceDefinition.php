@@ -6,16 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APServiceList
  *
- * @Table()
- * @Entity
+ * @Table @Entity
  */
-class APServiceList extends \ActiveEntity\Entity
+class APServiceDefinition extends \ActiveEntity\Entity
 {
   /**
    * @var string $code
-   * @Column(name="code", type="string")
-   * @Id
-   * @GeneratedValue(strategy="NONE")
+   * @Column(name="code", type="string") @Id @GeneratedValue
    */
   protected $code;
 
