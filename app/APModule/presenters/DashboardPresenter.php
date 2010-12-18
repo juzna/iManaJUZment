@@ -24,6 +24,21 @@ class DashboardPresenter extends BasePresenter
    */
   public function renderDetail($id) {
     $this->template->AP = \AP::find($id);
+    $this->template->Tags =\APTag::getRepository()->findAll();
+  }
+
+  public function handleSetTag($apId, $tagId, $what) {
+    /** @var AP */
+    $ap = \AP::find($apId);
+    $tag = \APTag::find($tagId);
+
+    // Do it
+    if($what == 'add') $ap->Tags->add($tag);
+    elseif($what == 'remove') $ap->Tags->removeElement($tag);
+    else throw new \InvalidArgumentException("Wrong action - what parameter");
+    
+    $ap->flush();
+    $this->invalidateControl('tags');
   }
 
   /**

@@ -3,11 +3,22 @@
 <h1>AP: {$AP->name}</h1>
 <div class="description">{$AP->description}</div>
 
-<strong>Tags: </strong>
-<ul>
-  <li n:foreach="$AP->Tags as $tag">{$tag->name}</li>
-</ul>
-
+<div>
+  <strong>Tags: </strong>
+  <ul n:snippet="tags">
+    <li n:foreach="$AP->Tags as $tag">{$tag->name}</li>
+  </ul>
+  <a onclick="$('#tagChooser').toggle();">Add new tag</a>
+  <div style="display: none;" id="tagChooser">
+      <ul>
+        <li n:foreach="$Tags as $tag">
+          <a href="{link setTag!, $AP->ID, $tag->ID, 'add'}" class="ajax">{$tag->name}</a> |
+          <a href="{link setTag!, $AP->ID, $tag->ID, 'remove'}" class="ajax">X</a>
+        </li>
+      </ul>
+  </div>
+</div>
+  
 <strong>Layer 3 parents:</strong>
 <ul>
   <li n:foreach="$AP->getL3Parents() as $ap">
@@ -24,6 +35,7 @@
 
 <fieldset>
   <legend>Basic info</legend>
+  <a href="{link edit, 'ap', $AP->ID}">Edit</a>
   <table>
     <tr><th>ID:</th>              <td>{$AP->ID}</td></tr>
     <tr><th>Network:</th>         <td>{$AP->network->name} ({$AP->network->ID})</td></tr>
@@ -66,15 +78,15 @@
 
 {table APParams, $AP->Params}
 {table APSwIf, $AP->SwInterfaces, AP => $AP->ID }
-{table APIP, $AP->IPs}
+{table APIP, $AP->IPs, AP => $AP->ID }
 {*table AP, $AP->getL3Children()*}
 {*table AP, $AP->getL2Children()*}
-{table APPort, $AP->Ports}
-{table APAntenna, $AP->Antennas}
-{table APHw, $AP->Hardware}
-{table APPort, $AP->Ports}
-{table APPortVlan, $AP->PortVlans}
-{table APCoverage, $AP->Coverages}
-{table APRoute, $AP->Routes}
-{table APService, $AP->Services}
-{table APVlan, $AP->Vlans}
+{table APPort, $AP->Ports, AP => $AP->ID }
+{table APAntenna, $AP->Antennas, AP => $AP->ID }
+{table APHw, $AP->Hardware, AP => $AP->ID }
+{table APPort, $AP->Ports, AP => $AP->ID }
+{table APPortVlan, $AP->PortVlans, AP => $AP->ID }
+{table APCoverage, $AP->Coverages, AP => $AP->ID }
+{table APRoute, $AP->Routes, AP => $AP->ID }
+{table APService, $AP->Services, AP => $AP->ID }
+{table APVlan, $AP->Vlans, AP => $AP->ID}

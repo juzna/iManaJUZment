@@ -54,3 +54,4 @@ class Links extends Annotation {
 
 class Immutable extends Annotation {}
 class Required extends Annotation {}
+class Group extends Annotation {}

@@ -17,11 +17,14 @@
 	<meta name="description" content="Nette Framework web application skeleton">
 	<meta name="robots" content="{$robots}" n:ifset="$robots">
 
-	<title>ISP manager | {block #title}Welcome{/block}</title>
+	<title>ISP manager | {block #title|striptags}Welcome{/block}</title>
 
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
 	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
+  <link rel="stylesheet" href="{$basePath}/css/isp.css" type="text/css">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+  <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
+  <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
 </head>
 
 <body>

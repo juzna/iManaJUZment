@@ -41,6 +41,16 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
     if(!isset($className)) $className = get_called_class();
     return self::getEntityManager()->getRepository($className)->find($id);
   }
+
+  /**
+   * Gets Doctrine's repository of a class
+   * @param string $className
+   * @return EntityRepository
+   */
+  public static function getRepository($className = null) {
+    if(!isset($className)) $className = get_called_class();
+    return self::getEntityManager()->getRepository($className);
+  }
   
   public function persist() {
     return self::getEntityManager()->persist($this);
