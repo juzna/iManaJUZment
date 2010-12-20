@@ -2,9 +2,9 @@
 <h1 n:block="title">Test view for AP module</h1>
 
 <ul>
-  <li><a href="{link list, 'ap'}">List all APs</a></li>
+  <li><a href="{link list, 'ap', network => 1}">List all APs</a></li>
   <li><a href="{link detail, 1}">Detail of AP 1</a></li>
-  <li><a href="{link add, 'ap'}">Add new AP</a></li>
+  <li><a href="{link add, 'ap', network => 1}">Add new AP</a></li>
   <li><a href="{link edit, 'ap', 1}">Edit AP 1</a></li>
   <li><a href="{link clone, 'ap', 1}">Clone AP 1</a></li>
   <li><a href="{link add, 'swif', AP => 1}">Add new interface to AP 1</a></li>

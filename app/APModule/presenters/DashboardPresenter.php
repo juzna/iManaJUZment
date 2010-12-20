@@ -119,7 +119,7 @@ class DashboardPresenter extends BasePresenter
       $indexField = Entity::getClassMetadata($cls)->getSingleIdentifierFieldName();
       $frm['index']->setValue($row->$indexField);
 
-      \Nette\Debug::dump($row->toArray());
+      //\Nette\Debug::dump($row->toArray());
       $frm->setDefaults($row->toArray());
     }
   }

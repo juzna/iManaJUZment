@@ -30,20 +30,21 @@ class APIP extends \ActiveEntity\Entity
   /**
    * @var string $interface
    * @Column(name="interface", type="string", length=50, nullable=false)
+   * @ae:show
    */
   protected $interface;
 
   /**
    * @var string $ip
    * @Column(name="ip", type="string", length=15, nullable=false)
-   * @ae:title("IP address")
+   * @ae:title("IP address") @ae:show
    */
   protected $ip;
 
   /**
    * @var integer $netmask
    * @Column(name="netmask", type="integer", length=2, nullable=false)
-   * @ae:
+   * @ae:show
    */
   protected $netmask;
 

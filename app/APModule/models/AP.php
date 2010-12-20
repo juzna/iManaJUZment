@@ -146,7 +146,8 @@ class AP extends \ActiveEntity\BehavioralEntity
 
   /**
    * @var integer $l3parent
-   * @Column(name="l3parent", type="integer", length=11, nullable=true)
+   * @ManyToOne(targetEntity="AP", inversedBy="l3children")
+   * @JoinColumn(name="l3parent", referencedColumnName="ID")
    */
   protected $l3parent;
 
@@ -157,6 +158,11 @@ class AP extends \ActiveEntity\BehavioralEntity
   protected $l3parentIf;
 
   /**
+   * @OneToMany(targetEntity="AP", mappedBy="l3parent")
+   */
+  protected $l3children;
+
+  /**
    * @var APParams
    * @OneToMany(targetEntity="APParams", mappedBy="AP", cascade={"all"})
    */
@@ -164,13 +170,13 @@ class AP extends \ActiveEntity\BehavioralEntity
 
   /**
    * @var APParent
-   * @OneToMany(targetEntity="APParent", mappedBy="Parent")
+   * @OneToMany(targetEntity="APParent", mappedBy="Child")
    */
-  protected $Parent;
+  protected $Parents;
 
   /**
    * @var APParent
-   * @OneToMany(targetEntity="APParent", mappedBy="Children")
+   * @OneToMany(targetEntity="APParent", mappedBy="Parent")
    */
   protected $Children;
 
@@ -268,10 +274,20 @@ class AP extends \ActiveEntity\BehavioralEntity
   /**
    * Get list of parents on Layer 2 of OSI
    * @return array of AP
+   * TODO: make it smarter, based on VLANs
    */
   public function getL2Parents() {
-    // TODO: implement this
-    return array();
+    $ret = array();
+
+    $ap = $this;
+    for($x = 10; $ap && $x > 0; $x--) {
+      $ret[] = $ap;
+      /** @var Doctrine\ORM\PersistentCollection $parents  */
+      $parents = $ap->__get('Parents');
+      $ap = $parents->count() ? $parents->first()->__get('Parent') : null;
+    }
+
+    return $ret;
   }
 
   /**
@@ -279,7 +295,14 @@ class AP extends \ActiveEntity\BehavioralEntity
    * @return array of AP
    */
   public function getL3Parents() {
-    // TODO: implement this
-    return array();
+    $ret = array();
+
+    $ap = $this;
+    for($x = 10; $ap && $x > 0; $x--) {
+      $ret[] = $ap;
+      $ap = $ap->__get('l3parent');
+    }
+
+    return $ret;
   }
 }

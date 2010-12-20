@@ -18,7 +18,7 @@ class APParent extends \ActiveEntity\Entity
 
   /**
    * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Parent")
+   * @ManyToOne(targetEntity="AP", inversedBy="Children")
    * @JoinColumns({
    *   @JoinColumn(name="parentAP", referencedColumnName="ID")
    * })
@@ -48,12 +48,12 @@ class APParent extends \ActiveEntity\Entity
 
   /**
    * @var AP
-   * @ManyToOne(targetEntity="AP", inversedBy="Children")
+   * @ManyToOne(targetEntity="AP", inversedBy="Parents")
    * @JoinColumns({
    *   @JoinColumn(name="childAP", referencedColumnName="ID")
    * })
    */
-  protected $Children;
+  protected $Child;
 
   /**
    * @var string $childInterface
@@ -72,6 +72,8 @@ class APParent extends \ActiveEntity\Entity
    * @Column(name="childVlan", type="integer", length=4, nullable=false)
    */
   protected $childVlan;
+
+
 
   /**
    * @var string $comment
