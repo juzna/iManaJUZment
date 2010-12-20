@@ -1,15 +1,15 @@
 [submodule "3rdParty/nette"]
 	path = 3rdParty/nette
-	url = git://github.com/nette/nette.git
+	url = juzna@juzna.cz:projects/nette.git
 [submodule "3rdParty/lightopenid"]
 	path = 3rdParty/lightopenid
 	url = git://gitorious.org/lightopenid/lightopenid.git
 [submodule "3rdParty/doctrine2/orm"]
 	path = 3rdParty/doctrine2/orm
-	url = git://github.com/doctrine/doctrine2.git
+	url = juzna@juzna.cz:projects/doctrine-orm.git
 [submodule "3rdParty/doctrine2/dbal"]
 	path = 3rdParty/doctrine2/dbal
-	url = git://github.com/doctrine/dbal.git
+	url = url = juzna@juzna.cz:projects/doctrine-dbal.git
 [submodule "3rdParty/doctrine2/migrations"]
 	path = 3rdParty/doctrine2/migrations
 	url = git://github.com/doctrine/migrations.git
