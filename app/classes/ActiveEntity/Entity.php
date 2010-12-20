@@ -101,12 +101,12 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
   
   public function &__get($name) {
     if(property_exists($this, $name)) return $this->$name;
-    else throw new \Exception("Property $name not exists");
+    else throw new \Exception("Property $name of class " . get_class($this) . " not exists");
   }
   
   public function __set($name, $value) {
     if(property_exists($this, $name)) $this->$name = $value;
-    else throw new \Exception("Property $name not exists");
+    else throw new \Exception("Property $name not " . get_class($this) . "exists");
   }  
   
   /**
