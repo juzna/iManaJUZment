@@ -5,25 +5,31 @@
 /**
  * TarifRychlost
  *
- * @Table()
- * @Entity
+ * @Table @Entity
+ * @ae:Behavioral
  */
-class TarifRychlost extends \ActiveEntity\Entity
+class TarifRychlost extends \ActiveEntity\BehavioralEntity
 {
-    /**
-     * @var integer $tarif
-     * @Column(name="tarif", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="NONE")
-     */
-    protected $tarif;
+  public static $_behaviours = array(
+    'ActiveEntity\\Behaviours\\InetSpeed',
+  );
 
-    /**
-     * @var integer $flag
-     * @Column(name="flag", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="NONE")
-     */
-    protected $flag;
+  /**
+   * @var integer $ID
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
+   */
+  protected $ID;
+
+  /**
+   * @ManyToOne(targetEntity="Tarif")
+   * @JoinColumn(name="tarifId", referencedColumnName="ID")
+   */
+  protected $tarif;
+
+  /**
+   * @ManyToOne(targetEntity="TarifFlag")
+   * @JoinColumn(name="flagId", referencedColumnName="ID")
+   */
+  protected $flag;
 
 }

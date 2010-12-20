@@ -5,30 +5,25 @@
 /**
  * Tarif
  *
- * @Table()
- * @Entity
+ * @Table @Entity
+ * @ae:links(module="Common", presenter="tarif", alias="tarif", common={"add", "edit", "remove"}, {
+ *  @ae:link(title="detail", view="detail", params={"$ID"})
+ * })
  */
 class Tarif extends \ActiveEntity\Entity
 {
     /**
      * @var integer $ID
-     * @Column(name="ID", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="NONE")
+     * @Column(name="ID", type="integer") @Id @GeneratedValue
      */
     protected $ID;
 
     /**
      * @var string $nazev
      * @Column(name="nazev", type="string", length=50, nullable=false, unique=true)
+     * @ae:link(title="detail", view="detail", params={"$ID"})
      */
     protected $nazev;
-
-    /**
-     * @var boolean $zakladni
-     * @Column(name="zakladni", type="boolean", nullable=false)
-     */
-    protected $zakladni;
 
     /**
      * @var float $mesicniPausal
