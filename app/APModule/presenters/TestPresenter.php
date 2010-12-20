@@ -19,6 +19,11 @@ class TestPresenter extends BasePresenter
     'swif'  => 'APSwIf',
   );
 
+  function renderTemplateFiles() {
+    \Nette\Debug::dump($this->formatTemplateFiles($this->getName(), $this->view));
+    exit;
+  }
+
   // Dump table definition
   function renderTableDefinition($what) {
     $name = $this->getEntityName($what);

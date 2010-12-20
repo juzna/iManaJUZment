@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APVlan
  *
- * @Table()
- * @Entity
+ * @Table @Entity
+ * @ae:links(module="AP", presenter="dashboard", alias="vlan", common={ "add", "edit", "clone", "delete" })
  */
 class APVlan extends \ActiveEntity\Entity
 {
@@ -23,18 +23,21 @@ class APVlan extends \ActiveEntity\Entity
    * @JoinColumns({
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
+   * @ae:immutable @ae:required @ae:show @ae:title("AP#")
    */
   protected $AP;
 
   /**
    * @var integer $vlan
    * @Column(name="vlan", type="integer")
+   * @ae:show @ae:title("VLAN #")
    */
   protected $vlan;
 
   /**
    * @var string $description
    * @Column(name="description", type="string", length=255, nullable=true)
+   * @ae:show
    */
   protected $description;
 

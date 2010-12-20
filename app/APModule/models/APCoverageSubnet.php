@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * APPokrytiSubnet
  *
  * @Table @Entity
+ * @ae:links(module="AP", presenter="dashboard", alias="coverageSubnet", common={ "add", "edit", "clone", "delete" })
  */
 class APCoverageSubnet extends \ActiveEntity\Entity
 {

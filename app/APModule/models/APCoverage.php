@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APCoverage
  *
- * @Table()
- * @Entity
+ * @Table @Entity
+ * @ae:links(module="AP", presenter="dashboard", alias="coverage", common={ "add", "edit", "clone", "delete" }, {
+ *   @ae:link(title="detail", view="coverageDetail", params={"$ID"})
+ * })
  */
 class APCoverage extends \ActiveEntity\Entity
 {
@@ -30,6 +32,7 @@ class APCoverage extends \ActiveEntity\Entity
   /**
    * @var string $interface
    * @Column(name="interface", type="string", length=50, nullable=true)
+   * @ae:show
    */
   protected $interface;
 

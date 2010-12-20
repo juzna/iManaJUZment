@@ -16,6 +16,11 @@ class DashboardPresenter extends BasePresenter
     'ap'    => 'AP',
     'ip'    => 'APIP',
     'swif'  => 'APSwIf',
+    'port'  => 'APPort',
+    'antenna' => 'APAntenna',
+    'coverage' => 'APCoverage',
+    'coverageSubnet' => 'APCoverageSubnet',
+    'route' => 'APRoute',
   );
 
   /**
@@ -27,6 +32,22 @@ class DashboardPresenter extends BasePresenter
     $this->template->Tags =\APTag::getRepository()->findAll();
   }
 
+  /**
+   * Detail of coverage
+   * @param int $id ID of coverage
+   */
+  public function renderCoverageDetail($id) {
+    $this->template->Coverage = $cov = \APCoverage::find($id);
+    $this->template->AP = $cov->AP;
+  }
+
+  /**
+   * Adds or removes tag from an AP
+   * @param int $apId AP id
+   * @param int $tagId Tag id
+   * @param string $what What action to do: add, remove
+   * @return void
+   */
   public function handleSetTag($apId, $tagId, $what) {
     /** @var AP */
     $ap = \AP::find($apId);
@@ -131,7 +152,7 @@ class DashboardPresenter extends BasePresenter
    * @return AppForm|IComponent
    */
   protected function createComponent($name) {
-    if(preg_match('/^([a-z]+)Form$/', $name, $match)) return $this->createForm($match[1]);
+    if(preg_match('/^([a-zA-Z]+)Form$/', $name, $match)) return $this->createForm($match[1]);
     else return parent::createComponent($name);
   }
 

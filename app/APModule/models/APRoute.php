@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * APRoute
  *
  * @Table @Entity
+ * @ae:links(module="AP", presenter="dashboard", alias="route", common={ "add", "edit", "clone", "delete" })
  */
 class APRoute extends \ActiveEntity\Entity
 {
@@ -22,24 +23,28 @@ class APRoute extends \ActiveEntity\Entity
    * @JoinColumns({
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
+   * @ae:immutable @ae:required @ae:show @ae:title("AP#")
    */
   protected $AP;
 
   /**
    * @var string $ip
    * @Column(name="ip", type="string", length=15, nullable=false)
+   * @ae:show @ae:title("IP address")
    */
   protected $ip;
 
   /**
    * @var integer $netmask
    * @Column(name="netmask", type="integer", length=2, nullable=false)
+   * @ae:show
    */
   protected $netmask;
 
   /**
    * @var string $gateway
    * @Column(name="gateway", type="string", length=15, nullable=false)
+   * @ae:show
    */
   protected $gateway;
 
@@ -51,7 +56,7 @@ class APRoute extends \ActiveEntity\Entity
 
   /**
    * @var integer $distance
-   * @Column(name="distance", type="integer", length=2, nullable=false)
+   * @Column(name="distance", type="integer", length=2, nullable=true)
    */
   protected $distance;
 

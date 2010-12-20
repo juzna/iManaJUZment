@@ -6,15 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APAntenna
  *
- * @Table()
- * @Entity
+ * @Table @Entity
+ * @ae:links(module="AP", presenter="dashboard", alias="antenna", common={ "add", "edit", "clone", "delete" })
  */
 class APAntenna extends \ActiveEntity\Entity
 {
   /**
    * @var integer $ID
-   * @Column(name="ID", type="integer")
-   * @Id @GeneratedValue
+   * @Column(name="ID", type="integer") @Id @GeneratedValue
    */
   protected $ID;
 

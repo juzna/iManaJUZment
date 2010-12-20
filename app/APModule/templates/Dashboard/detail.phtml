@@ -74,17 +74,13 @@
   </table>
 </fieldset>
 
-{table APParams, $AP->Params}
 {table APSwIf, $AP->SwInterfaces, AP => $AP->ID }
 {table APIP, $AP->IPs, AP => $AP->ID }
-{*table AP, $AP->getL3Children()*}
-{*table AP, $AP->getL2Children()*}
 {table APPort, $AP->Ports, AP => $AP->ID }
 {table APAntenna, $AP->Antennas, AP => $AP->ID }
 {table APHw, $AP->Hardware, AP => $AP->ID }
+{table APVlan, $AP->Vlans, AP => $AP->ID}
 {table APPort, $AP->Ports, AP => $AP->ID }
-{table APPortVlan, $AP->PortVlans, AP => $AP->ID }
 {table APCoverage, $AP->Coverages, AP => $AP->ID }
 {table APRoute, $AP->Routes, AP => $AP->ID }
 {table APService, $AP->Services, AP => $AP->ID }
-{table APVlan, $AP->Vlans, AP => $AP->ID}

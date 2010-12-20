@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * APPort
  *
  * @Table @Entity
+ * @ae:links(module="AP", presenter="dashboard", alias="port", common={ "add", "edit", "clone", "delete" })
  */
 class APPort extends \ActiveEntity\Entity
 {
@@ -22,18 +23,21 @@ class APPort extends \ActiveEntity\Entity
    * @JoinColumns({
    *   @JoinColumn(name="AP", referencedColumnName="ID")
    * })
+   * @ae:immutable @ae:required @ae:show @ae:title("AP#")
    */
   protected $AP;
 
   /**
    * @var string $port
    * @Column(name="port", type="string", length=50, nullable=false)
+   * @ae:show
    */
   protected $port;
 
   /**
    * @var enum $typ
    * @Column(name="typ", type="enum", nullable=false)
+   * @ae:show
    */
   protected $typ;
 
