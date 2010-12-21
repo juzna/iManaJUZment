@@ -1,5 +1,6 @@
 <?php
 
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**

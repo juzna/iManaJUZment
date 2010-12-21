@@ -2,7 +2,7 @@
 
 <h1 n:block="title">Customer list</h1>
 
-<p><a href="{link add}">Add new customer record</a></p>
+<p><a href="{link add, 'customer'}">Add new customer record</a></p>
 
 <table class="grid">
 <tr>
@@ -11,11 +11,11 @@
 	<th>&nbsp;</th>
 </tr>
 <tr n:foreach="$customers as $customer">
-	<td>{$customer->PorCis}</td>
-	<td>{$customer->cisloSmlouvy}</td>
+	<td>{$customer->custId}</td>
+	<td><a href="{link detail, $customer->custId}">{$customer->contractNumber}</a></td>
 	<td>
-		<a href="{link edit, $customer->PorCis}">Edit</a>
-		<a href="{link delete, $customer->PorCis}">Delete</a>
+		<a href="{link edit, $customer->custId}">Edit</a>
+		<a href="{link delete, $customer->custId}">Delete</a>
 	</td>
 </tr>
 </table>

@@ -140,6 +140,13 @@ class Customer extends \ActiveEntity\Entity {
    */
   protected $Inactivities;
 
+  /**
+   * @var CustomerAddress Default address of a customer
+   * @OneToOne(targetEntity="CustomerAddress")
+   * @JoinColumn(name="defaultAddress", referencedColumnName="ID")
+   */
+  protected $address;
+
 
   public function __construct() {
     $this->Addresses = new ArrayCollection;

@@ -46,6 +46,17 @@ use Doctrine\ORM\Configuration,
   $em = EntityManager::create($database, $config);
   ActiveEntity\Entity::setEntityManager($em);
 
+  /**
+   * @return Doctrine\ORM\EntityManager
+   */
   function em() { return $GLOBALS['em']; }
+
+  /**
+   * @return Doctrine\ORM\Query
+   */
+  function q() {
+    $args = func_get_args();
+    return call_user_func_array(array(em(), 'createQuery'), $args);
+   }
 }
 

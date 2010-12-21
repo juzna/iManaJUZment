@@ -11,8 +11,8 @@ class DoctrineForm extends AppForm {
   /**
    * @var \ActiveEntity\ClassMetadata
    */
-  private $metadata;
-  private $entityName;
+  protected $metadata;
+  protected $entityName;
   
   /**
   * Application form constructor.
@@ -135,7 +135,7 @@ class DoctrineForm extends AppForm {
    * @param array $values Values to be saved
    * @return void
    */
-  public function saveAdd($values = null) {
+  public function saveAdd($values = null, $flush = true) {
     if(!$values) $values = $this->getValues();
 
     $cls = $this->entityName;
@@ -144,8 +144,12 @@ class DoctrineForm extends AppForm {
     // Set values
     $this->_setEntityValues($obj, $values, 'add');
 
-    $obj->persist();
-    $obj->flush();
+    if($flush) {
+      $obj->persist();
+      $obj->flush();
+    }
+
+    return $obj;
   }
 
   /**
@@ -153,7 +157,7 @@ class DoctrineForm extends AppForm {
    * @param array $values Values to be saved
    * @return void
    */
-  public function saveClone($values = null) {
+  public function saveClone($values = null, $flush = true) {
     if(!$values) $values = $this->getValues();
 
     $cls = $this->entityName;
@@ -168,8 +172,12 @@ class DoctrineForm extends AppForm {
     // Set values
     $this->_setEntityValues($obj, $values, 'clone');
 
-    $obj->persist();
-    $obj->flush();
+    if($flush) {
+      $obj->persist();
+      $obj->flush();
+    }
+
+    return $obj;
   }
 
   /**
@@ -177,7 +185,7 @@ class DoctrineForm extends AppForm {
    * @param array $values Values to be saved
    * @return void
    */
-  public function saveEdit($values = null) {
+  public function saveEdit($values = null, $flush = true) {
     if(!$values) $values = $this->getValues();
 
     $cls = $this->entityName;
@@ -186,7 +194,12 @@ class DoctrineForm extends AppForm {
     // Set values
     $this->_setEntityValues($obj, $values, 'edit');
 
-    $obj->flush();
+    if($flush) {
+      $obj->persist();
+      $obj->flush();
+    }
+
+    return $obj;
   }
 
   /**
@@ -200,8 +213,10 @@ class DoctrineForm extends AppForm {
     // Update values
     foreach($this->metadata->getFieldDefinitions() as $def) {
       $fieldName = $def['fieldName'];
-      if(!array_key_exists($fieldName, $values) || !$this->isFieldEditable($def)) continue;
-      $value = $values[$fieldName];
+      $needToBeSet = $def['type'] != 'boolean';
+
+      if(($needToBeSet && !array_key_exists($fieldName, $values)) || !$this->isFieldEditable($def)) continue;
+      $value = @$values[$fieldName];
 
       switch($def['type']) {
         case 'string':
@@ -224,7 +239,7 @@ class DoctrineForm extends AppForm {
 
         case 'bool':
         case 'boolean':
-          if($value === '' || $value === null) $obj->$fieldName = null;
+          if($value === '' || $value === null) $obj->$fieldName = false;
           else $obj->$fieldName = in_array(strtolower($value), array('1', 'y', 'yes', 'on'));
           break;
       }
@@ -265,6 +280,17 @@ class DoctrineForm extends AppForm {
     if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Editable'])) return true;
 
     return false;
+  }
+
+  public static function createFromArray($entityName, $values) {
+    // Create new object
+    $obj = new $entityName;
+
+    // Set values
+    $frm = new DoctrineForm($entityName);
+    $frm->_setEntityValues($obj, $values, 'add');
+
+    return $obj;
   }
   
   

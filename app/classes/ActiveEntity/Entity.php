@@ -174,6 +174,17 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
   
   public static function getFieldDefinitions($className = null) {
     return self::getClassMetadata($className)->getFieldDefinitions();
-  }  
+  }
+
+
+  /******************   Special fetching    *****************/
+
+  public static function fetchPairs($key, $val, $className = null) {
+    $className = isset($className) ? $className : get_called_class();
+
+    return self::getEntityManager()->createQueryBuilder()->
+      select("partial i.{" . "$key, $val}")->from($className, 'i')->
+      getQuery()->getPairsResult('i_' . $key, 'i_' . $val);
+  }
 }
 

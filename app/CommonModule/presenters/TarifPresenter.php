@@ -9,8 +9,7 @@ use Nette\Application\AppForm,
   ActiveEntity\Entity;
 
 
-class TarifPresenter extends BasePresenter
-{
+class TarifPresenter extends \DashboardPresenter {
   // List of entity aliases (for listing, adding, editing, removing)
   protected $entityAliases = array(
     'tarif'    => 'Tarif',
