@@ -24,6 +24,34 @@ class ContractPresenter extends BasePresenter {
     exit;
   }
 
+  function renderScaffolding() {
+    /** @var $frm \Nette\Forms\AppForm */
+    $frm = $this->getComponent('contractForm');
+    $frm->setRenderer(new \Nette\Forms\ScaffoldingRenderer());
+    $code = $frm->__toString();
+
+
+    if(@$_GET['save']) {
+      $path = $this->getModulePath('templates') . '/contract.phtml';
+      file_put_contents($path, $code);
+    }
+    else echo $code;
+
+    exit;
+  }
+
+  function renderTpl() {
+    $renderer = new \Nette\Forms\TemplateRenderer($this->formatTemplateFiles($this->getName(), 'form'));
+    $this->templatePrepareFilters($renderer->getTemplate());
+
+    $frm = $this->getComponent('contractForm');
+    $frm->setRenderer($renderer);
+
+    $frm->render();
+    exit;
+
+  }
+
 
   public function createComponentContractForm() {
     $frm = new AppForm;
@@ -37,7 +65,7 @@ class ContractPresenter extends BasePresenter {
     $frm->addCheckbox('accepted', 'Accepted?');
     $frm->addText('instalacniPoplatek', 'Instalacni poplatek');
     $frm->addText('doporucitel', 'Doporucitel');
-    $frm->addText('sepsaniSmlouvy', 'Sepsani smlouvy');
+    $frm->addText('sepsaniSmlouvy', 'Sepsani smlouvy')->setType('date');
 
     // Adresa info
     $frm->addGroup('Address')->setOption('prefix', 'address');
@@ -93,9 +121,10 @@ class ContractPresenter extends BasePresenter {
 
     // Add new customer
     $cust = \DoctrineForm::createFromArray('Customer', $frm->getValues('cust'));
-    $cust->Addresses->add(\DoctrineForm::createFromArray('CustomerAddress', $frm->getValues('address')));
+    $cust->Addresses->add($address = \DoctrineForm::createFromArray('CustomerAddress', $frm->getValues('address')));
     $cust->IPs->add(\DoctrineForm::createFromArray('CustomerIP', $frm->getValues('ip')));
     $cust->Tariffs->add(\DoctrineForm::createFromArray('CustomerTariff', $frm->getValues('tariff')));
+    $cust->address = $address;
 
     $cust->persist();
     $cust->flush();

@@ -41,7 +41,7 @@ abstract class BasePresenter extends Presenter {
 		$path = '/' . str_replace(':', 'Module/', $this->getName());
 		$path = substr($path, 0, strrpos($path, '/') + 1);
 		
-		return realpath($appDir . '/' . $path . ($dir ? "$dir/" : ''));
+		return realpath($appDir . '/' . $path . '/' . ($dir ? "$dir/" : ''));
 	}
 	
 	/************ Template factory ****************/

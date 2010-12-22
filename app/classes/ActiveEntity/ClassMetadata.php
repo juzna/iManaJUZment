@@ -27,6 +27,23 @@ class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
     else return $this->name;
   }
 
+  /**
+   * Get field, which represents name of this entity
+   * @throws Exception
+   * @return string
+   */
+  public function getNameField() {
+    // Look for name field
+    foreach($this->getFieldDefinitions() as $def) {
+      if(!empty($def['fieldMetadata']['ActiveEntity\\Annotations\\Name'])) return $def['fieldName'];
+    }
+
+    // Try field with name 'name'
+    if($this->hasField('name')) return 'name';
+
+    throw new \Exception("Name field not found in entity");
+  }
+
   public function getAllFieldNames() {
     return array_keys($this->reflFields);
   }

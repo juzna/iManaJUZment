@@ -1,5 +1,7 @@
 <?php
 
+use ActiveEntity\Entity;
+
 class DashboardPresenter extends BasePresenter {
   /**************   Basic renderers    *****************/
 
@@ -84,6 +86,43 @@ class DashboardPresenter extends BasePresenter {
       //\Nette\Debug::dump($row->toArray());
       $frm->setDefaults($row->toArray());
     }
+  }
+
+  /**
+   * Show form for confirmation of deleting an entity
+   * @param string $what Entity alias
+   * @param int $id Entity ID
+   * @return void
+   */
+  public function renderDelete($what, $id) {
+    $this->template->what = $what;
+    $this->template->index = $id;
+
+    $cls = $this->getEntityName($what);
+    $row = Entity::find($id, $cls);
+    if(!$row) throw new Nette\Application\BadRequestException('Record not found');
+
+    $fieldName = Entity::getClassMetadata($cls)->getNameField();
+    $this->template->name = $row->$fieldName;
+  }
+
+  /**
+   * Perform deleting on an entity
+   * @throws BadRequestException
+   * @param string $what
+   * @param id $id
+   * @return void
+   */
+  public function handleDelete($what, $id) {
+    $cls = $this->getEntityName($what);
+    $row = Entity::find($id, $cls);
+    if(!$row) throw new Nette\Application\BadRequestException('Record not found');
+
+    $row->remove();
+    $row->flush();
+
+    $this->flashMessage("Deleted!");
+    $this->redirect('default');
   }
 
 

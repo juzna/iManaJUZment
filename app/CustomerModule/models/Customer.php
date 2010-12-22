@@ -17,6 +17,7 @@ class Customer extends \ActiveEntity\Entity {
   /**
    * @var integer $contractNumber
    * @Column(name="contractNumber", type="string", length=20, nullable=false, unique=true)
+   * @ae:name
    */
   protected $contractNumber;
 

@@ -99,6 +99,7 @@ class CustomerIP extends \ActiveEntity\Entity {
   /**
    * @var enum $encType
    * @Column(name="encType", type="enum", nullable=false)
+   * @ae:defaultValue("none") @ae:enumValues("none,wep,wpa")
    */
   protected $encType;
 
@@ -111,6 +112,7 @@ class CustomerIP extends \ActiveEntity\Entity {
   /**
    * @var enum $router
    * @Column(name="router", type="enum", nullable=false)
+   * @ae:defaultValue("none") @ae:enumValues("none,cable,wifi,combo")
    */
   protected $router;
 
@@ -123,6 +125,7 @@ class CustomerIP extends \ActiveEntity\Entity {
   /**
    * @var enum $voip
    * @Column(name="voip", type="enum", nullable=false)
+   * @ae:defaultValue("none") @ae:enumValues("none,hlas,data")
    */
   protected $voip;
 

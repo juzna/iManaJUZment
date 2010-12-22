@@ -2,7 +2,11 @@
 
 <h1 n:block="title">Customer list</h1>
 
-<p><a href="{link add, 'customer'}">Add new customer record</a></p>
+<ul>
+  <li><a href="{link add, 'customer'}">Add new customer record</a></li>
+  <li><a href="{link Contract:add}">Add new contract</a></li>
+</ul>
+
 
 <table class="grid">
 <tr>
@@ -14,8 +18,8 @@
 	<td>{$customer->custId}</td>
 	<td><a href="{link detail, $customer->custId}">{$customer->contractNumber}</a></td>
 	<td>
-		<a href="{link edit, $customer->custId}">Edit</a>
-		<a href="{link delete, $customer->custId}">Delete</a>
+		<a href="{link edit, 'customer', $customer->custId}">Edit</a>
+		<a href="{link delete, 'customer', $customer->custId}">Delete</a>
 	</td>
 </tr>
 </table>

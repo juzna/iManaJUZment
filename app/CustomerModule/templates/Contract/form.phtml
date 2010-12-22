@@ -1,0 +1,191 @@
+{$form->render('begin')}
+{$form->render('errors')}
+<fieldset>
+<legend>Basic info</legend>
+<table>
+<tr>
+	<th>{$form['cust_contractNumber']->label}</th>
+	<td>{$form['cust_contractNumber']->control}</td>
+</tr>
+<tr>
+	<th>{$form['cust_password']->label}</th>
+	<td>{$form['cust_password']->control}</td>
+</tr>
+<tr>
+	<th>{$form['cust_activeSince']->label}</th>
+	<td>{$form['cust_activeSince']->control}</td>
+</tr>
+<tr>
+	<th>&nbsp;</th>
+	<td>{$form['cust_accepted']->control}{$form['cust_accepted']->label}</td>
+</tr>
+<tr>
+	<th>{$form['cust_instalacniPoplatek']->label}</th>
+	<td>{$form['cust_instalacniPoplatek']->control}</td>
+</tr>
+<tr>
+	<th>{$form['cust_doporucitel']->label}</th>
+	<td>{$form['cust_doporucitel']->control}</td>
+</tr>
+<tr>
+	<th>{$form['cust_sepsaniSmlouvy']->label}</th>
+	<td>{$form['cust_sepsaniSmlouvy']->control}</td>
+</tr>
+</table>
+</fieldset>
+<fieldset>
+<legend>Address</legend>
+<table>
+<tr>
+	<th>&nbsp;</th>
+	<td>{$form['address_isOdberna']->control}{$form['address_isOdberna']->label}</td>
+</tr>
+<tr>
+	<th>&nbsp;</th>
+	<td>{$form['address_isFakturacni']->control}{$form['address_isFakturacni']->label}</td>
+</tr>
+<tr>
+	<th>&nbsp;</th>
+	<td>{$form['address_isKorespondencni']->control}{$form['address_isKorespondencni']->label}</td>
+</tr>
+<tr>
+	<th>{$form['address_popis']->label}</th>
+	<td>{$form['address_popis']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_firma']->label}</th>
+	<td>{$form['address_firma']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_firma2']->label}</th>
+	<td>{$form['address_firma2']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_titulPred']->label}</th>
+	<td>{$form['address_titulPred']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_jmeno']->label}</th>
+	<td>{$form['address_jmeno']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_druheJmeno']->label}</th>
+	<td>{$form['address_druheJmeno']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_prijmeni']->label}</th>
+	<td>{$form['address_prijmeni']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_druhePrijmeni']->label}</th>
+	<td>{$form['address_druhePrijmeni']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_titulZa']->label}</th>
+	<td>{$form['address_titulZa']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_ICO']->label}</th>
+	<td>{$form['address_ICO']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_DIC']->label}</th>
+	<td>{$form['address_DIC']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_poznamka']->label}</th>
+	<td>{$form['address_poznamka']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_rodneCislo']->label}</th>
+	<td>{$form['address_rodneCislo']->control}</td>
+</tr>
+<tr>
+	<th>{$form['address_datumNarozeni']->label}</th>
+	<td>{$form['address_datumNarozeni']->control}</td>
+</tr>
+</table>
+</fieldset>
+<fieldset>
+<legend>IP address</legend>
+<table>
+<tr>
+	<th>{$form['ip_IP']->label}</th>
+	<td>{$form['ip_IP']->control}</td>
+</tr>
+<tr>
+	<th>{$form['ip_netmask']->label}</th>
+	<td>{$form['ip_netmask']->control}</td>
+</tr>
+<tr>
+	<th>{$form['ip_MAC']->label}</th>
+	<td>{$form['ip_MAC']->control}</td>
+</tr>
+<tr>
+	<th>{$form['ip_l2parent']->label}</th>
+	<td>{$form['ip_l2parent']->control}</td>
+</tr>
+<tr>
+	<th>{$form['ip_l2parentIf']->label}</th>
+	<td>{$form['ip_l2parentIf']->control}</td>
+</tr>
+<tr>
+	<th>{$form['ip_l3parent']->label}</th>
+	<td>{$form['ip_l3parent']->control}</td>
+</tr>
+<tr>
+	<th>{$form['ip_l3parentIf']->label}</th>
+	<td>{$form['ip_l3parentIf']->control}</td>
+</tr>
+</table>
+</fieldset>
+<fieldset>
+<legend>Tariff</legend>
+<table>
+<tr>
+	<th>{$form['tariff_tariff']->label}</th>
+	<td>{$form['tariff_tariff']->control}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_comment']->label}</th>
+	<td>{$form['tariff_comment']->control}</td>
+</tr>
+<tr>
+	<th>&nbsp;</th>
+	<td>{$form['tariff_specialniCeny']->control}{$form['tariff_specialniCeny']->label}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_mesicniPausal']->label}</th>
+	<td>{$form['tariff_mesicniPausal']->control}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_ctvrtletniPausal']->label}</th>
+	<td>{$form['tariff_ctvrtletniPausal']->control}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_pololetniPausal']->label}</th>
+	<td>{$form['tariff_pololetniPausal']->control}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_rocniPausal']->label}</th>
+	<td>{$form['tariff_rocniPausal']->control}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_datumOd']->label}</th>
+	<td>{$form['tariff_datumOd']->control}</td>
+</tr>
+<tr>
+	<th>{$form['tariff_datumDo']->label}</th>
+	<td>{$form['tariff_datumDo']->control}</td>
+</tr>
+</table>
+</fieldset>
+<fieldset>
+<table>
+<tr>
+	<th>&nbsp;</th>
+	<td>{$form['add']->control}</td>
+</tr>
+</table>
+</fieldset>
+{$form->render('end')}

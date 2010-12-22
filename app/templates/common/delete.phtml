@@ -1,0 +1,11 @@
+{block #content}
+
+<h1 n:block="title">Deleting {$what}</h1>
+
+<p><strong>Are you sure, you want to delete {$what} '{$name}'?</strong></p>
+  
+<form action="{link delete!, $what, $index}" method="post">
+  <input type="submit" value="Yes!" />
+</form>
+
+<a href="">No</a>

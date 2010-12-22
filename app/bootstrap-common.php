@@ -46,6 +46,8 @@ use Doctrine\ORM\Configuration,
   $em = EntityManager::create($database, $config);
   ActiveEntity\Entity::setEntityManager($em);
 
+  $em->getEventManager()->addEventSubscriber(new \ActiveEntity\Events\DefaultValues);
+
   /**
    * @return Doctrine\ORM\EntityManager
    */
