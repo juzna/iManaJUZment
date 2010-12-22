@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS `AP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AP` (
+  `l3parent` int(11) DEFAULT NULL,
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_czech_ci NOT NULL,
   `description` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
@@ -40,7 +41,6 @@ CREATE TABLE `AP` (
   `os` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
   `osVersion` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
   `sshFingerprint` varchar(60) COLLATE utf8_czech_ci DEFAULT NULL,
-  `l3parent` int(11) DEFAULT NULL,
   `l3parentIf` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
   `posX` int(11) DEFAULT NULL,
   `posY` int(11) DEFAULT NULL,
@@ -62,6 +62,8 @@ CREATE TABLE `AP` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `AP_name_uniq` (`name`),
   KEY `AP_APNetwork_ID_idx` (`APNetwork_ID`),
+  KEY `AP_l3parent_idx` (`l3parent`),
+  CONSTRAINT `AP_ibfk_2` FOREIGN KEY (`l3parent`) REFERENCES `AP` (`ID`),
   CONSTRAINT `AP_ibfk_1` FOREIGN KEY (`APNetwork_ID`) REFERENCES `APNetwork` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -72,7 +74,7 @@ CREATE TABLE `AP` (
 
 LOCK TABLES `AP` WRITE;
 /*!40000 ALTER TABLE `AP` DISABLE KEYS */;
-INSERT INTO `AP` VALUES (1,'prvni','prvni masina v siti','nat','192.168.1.1',24,1,0,'','','','','','','','','',NULL,'',NULL,NULL,'','','','','',NULL,NULL,NULL,NULL,0,NULL,'2010-12-20 00:22:01',0,NULL,1),(2,'druha','druha masina v siti',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),(3,'mario','','','',0,0,NULL,'','','','','','','','','',0,'',0,0,'','','','','',0,0,0,0,NULL,'2010-12-14 21:27:45','2010-12-14 21:27:45',NULL,NULL,1),(4,'lol','','','',NULL,NULL,NULL,'','','','','','','','','',NULL,'',NULL,NULL,'','','','','',NULL,NULL,NULL,NULL,NULL,'2010-12-14 21:31:51','2010-12-14 21:31:51',NULL,NULL,1),(5,'prvni druha','prvni masina v siti','nat','192.168.1.2',24,NULL,NULL,'','','','','','','','','',NULL,'',NULL,NULL,'','','','','',NULL,NULL,NULL,NULL,NULL,'2010-12-15 01:47:35','2010-12-15 01:47:35',NULL,NULL,1);
+INSERT INTO `AP` VALUES (NULL,1,'prvni','prvni masina v siti','nat','192.168.1.1',24,1,0,'','','','','','','','','',NULL,NULL,NULL,'','','','','',NULL,NULL,NULL,NULL,0,NULL,'2010-12-20 00:22:01',0,NULL,1),(NULL,2,'druha','druha masina v siti',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),(NULL,3,'mario','','','',0,0,NULL,'','','','','','','','','','0',0,0,'0','','','','',0,0,0,0,NULL,'2010-12-14 21:27:45','2010-12-14 21:27:45',NULL,NULL,1),(NULL,4,'lol','','','',NULL,NULL,NULL,'','','','','','','','','',NULL,NULL,NULL,'','','','','',NULL,NULL,NULL,NULL,NULL,'2010-12-14 21:31:51','2010-12-14 21:31:51',NULL,NULL,1),(NULL,5,'prvni druha','prvni masina v siti','nat','192.168.1.2',24,NULL,NULL,'','','','','','','','',NULL,'',NULL,NULL,'','','','','',NULL,NULL,NULL,NULL,NULL,'2010-12-15 01:47:35','2010-12-15 01:47:35',NULL,NULL,1);
 /*!40000 ALTER TABLE `AP` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -324,8 +326,8 @@ CREATE TABLE `APParent` (
   PRIMARY KEY (`ID`),
   KEY `APParent_parentAP_idx` (`parentAP`),
   KEY `APParent_childAP_idx` (`childAP`),
-  CONSTRAINT `APParent_ibfk_1` FOREIGN KEY (`parentAP`) REFERENCES `AP` (`ID`),
-  CONSTRAINT `APParent_ibfk_2` FOREIGN KEY (`childAP`) REFERENCES `AP` (`ID`)
+  CONSTRAINT `APParent_ibfk_2` FOREIGN KEY (`childAP`) REFERENCES `AP` (`ID`),
+  CONSTRAINT `APParent_ibfk_1` FOREIGN KEY (`parentAP`) REFERENCES `AP` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -416,7 +418,7 @@ CREATE TABLE `APRoute` (
   `netmask` int(11) NOT NULL,
   `gateway` varchar(15) COLLATE utf8_czech_ci NOT NULL,
   `preferredSource` varchar(15) COLLATE utf8_czech_ci DEFAULT NULL,
-  `distance` int(11) NOT NULL,
+  `distance` int(11) DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL,
   `AP` int(11) DEFAULT NULL,
@@ -452,8 +454,8 @@ CREATE TABLE `APService` (
   PRIMARY KEY (`ID`),
   KEY `APService_AP_idx` (`AP`),
   KEY `APService_service_idx` (`service`),
-  CONSTRAINT `APService_ibfk_1` FOREIGN KEY (`AP`) REFERENCES `AP` (`ID`),
-  CONSTRAINT `APService_ibfk_2` FOREIGN KEY (`service`) REFERENCES `APServiceDefinition` (`code`)
+  CONSTRAINT `APService_ibfk_2` FOREIGN KEY (`service`) REFERENCES `APServiceDefinition` (`code`),
+  CONSTRAINT `APService_ibfk_1` FOREIGN KEY (`AP`) REFERENCES `AP` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -600,8 +602,8 @@ CREATE TABLE `APTagMapping` (
   PRIMARY KEY (`AP_id`,`APTag_id`),
   KEY `APTagMapping_AP_id_idx` (`AP_id`),
   KEY `APTagMapping_APTag_id_idx` (`APTag_id`),
-  CONSTRAINT `APTagMapping_ibfk_1` FOREIGN KEY (`AP_id`) REFERENCES `AP` (`ID`),
-  CONSTRAINT `APTagMapping_ibfk_2` FOREIGN KEY (`APTag_id`) REFERENCES `APTag` (`ID`)
+  CONSTRAINT `APTagMapping_ibfk_2` FOREIGN KEY (`APTag_id`) REFERENCES `APTag` (`ID`),
+  CONSTRAINT `APTagMapping_ibfk_1` FOREIGN KEY (`AP_id`) REFERENCES `AP` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -650,10 +652,12 @@ DROP TABLE IF EXISTS `Adresar`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Adresar` (
-  `ID` int(11) NOT NULL,
-  `nazev` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
+  `ico` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `dic` varchar(255) COLLATE utf8_czech_ci NOT NULL,
   `jePlatceDph` tinyint(1) NOT NULL,
-  `zobrazit` tinyint(1) NOT NULL,
+  `display` tinyint(1) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -675,7 +679,7 @@ DROP TABLE IF EXISTS `AdresarAdresa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AdresarAdresa` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `isOdberna` tinyint(1) NOT NULL,
   `isFakturacni` tinyint(1) NOT NULL,
   `isKorespondencni` tinyint(1) NOT NULL,
@@ -698,7 +702,10 @@ CREATE TABLE `AdresarAdresa` (
   `poznamka` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   `rodneCislo` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
   `datumNarozeni` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `adresarId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `AdresarAdresa_adresarId_idx` (`adresarId`),
+  CONSTRAINT `AdresarAdresa_ibfk_1` FOREIGN KEY (`adresarId`) REFERENCES `Adresar` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -719,11 +726,14 @@ DROP TABLE IF EXISTS `AdresarKontakt`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AdresarKontakt` (
-  `ID` int(11) NOT NULL,
-  `typ` varchar(10) COLLATE utf8_czech_ci NOT NULL,
-  `hodnota` varchar(100) COLLATE utf8_czech_ci NOT NULL,
-  `popis` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) COLLATE utf8_czech_ci NOT NULL,
+  `value` varchar(100) COLLATE utf8_czech_ci NOT NULL,
+  `comment` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `adresarId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `AdresarKontakt_adresarId_idx` (`adresarId`),
+  CONSTRAINT `AdresarKontakt_ibfk_1` FOREIGN KEY (`adresarId`) REFERENCES `Adresar` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -744,12 +754,16 @@ DROP TABLE IF EXISTS `AdresarUcet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AdresarUcet` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `predcisli` varchar(10) COLLATE utf8_czech_ci NOT NULL,
   `cislo` varchar(10) COLLATE utf8_czech_ci NOT NULL,
   `kodBanky` varchar(4) COLLATE utf8_czech_ci NOT NULL,
   `poznamka` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `active` tinyint(1) NOT NULL,
+  `adresarId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `AdresarUcet_adresarId_idx` (`adresarId`),
+  CONSTRAINT `AdresarUcet_ibfk_1` FOREIGN KEY (`adresarId`) REFERENCES `Adresar` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -770,10 +784,13 @@ DROP TABLE IF EXISTS `AdresarZalohovyUcet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AdresarZalohovyUcet` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `nazev` varchar(100) COLLATE utf8_czech_ci NOT NULL,
   `kod` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
+  `adresarId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `AdresarZalohovyUcet_adresarId_idx` (`adresarId`),
+  CONSTRAINT `AdresarZalohovyUcet_ibfk_1` FOREIGN KEY (`adresarId`) REFERENCES `Adresar` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -787,25 +804,358 @@ LOCK TABLES `AdresarZalohovyUcet` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Platba`
+-- Table structure for table `Customer`
 --
 
-DROP TABLE IF EXISTS `Platba`;
+DROP TABLE IF EXISTS `Customer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Platba` (
-  `ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
+CREATE TABLE `Customer` (
+  `custId` int(11) NOT NULL AUTO_INCREMENT,
+  `contractNumber` varchar(20) COLLATE utf8_czech_ci NOT NULL,
+  `password` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `activeSince` date DEFAULT NULL,
+  `accepted` tinyint(1) NOT NULL,
+  `accepteBydUser` int(11) DEFAULT NULL,
+  `acceptedTime` datetime DEFAULT NULL,
+  `prepaidDate` date DEFAULT NULL,
+  `active` tinyint(1) NOT NULL,
+  `nepocitatPredplatne` tinyint(1) NOT NULL,
+  `nepocitatPredplatneDuvod` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `instalacniPoplatek` double DEFAULT NULL,
+  `doporucitel` int(11) DEFAULT NULL,
+  `sepsaniSmlouvy` date DEFAULT NULL,
+  `neplaticSkupina` int(11) DEFAULT NULL,
+  `neplaticTolerance` int(11) DEFAULT NULL,
+  `neplaticNeresitDo` date DEFAULT NULL,
+  `defaultAddress` int(11) DEFAULT NULL,
+  PRIMARY KEY (`custId`),
+  UNIQUE KEY `Customer_contractNumber_uniq` (`contractNumber`),
+  UNIQUE KEY `Customer_defaultAddress_uniq` (`defaultAddress`),
+  CONSTRAINT `Customer_ibfk_1` FOREIGN KEY (`defaultAddress`) REFERENCES `CustomerAddress` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Customer`
+--
+
+LOCK TABLES `Customer` WRITE;
+/*!40000 ALTER TABLE `Customer` DISABLE KEYS */;
+INSERT INTO `Customer` VALUES (10,'12345','ahoj',NULL,0,NULL,NULL,NULL,0,0,NULL,0,NULL,'2010-12-20',NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `Customer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerAddress`
+--
+
+DROP TABLE IF EXISTS `CustomerAddress`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerAddress` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `isOdberna` tinyint(1) NOT NULL,
+  `isFakturacni` tinyint(1) NOT NULL,
+  `isKorespondencni` tinyint(1) NOT NULL,
+  `popis` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `firma` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
+  `firma2` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
+  `titulPred` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `jmeno` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `druheJmeno` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `prijmeni` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `druhePrijmeni` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `titulZa` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `ICO` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `DIC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `poznamka` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `rodneCislo` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `datumNarozeni` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `custId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerAddress_custId_idx` (`custId`),
+  CONSTRAINT `CustomerAddress_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerAddress`
+--
+
+LOCK TABLES `CustomerAddress` WRITE;
+/*!40000 ALTER TABLE `CustomerAddress` DISABLE KEYS */;
+INSERT INTO `CustomerAddress` VALUES (6,0,0,0,'','','','','','','','','','','','','','',NULL),(7,1,1,0,'','Novak','druhej','','','','','','','','','','','',10),(8,0,1,1,'','','','','franta','','novak','','','','','','','',10);
+/*!40000 ALTER TABLE `CustomerAddress` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerContact`
+--
+
+DROP TABLE IF EXISTS `CustomerContact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerContact` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) COLLATE utf8_czech_ci NOT NULL,
+  `value` varchar(100) COLLATE utf8_czech_ci NOT NULL,
+  `comment` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `custId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerContact_custId_idx` (`custId`),
+  CONSTRAINT `CustomerContact_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerContact`
+--
+
+LOCK TABLES `CustomerContact` WRITE;
+/*!40000 ALTER TABLE `CustomerContact` DISABLE KEYS */;
+INSERT INTO `CustomerContact` VALUES (1,'telephone','775 178 544','company phone',10);
+/*!40000 ALTER TABLE `CustomerContact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerIP`
+--
+
+DROP TABLE IF EXISTS `CustomerIP`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerIP` (
+  `address` int(11) DEFAULT NULL,
+  `l2parent` int(11) DEFAULT NULL,
+  `l3parent` int(11) DEFAULT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `IP` varchar(20) COLLATE utf8_czech_ci NOT NULL,
+  `netmask` int(11) NOT NULL,
+  `IPold` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `IPverej` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `MAC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `visibleMAC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `l2parentIf` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `l3parentIf` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `poznamka` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `encType` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `encKey` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
+  `router` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `routerVlastni` tinyint(1) DEFAULT NULL,
+  `voip` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `vlastniRychlost` tinyint(1) NOT NULL,
+  `APIP` varchar(15) COLLATE utf8_czech_ci DEFAULT NULL,
+  `APMAC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
+  `custId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerIP_custId_idx` (`custId`),
+  KEY `CustomerIP_address_idx` (`address`),
+  KEY `CustomerIP_l2parent_idx` (`l2parent`),
+  KEY `CustomerIP_l3parent_idx` (`l3parent`),
+  CONSTRAINT `CustomerIP_ibfk_4` FOREIGN KEY (`l3parent`) REFERENCES `AP` (`ID`),
+  CONSTRAINT `CustomerIP_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`),
+  CONSTRAINT `CustomerIP_ibfk_2` FOREIGN KEY (`address`) REFERENCES `CustomerAddress` (`ID`),
+  CONSTRAINT `CustomerIP_ibfk_3` FOREIGN KEY (`l2parent`) REFERENCES `AP` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerIP`
+--
+
+LOCK TABLES `CustomerIP` WRITE;
+/*!40000 ALTER TABLE `CustomerIP` DISABLE KEYS */;
+INSERT INTO `CustomerIP` VALUES (NULL,NULL,NULL,1,'192.168.10.15',24,NULL,NULL,'',NULL,'ether1','wlan0',NULL,'none',NULL,'none',0,'none',0,NULL,NULL,NULL),(NULL,NULL,NULL,2,'192.168.2.4',24,'','','','','','','','','','',0,'',0,'','',10),(NULL,NULL,NULL,3,'192.168.2.5',24,'','','','','','','','','','',0,'',0,'','',10);
+/*!40000 ALTER TABLE `CustomerIP` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerInactivity`
+--
+
+DROP TABLE IF EXISTS `CustomerInactivity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerInactivity` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `datumOd` date NOT NULL,
+  `datumDo` date DEFAULT NULL,
+  `reason` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `custId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerInactivity_custId_idx` (`custId`),
+  CONSTRAINT `CustomerInactivity_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Platba`
+-- Dumping data for table `CustomerInactivity`
 --
 
-LOCK TABLES `Platba` WRITE;
-/*!40000 ALTER TABLE `Platba` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Platba` ENABLE KEYS */;
+LOCK TABLES `CustomerInactivity` WRITE;
+/*!40000 ALTER TABLE `CustomerInactivity` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CustomerInactivity` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerInactivityTariff`
+--
+
+DROP TABLE IF EXISTS `CustomerInactivityTariff`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerInactivityTariff` (
+  `inactivityId` int(11) NOT NULL,
+  `customerTariffId` int(11) NOT NULL,
+  PRIMARY KEY (`inactivityId`,`customerTariffId`),
+  KEY `CustomerInactivityTariff_inactivityId_idx` (`inactivityId`),
+  KEY `CustomerInactivityTariff_customerTariffId_idx` (`customerTariffId`),
+  CONSTRAINT `CustomerInactivityTariff_ibfk_2` FOREIGN KEY (`customerTariffId`) REFERENCES `CustomerTariff` (`ID`),
+  CONSTRAINT `CustomerInactivityTariff_ibfk_1` FOREIGN KEY (`inactivityId`) REFERENCES `CustomerInactivity` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerInactivityTariff`
+--
+
+LOCK TABLES `CustomerInactivityTariff` WRITE;
+/*!40000 ALTER TABLE `CustomerInactivityTariff` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CustomerInactivityTariff` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerInstalationFee`
+--
+
+DROP TABLE IF EXISTS `CustomerInstalationFee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerInstalationFee` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `amount` double NOT NULL,
+  `currency` varchar(5) COLLATE utf8_czech_ci NOT NULL,
+  `comment` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `custId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerInstalationFee_custId_idx` (`custId`),
+  CONSTRAINT `CustomerInstalationFee_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerInstalationFee`
+--
+
+LOCK TABLES `CustomerInstalationFee` WRITE;
+/*!40000 ALTER TABLE `CustomerInstalationFee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CustomerInstalationFee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerServiceFee`
+--
+
+DROP TABLE IF EXISTS `CustomerServiceFee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerServiceFee` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `amount` double NOT NULL,
+  `currency` varchar(5) COLLATE utf8_czech_ci NOT NULL,
+  `comment` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `custId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerServiceFee_custId_idx` (`custId`),
+  CONSTRAINT `CustomerServiceFee_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerServiceFee`
+--
+
+LOCK TABLES `CustomerServiceFee` WRITE;
+/*!40000 ALTER TABLE `CustomerServiceFee` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CustomerServiceFee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CustomerTariff`
+--
+
+DROP TABLE IF EXISTS `CustomerTariff`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CustomerTariff` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `comment` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `zakladni` tinyint(1) NOT NULL,
+  `specialniCeny` tinyint(1) NOT NULL,
+  `mesicniPausal` double DEFAULT NULL,
+  `ctvrtletniPausal` double DEFAULT NULL,
+  `pololetniPausal` double DEFAULT NULL,
+  `rocniPausal` double DEFAULT NULL,
+  `datumOd` date NOT NULL,
+  `datumDo` date DEFAULT NULL,
+  `predplaceno` date DEFAULT NULL,
+  `aktivni` tinyint(1) NOT NULL,
+  `zaplacenoCele` tinyint(1) DEFAULT NULL,
+  `custId` int(11) DEFAULT NULL,
+  `tarifId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CustomerTariff_custId_idx` (`custId`),
+  KEY `CustomerTariff_tarifId_idx` (`tarifId`),
+  CONSTRAINT `CustomerTariff_ibfk_2` FOREIGN KEY (`tarifId`) REFERENCES `Tarif` (`ID`),
+  CONSTRAINT `CustomerTariff_ibfk_1` FOREIGN KEY (`custId`) REFERENCES `Customer` (`custId`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CustomerTariff`
+--
+
+LOCK TABLES `CustomerTariff` WRITE;
+/*!40000 ALTER TABLE `CustomerTariff` DISABLE KEYS */;
+INSERT INTO `CustomerTariff` VALUES (6,'',0,0,0,0,0,0,'2010-01-01',NULL,NULL,0,0,NULL,NULL);
+/*!40000 ALTER TABLE `CustomerTariff` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Payment`
+--
+
+DROP TABLE IF EXISTS `Payment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Payment` (
+  `customer_id` int(11) DEFAULT NULL,
+  `adresar_id` int(11) DEFAULT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `outgoing` tinyint(1) NOT NULL,
+  `method` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `dateAdded` date NOT NULL,
+  `datePaid` date NOT NULL,
+  `ammount` double NOT NULL,
+  `currency` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `Payment_customer_id_idx` (`customer_id`),
+  KEY `Payment_adresar_id_idx` (`adresar_id`),
+  CONSTRAINT `Payment_ibfk_2` FOREIGN KEY (`adresar_id`) REFERENCES `Adresar` (`ID`),
+  CONSTRAINT `Payment_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`custId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Payment`
+--
+
+LOCK TABLES `Payment` WRITE;
+/*!40000 ALTER TABLE `Payment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Payment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -816,9 +1166,8 @@ DROP TABLE IF EXISTS `Tarif`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Tarif` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `nazev` varchar(50) COLLATE utf8_czech_ci NOT NULL,
-  `zakladni` tinyint(1) NOT NULL,
   `mesicniPausal` double NOT NULL,
   `ctvrtletniPausal` double NOT NULL,
   `pololetniPausal` double NOT NULL,
@@ -827,7 +1176,7 @@ CREATE TABLE `Tarif` (
   `posilatFaktury` tinyint(1) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Tarif_nazev_uniq` (`nazev`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -836,6 +1185,7 @@ CREATE TABLE `Tarif` (
 
 LOCK TABLES `Tarif` WRITE;
 /*!40000 ALTER TABLE `Tarif` DISABLE KEYS */;
+INSERT INTO `Tarif` VALUES (1,'home city',0,0,0,0,'',0),(2,'home ext',0,0,0,0,'',0);
 /*!40000 ALTER TABLE `Tarif` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -847,10 +1197,10 @@ DROP TABLE IF EXISTS `TarifFlag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `TarifFlag` (
-  `ID` int(11) NOT NULL,
-  `nazev` varchar(50) COLLATE utf8_czech_ci NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8_czech_ci NOT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `TarifFlag_nazev_uniq` (`nazev`)
+  UNIQUE KEY `TarifFlag_name_uniq` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -871,9 +1221,14 @@ DROP TABLE IF EXISTS `TarifRychlost`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `TarifRychlost` (
-  `tarif` int(11) NOT NULL,
-  `flag` int(11) NOT NULL,
-  PRIMARY KEY (`tarif`,`flag`)
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `tarifId` int(11) DEFAULT NULL,
+  `flagId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `TarifRychlost_tarifId_idx` (`tarifId`),
+  KEY `TarifRychlost_flagId_idx` (`flagId`),
+  CONSTRAINT `TarifRychlost_ibfk_2` FOREIGN KEY (`flagId`) REFERENCES `TarifFlag` (`ID`),
+  CONSTRAINT `TarifRychlost_ibfk_1` FOREIGN KEY (`tarifId`) REFERENCES `Tarif` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -894,8 +1249,26 @@ DROP TABLE IF EXISTS `Uhrada`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Uhrada` (
-  `ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
+  `payment_id` int(11) DEFAULT NULL,
+  `tariff_id` int(11) DEFAULT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `amount` double DEFAULT NULL,
+  `currency` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `months` int(11) DEFAULT NULL,
+  `dateFrom` date DEFAULT NULL,
+  `dateTo` date DEFAULT NULL,
+  `instalationFee_id` int(11) DEFAULT NULL,
+  `serviceFee_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `Uhrada_payment_id_idx` (`payment_id`),
+  KEY `Uhrada_tariff_id_idx` (`tariff_id`),
+  KEY `Uhrada_instalationFee_id_idx` (`instalationFee_id`),
+  KEY `Uhrada_serviceFee_id_idx` (`serviceFee_id`),
+  CONSTRAINT `Uhrada_ibfk_4` FOREIGN KEY (`serviceFee_id`) REFERENCES `CustomerServiceFee` (`ID`),
+  CONSTRAINT `Uhrada_ibfk_1` FOREIGN KEY (`payment_id`) REFERENCES `Payment` (`ID`),
+  CONSTRAINT `Uhrada_ibfk_2` FOREIGN KEY (`tariff_id`) REFERENCES `CustomerTariff` (`ID`),
+  CONSTRAINT `Uhrada_ibfk_3` FOREIGN KEY (`instalationFee_id`) REFERENCES `CustomerInstalationFee` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -907,258 +1280,6 @@ LOCK TABLES `Uhrada` WRITE;
 /*!40000 ALTER TABLE `Uhrada` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Uhrada` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `ZakanzikTarifUhrada`
---
-
-DROP TABLE IF EXISTS `ZakanzikTarifUhrada`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakanzikTarifUhrada` (
-  `ID` int(11) NOT NULL,
-  `mesicu` int(11) NOT NULL,
-  `datumOd` date NOT NULL,
-  `datumDo` date NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakanzikTarifUhrada`
---
-
-LOCK TABLES `ZakanzikTarifUhrada` WRITE;
-/*!40000 ALTER TABLE `ZakanzikTarifUhrada` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakanzikTarifUhrada` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Zakaznik`
---
-
-DROP TABLE IF EXISTS `Zakaznik`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Zakaznik` (
-  `PorCis` int(11) NOT NULL,
-  `cisloSmlouvy` int(11) DEFAULT NULL,
-  `heslo` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `aktivniOd` date DEFAULT NULL,
-  `accepted` tinyint(1) NOT NULL,
-  `acceptedUser` int(11) DEFAULT NULL,
-  `acceptedTime` datetime DEFAULT NULL,
-  `predplaceno` date DEFAULT NULL,
-  `aktivni` tinyint(1) DEFAULT NULL,
-  `staryDluh` int(11) DEFAULT NULL,
-  `nepocitatPredplatne` tinyint(1) NOT NULL,
-  `nepocitatPredplatneDuvod` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  `instalacniPoplatek` double DEFAULT NULL,
-  `doporucitel` int(11) DEFAULT NULL,
-  `sepsaniSmlouvy` date DEFAULT NULL,
-  `neplaticSkupina` int(11) DEFAULT NULL,
-  `neplaticTolerance` int(11) DEFAULT NULL,
-  `neplaticNeresitDo` date DEFAULT NULL,
-  PRIMARY KEY (`PorCis`),
-  UNIQUE KEY `Zakaznik_cisloSmlouvy_uniq` (`cisloSmlouvy`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Zakaznik`
---
-
-LOCK TABLES `Zakaznik` WRITE;
-/*!40000 ALTER TABLE `Zakaznik` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Zakaznik` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ZakaznikAdresa`
---
-
-DROP TABLE IF EXISTS `ZakaznikAdresa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakaznikAdresa` (
-  `ID` int(11) NOT NULL,
-  `isOdberna` tinyint(1) NOT NULL,
-  `isFakturacni` tinyint(1) NOT NULL,
-  `isKorespondencni` tinyint(1) NOT NULL,
-  `popis` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  `firma` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
-  `firma2` varchar(100) COLLATE utf8_czech_ci DEFAULT NULL,
-  `titulPred` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `jmeno` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `druheJmeno` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `prijmeni` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `druhePrijmeni` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `titulZa` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `ICO` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `DIC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `poznamka` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  `rodneCislo` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `datumNarozeni` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakaznikAdresa`
---
-
-LOCK TABLES `ZakaznikAdresa` WRITE;
-/*!40000 ALTER TABLE `ZakaznikAdresa` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakaznikAdresa` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ZakaznikIP`
---
-
-DROP TABLE IF EXISTS `ZakaznikIP`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakaznikIP` (
-  `ID` int(11) NOT NULL,
-  `IP` varchar(20) COLLATE utf8_czech_ci NOT NULL,
-  `netmask` int(11) NOT NULL,
-  `IPold` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `IPverej` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `MAC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `visibleMAC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  `adresa` int(11) NOT NULL,
-  `l2parent` int(11) DEFAULT NULL,
-  `l2parentIf` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `l3parent` int(11) DEFAULT NULL,
-  `l3parentIf` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `poznamka` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  `encType` varchar(255) COLLATE utf8_czech_ci NOT NULL,
-  `encKey` varchar(50) COLLATE utf8_czech_ci DEFAULT NULL,
-  `router` varchar(255) COLLATE utf8_czech_ci NOT NULL,
-  `routerVlastni` tinyint(1) DEFAULT NULL,
-  `voip` varchar(255) COLLATE utf8_czech_ci NOT NULL,
-  `vlastniRychlost` tinyint(1) NOT NULL,
-  `APIP` varchar(15) COLLATE utf8_czech_ci DEFAULT NULL,
-  `APMAC` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakaznikIP`
---
-
-LOCK TABLES `ZakaznikIP` WRITE;
-/*!40000 ALTER TABLE `ZakaznikIP` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakaznikIP` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ZakaznikKontakt`
---
-
-DROP TABLE IF EXISTS `ZakaznikKontakt`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakaznikKontakt` (
-  `ID` int(11) NOT NULL,
-  `typ` varchar(10) COLLATE utf8_czech_ci NOT NULL,
-  `hodnota` varchar(100) COLLATE utf8_czech_ci NOT NULL,
-  `popis` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakaznikKontakt`
---
-
-LOCK TABLES `ZakaznikKontakt` WRITE;
-/*!40000 ALTER TABLE `ZakaznikKontakt` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakaznikKontakt` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ZakaznikNeaktivni`
---
-
-DROP TABLE IF EXISTS `ZakaznikNeaktivni`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakaznikNeaktivni` (
-  `ID` int(11) NOT NULL,
-  `datumOd` date NOT NULL,
-  `datumDo` date DEFAULT NULL,
-  `duvod` varchar(255) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakaznikNeaktivni`
---
-
-LOCK TABLES `ZakaznikNeaktivni` WRITE;
-/*!40000 ALTER TABLE `ZakaznikNeaktivni` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakaznikNeaktivni` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ZakaznikNeaktivniTarif`
---
-
-DROP TABLE IF EXISTS `ZakaznikNeaktivniTarif`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakaznikNeaktivniTarif` (
-  `ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakaznikNeaktivniTarif`
---
-
-LOCK TABLES `ZakaznikNeaktivniTarif` WRITE;
-/*!40000 ALTER TABLE `ZakaznikNeaktivniTarif` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakaznikNeaktivniTarif` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ZakaznikTarif`
---
-
-DROP TABLE IF EXISTS `ZakaznikTarif`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ZakaznikTarif` (
-  `ID` int(11) NOT NULL,
-  `popis` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  `zakladni` tinyint(1) NOT NULL,
-  `specialniCeny` tinyint(1) NOT NULL,
-  `mesicniPausal` double DEFAULT NULL,
-  `ctvrtletniPausal` double DEFAULT NULL,
-  `pololetniPausal` double DEFAULT NULL,
-  `rocniPausal` double DEFAULT NULL,
-  `datumOd` date NOT NULL,
-  `datumDo` date DEFAULT NULL,
-  `predplaceno` date DEFAULT NULL,
-  `aktivni` tinyint(1) NOT NULL,
-  `zaplacenoCele` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ZakaznikTarif`
---
-
-LOCK TABLES `ZakaznikTarif` WRITE;
-/*!40000 ALTER TABLE `ZakaznikTarif` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ZakaznikTarif` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1169,4 +1290,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-20 13:43:29
+-- Dump completed on 2010-12-23  0:41:51
