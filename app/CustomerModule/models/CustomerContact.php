@@ -18,6 +18,7 @@ class CustomerContact extends \ActiveEntity\Entity {
    * @var Customer $customer
    * @ManyToOne(targetEntity="Customer", inversedBy="Contacts")
    * @JoinColumn(name="custId", referencedColumnName="custId")
+   * @ae:required @ae:immutable
    */
   protected $customer;
 

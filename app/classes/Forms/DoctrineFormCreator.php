@@ -40,6 +40,10 @@ class DoctrineFormCreator extends DoctrineForm {
   }
 
   public function render() {
-    echo implode("\n", $this->code) . "\n";
+    echo $this->__toString();
+  }
+
+  public function __toString() {
+    return implode("\n", $this->code) . "\n";
   }
 }

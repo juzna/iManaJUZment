@@ -1,20 +1,81 @@
 {block #content}
 
 <h1>Customer {$c->contractNumber}</h1>
+<strong n:if="$c->address">{$c->address->firma}</strong>
 
+{** basic info **}
+<fieldset>
+  <legend>Basic info</legend>
+
+  <table>
+    <tr><th>CustId:</th><td>{$c->custId}</td></tr>
+    <tr><th>ContractNumber:</th><td>{$c->contractNumber}</td></tr>
+    <tr><th>Password:</th><td>{$c->password}</td></tr>
+    <tr><th>ActiveSince:</th><td>{$c->activeSince}</td></tr>
+    <tr><th>Accepted:</th><td>{$c->accepted}</td></tr>
+    <tr><th>AcceptedByUser:</th><td>{$c->acceptedByUser}</td></tr>
+    <tr><th>AcceptedTime:</th><td>{$c->acceptedTime}</td></tr>
+    <tr><th>PrepaidDate:</th><td>{$c->prepaidDate}</td></tr>
+    <tr><th>Active:</th><td>{$c->active}</td></tr>
+    <tr><th>NepocitatPredplatne:</th><td>{$c->nepocitatPredplatne}</td></tr>
+    <tr><th>NepocitatPredplatneDuvod:</th><td>{$c->nepocitatPredplatneDuvod}</td></tr>
+    <tr><th>InstalacniPoplatek:</th><td>{$c->instalacniPoplatek}</td></tr>
+    <tr><th>Doporucitel:</th><td>{$c->doporucitel}</td></tr>
+    <tr><th>SepsaniSmlouvy:</th><td>{$c->sepsaniSmlouvy}</td></tr>
+    <tr><th>NeplaticSkupina:</th><td>{$c->neplaticSkupina}</td></tr>
+    <tr><th>NeplaticTolerance:</th><td>{$c->neplaticTolerance}</td></tr>
+    <tr><th>NeplaticNeresitDo:</th><td>{$c->neplaticNeresitDo}</td></tr>
+  </table>
+</fieldset>
+
+
+{** postal addresses **}
 <fieldset>
   <legend>Addresses</legend>
 
   <fieldset n:foreach="$c->Addresses as $address">
     <legend>X</legend>
 
-    <div>
-
-
-    </div>
+    <table>
+      <tr><th>IsOdberna:</th><td>{$address->isOdberna}</td></tr>
+      <tr><th>IsFakturacni:</th><td>{$address->isFakturacni}</td></tr>
+      <tr><th>IsKorespondencni:</th><td>{$address->isKorespondencni}</td></tr>
+      <tr><th>Popis:</th><td>{$address->popis}</td></tr>
+      <tr><th>Firma:</th><td>{$address->firma}</td></tr>
+      <tr><th>Firma2:</th><td>{$address->firma2}</td></tr>
+      <tr><th>TitulPred:</th><td>{$address->titulPred}</td></tr>
+      <tr><th>Jmeno:</th><td>{$address->jmeno}</td></tr>
+      <tr><th>DruheJmeno:</th><td>{$address->druheJmeno}</td></tr>
+      <tr><th>Prijmeni:</th><td>{$address->prijmeni}</td></tr>
+      <tr><th>DruhePrijmeni:</th><td>{$address->druhePrijmeni}</td></tr>
+      <tr><th>TitulZa:</th><td>{$address->titulZa}</td></tr>
+      <tr><th>ICO:</th><td>{$address->ICO}</td></tr>
+      <tr><th>DIC:</th><td>{$address->DIC}</td></tr>
+      <tr><th>Poznamka:</th><td>{$address->poznamka}</td></tr>
+      <tr><th>RodneCislo:</th><td>{$address->rodneCislo}</td></tr>
+      <tr><th>DatumNarozeni:</th><td>{$address->datumNarozeni}</td></tr>
+    </table>
 
   </fieldset>
 
   <a href="{link Dashboard:add, 'address', customer => $c->custId}">Add new address</a>
-
 </fieldset>
+
+{** Contact info **}
+<fieldset>
+  <legend>Contact info</legend>
+  <ul>
+    <li n:foreach="$c->Contacts as $item" title="{$item->comment}"">
+      <strong>{$item->type}: </strong>
+      <span>{$item->value}</span>
+      <span n:if="$item->comment" style="color: red;">*</span>
+    </li>
+  </ul>
+  <a href="{link add, 'contact', customer => $c->custId}">Add new contact detail</a>
+</fieldset>
+
+{** IP addresses **}
+{table 'CustomerIP', $c->IPs, customer => $c->custId}
+
+{** Tariffs **}
+{table 'CustomerTariff', $c->Tariffs, customer => $c->custId}
