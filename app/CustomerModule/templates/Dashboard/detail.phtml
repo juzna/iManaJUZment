@@ -1,5 +1,20 @@
 {block #content}
 
-<h1>Customer {$contractNumber}</h1>
+<h1>Customer {$c->contractNumber}</h1>
 
-  TODO...
+<fieldset>
+  <legend>Addresses</legend>
+
+  <fieldset n:foreach="$c->Addresses as $address">
+    <legend>X</legend>
+
+    <div>
+
+
+    </div>
+
+  </fieldset>
+
+  <a href="{link Dashboard:add, 'address', customer => $c->custId}">Add new address</a>
+
+</fieldset>

@@ -32,7 +32,7 @@ class DashboardPresenter extends \DashboardPresenter {
    * @return void
    */
   function renderDetail($id) {
-    $this->template->setParams(\Customer::find($id)->toArray());
+    $this->template->c = \Customer::find($id);
   }
 
 
