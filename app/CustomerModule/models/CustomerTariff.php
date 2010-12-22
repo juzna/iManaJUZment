@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * tariffs of a customer
  *
  * @Table @Entity
+ * @ae:links(module="Customer", presenter="dashboard", alias="tariff", common={"add", "edit", "delete"})
  */
 class CustomerTariff extends \ActiveEntity\Entity {
   /**
@@ -19,6 +20,7 @@ class CustomerTariff extends \ActiveEntity\Entity {
    * @var Customer $customer
    * @ManyToOne(targetEntity="Customer", inversedBy="Tariffs")
    * @JoinColumn(name="custId", referencedColumnName="custId")
+   * @ae:required @ae:immutable
    */
   protected $customer;
 
@@ -38,6 +40,7 @@ class CustomerTariff extends \ActiveEntity\Entity {
   /**
    * @var boolean $zakladni
    * @Column(name="zakladni", type="boolean", nullable=false)
+   * @ae:immutable
    */
   protected $zakladni;
 

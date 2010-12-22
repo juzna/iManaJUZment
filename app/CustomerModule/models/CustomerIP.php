@@ -6,6 +6,7 @@
  * IP address of customer
  *
  * @Table @Entity
+ * @ae:links(module="Customer", presenter="dashboard", alias="ip", common={"add", "edit", "remove"})
  */
 class CustomerIP extends \ActiveEntity\Entity {
   /**
@@ -18,6 +19,7 @@ class CustomerIP extends \ActiveEntity\Entity {
    * @var Customer $customer
    * @ManyToOne(targetEntity="Customer", inversedBy="IPs")
    * @JoinColumn(name="custId", referencedColumnName="custId")
+   * @ae:required @ae:immutable
    */
   protected $customer;
 

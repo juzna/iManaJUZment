@@ -6,6 +6,7 @@
  * Postal address of customer
  *
  * @Table @Entity
+ * @ae:links(module="Customer", presenter="dashboard", alias="address", common={"add", "edit", "delete"})
  */
 class CustomerAddress extends \ActiveEntity\Entity
 {
