@@ -13,7 +13,7 @@
       <ul>
         <li n:foreach="$Tags as $tag">
           <a href="{link setTag!, $AP->ID, $tag->ID, 'add'}" class="ajax">{$tag->name}</a> |
-          <a href="{link setTag!, $AP->ID, $tag->ID, 'remove'}" class="ajax">X</a>
+          <a href="{link setTag!, $AP->ID, $tag->ID, 'delete'}" class="ajax">X</a>
         </li>
       </ul>
   </div>

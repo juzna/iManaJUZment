@@ -3,7 +3,7 @@
 /**
  * @Entity
  */
-class UhradaTariff extends Uhrada {
+class PaymeeTariff extends Paymee {
 
   /**
    * @ManyToOne(targetEntity="CustomerTariff")

@@ -3,11 +3,11 @@
 
 
 /**
- * AdresarZalohovyUcet
+ * DirectoryDepositAccount
  *
  * @Table @Entity
  */
-class AdresarZalohovyUcet extends \ActiveEntity\Entity {
+class DirectoryDepositAccount extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
@@ -15,11 +15,11 @@ class AdresarZalohovyUcet extends \ActiveEntity\Entity {
   protected $ID;
 
   /**
-   * @ManyToOne(targetEntity="Adresar", inversedBy="UctyZalohove")
-   * @JoinColumn(name="adresarId", referencedColumnName="ID")
+   * @ManyToOne(targetEntity="DirectoryEntry", inversedBy="DepositAccounts")
+   * @JoinColumn(name="directoryId", referencedColumnName="ID")
    * @ae:immutable @ae:required
    */
-  protected $adresar;
+  protected $directory;
 
   /**
    * @var string $nazev

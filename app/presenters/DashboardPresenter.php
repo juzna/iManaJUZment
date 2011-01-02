@@ -88,6 +88,10 @@ class DashboardPresenter extends BasePresenter {
     }
   }
 
+  public function renderRemove($what, $id) {
+    $this->redirect('delete', array($what, $id));
+  }
+
   /**
    * Show form for confirmation of deleting an entity
    * @param string $what Entity alias

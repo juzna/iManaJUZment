@@ -51,7 +51,7 @@ class SignPresenter extends BasePresenter
 	public function signInFormSubmitted($form)
 	{
 		try {
-			$this->user->login(\UsersModel::MODE_PASS, $form['username']->value, $form['password']->value);
+			$this->user->login(\UserAuthenticator::MODE_PASS, $form['username']->value, $form['password']->value);
 			$this->application->restoreRequest($this->backlink);
 			$this->redirect('Dashboard:');
 
@@ -81,7 +81,7 @@ class SignPresenter extends BasePresenter
     }
     
     if($openid->validate()) {
-		  $this->user->login(\UsersModel::MODE_OPENID, $openid->identity);
+		  $this->user->login(\UserAuthenticator::MODE_OPENID, $openid->identity);
 		  $this->application->restoreRequest($this->backlink);
 		  $this->redirect('Dashboard:');
 	  }

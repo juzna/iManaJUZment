@@ -3,11 +3,11 @@
 
 
 /**
- * Adresar
+ * DirectoryEntry
  *
- * @Table @Entity
+ * @Table(name="Directory") @Entity
  */
-class Adresar extends \ActiveEntity\Entity {
+class DirectoryEntry extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
@@ -49,35 +49,35 @@ class Adresar extends \ActiveEntity\Entity {
   /*****  Associations  ******/
 
   /**
-   * @var array of AdresarAdresa List of addresses
-   * @OneToMany(targetEntity="AdresarAdresa", mappedBy="adresar", cascade={"all"})
+   * @var array of DirectoryAddress List of addresses
+   * @OneToMany(targetEntity="DirectoryAddress", mappedBy="directory", cascade={"all"})
    */
   protected $Addresses;
 
   /**
-   * @var array of AdresarKontakt List of contacts
-   * @OneToMany(targetEntity="AdresarKontakt", mappedBy="adresar", cascade={"all"})
+   * @var array of DirectoryContact List of contacts
+   * @OneToMany(targetEntity="DirectoryContact", mappedBy="directory", cascade={"all"})
    */
   protected $Contacts;
 
   /**
-   * @var array of AdresarUcet List of bank accounts
-   * @OneToMany(targetEntity="AdresarUcet", mappedBy="adresar", cascade={"all"})
+   * @var array of DirectoryAccount List of bank accounts
+   * @OneToMany(targetEntity="DirectoryAccount", mappedBy="directory", cascade={"all"})
    */
-  protected $Ucty;
+  protected $Accounts;
 
   /**
-   * @var array of AdresarZalohovyUcet List of backup accounts
-   * @OneToMany(targetEntity="AdresarZalohovyUcet", mappedBy="adresar", cascade={"all"})
+   * @var array of DirectoryDepositAccount List of backup accounts
+   * @OneToMany(targetEntity="DirectoryDepositAccount", mappedBy="directory", cascade={"all"})
    */
-  protected $UctyZalohove;
+  protected $DepositAccounts;
 
   
   function __construct() {
     $this->Addresses = new ArrayCollection;
     $this->Contacts = new ArrayCollection;
-    $this->Ucty = new ArrayCollection;
-    $this->UctyZalohove = new ArrayCollection;
+    $this->Accounts = new ArrayCollection;
+    $this->DepositAccounts = new ArrayCollection;
   }
 
 

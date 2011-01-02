@@ -26,6 +26,7 @@ class CustomerIP extends \ActiveEntity\Entity {
   /**
    * @var string $IP
    * @Column(name="IP", type="string", length=20, nullable=false)
+   * @ae:name
    */
   protected $IP;
 

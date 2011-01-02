@@ -3,12 +3,12 @@
 
 
 /**
- * TarifRychlost
+ * TariffSpeed
  *
  * @Table @Entity
  * @ae:Behavioral
  */
-class TarifRychlost extends \ActiveEntity\BehavioralEntity
+class TariffSpeed extends \ActiveEntity\BehavioralEntity
 {
   public static $_behaviours = array(
     'ActiveEntity\\Behaviours\\InetSpeed',
@@ -21,13 +21,13 @@ class TarifRychlost extends \ActiveEntity\BehavioralEntity
   protected $ID;
 
   /**
-   * @ManyToOne(targetEntity="Tarif")
+   * @ManyToOne(targetEntity="Tariff")
    * @JoinColumn(name="tarifId", referencedColumnName="ID")
    */
   protected $tarif;
 
   /**
-   * @ManyToOne(targetEntity="TarifFlag")
+   * @ManyToOne(targetEntity="TariffFlag")
    * @JoinColumn(name="flagId", referencedColumnName="ID")
    */
   protected $flag;

@@ -12,9 +12,9 @@ use Nette\Application\AppForm,
 class TarifPresenter extends \DashboardPresenter {
   // List of entity aliases (for listing, adding, editing, removing)
   protected $entityAliases = array(
-    'tarif'    => 'Tarif',
-    'flag'    => 'TarifFlag',
-    'rychlost' => 'TarifRychlost',
+    'tarif'    => 'Tariff',
+    'flag'    => 'TariffFlag',
+    'rychlost' => 'TariffSpeed',
   );
 
   /**
@@ -23,8 +23,8 @@ class TarifPresenter extends \DashboardPresenter {
    * @return void
    */
   function renderDetail($id) {
-    $this->template->Tarif = \Tarif::find($id);
-    $this->template->Speeds = \TarifFlag::getRepository()->findAll();
+    $this->template->Tarif = \Tariff::find($id);
+    $this->template->Speeds = \TariffFlag::getRepository()->findAll();
   }
   
 }  

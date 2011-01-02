@@ -3,11 +3,11 @@
 
 
 /**
- * TarifFlag
+ * TariffFlag
  *
  * @Table @Entity
  */
-class TarifFlag extends \ActiveEntity\Entity
+class TariffFlag extends \ActiveEntity\Entity
 {
     /**
      * @var integer $ID

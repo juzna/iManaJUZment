@@ -8,16 +8,10 @@ use Nette\Object,
 /**
  * Users authenticator.
  */
-class UsersModel extends Object implements Nette\Security\IAuthenticator
-{
+class UserAuthenticator extends Object implements Nette\Security\IAuthenticator {
   const MODE_PASS = 1;
   const MODE_OPENID = 2;
 
-  public static function initialize()
-  {
-    dibi::connect(Environment::getConfig('database2'), 'database2');
-  }
-  
 	/**
 	 * Performs an authentication
 	 * @param  array

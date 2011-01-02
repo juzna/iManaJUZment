@@ -3,7 +3,7 @@
 /**
  * @Entity
  */
-class UhradaInstalationFee extends Uhrada {
+class PaymeeInstalationFee extends Paymee {
   /**
    * @ManyToOne(targetEntity="CustomerInstalationFee")
    * @JoinColumn

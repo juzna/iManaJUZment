@@ -3,11 +3,11 @@
 
 
 /**
- * AdresarAdresa
+ * DirectoryAddress
  *
  * @Table @Entity
  */
-class AdresarAdresa extends \ActiveEntity\Entity {
+class DirectoryAddress extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
@@ -15,11 +15,15 @@ class AdresarAdresa extends \ActiveEntity\Entity {
   protected $ID;
 
   /**
-   * @ManyToOne(targetEntity="Adresar", inversedBy="Addresses")
-   * @JoinColumn(name="adresarId", referencedColumnName="ID")
+   * @ManyToOne(targetEntity="DirectoryEntry", inversedBy="Addresses")
+   * @JoinColumn(name="directoryId", referencedColumnName="ID")
    * @ae:immutable @ae:required
    */
-  protected $adresar;
+  protected $directory;
+
+
+
+  /*****   flags  ******/
 
   /**
    * @var boolean $isOdberna
@@ -44,6 +48,11 @@ class AdresarAdresa extends \ActiveEntity\Entity {
    * @Column(name="popis", type="string", length=255, nullable=true)
    */
   protected $popis;
+
+
+
+
+  /******  personal info *****/
 
   /**
    * @var string $firma
@@ -93,6 +102,11 @@ class AdresarAdresa extends \ActiveEntity\Entity {
    */
   protected $titulZa;
 
+
+
+
+  /********  adresa  ********/
+
   /**
    * @var string $ulice
    * @Column(name="ulice", type="string", length=50, nullable=true)
@@ -112,7 +126,7 @@ class AdresarAdresa extends \ActiveEntity\Entity {
   protected $mesto;
 
   /**
-   * @var string $PSC
+   * @var string $PSC Post code
    * @Column(name="PSC", type="string", length=10, nullable=true)
    */
   protected $PSC;
@@ -122,6 +136,10 @@ class AdresarAdresa extends \ActiveEntity\Entity {
    * @Column(name="uir_objekt", type="integer", length=11, nullable=true)
    */
   protected $uir_objekt;
+
+
+
+  /*********   misc   ******/
 
   /**
    * @var string $ICO

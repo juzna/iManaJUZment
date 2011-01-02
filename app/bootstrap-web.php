@@ -27,7 +27,7 @@ $application->errorPresenter = 'Error';
 
 
 // 3b) establish database connection
-$application->onStartup[] = 'UsersModel::initialize';
+//$application->onStartup[] = 'UserAuthenticator::initialize';
 
 
 // Step 4: Setup application router

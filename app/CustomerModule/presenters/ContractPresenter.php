@@ -99,7 +99,7 @@ class ContractPresenter extends BasePresenter {
 
     // Tariff
     $frm->addGroup('Tariff')->setOption('prefix', 'tariff');
-    $frm->addSelect('tariff', 'Tariff', Entity::fetchPairs('ID', 'nazev', 'Tarif'))->skipFirst('Please select tariff');
+    $frm->addSelect('tariff', 'Tariff', Entity::fetchPairs('ID', 'nazev', 'Tariff'))->skipFirst('Please select tariff');
     $frm->addText('comment', 'Comment');
     $frm->addCheckBox('specialniCeny', 'Specialni ceny?');
     $frm->addText('mesicniPausal', 'Mesicni pausal');

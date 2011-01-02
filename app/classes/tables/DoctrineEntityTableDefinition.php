@@ -180,6 +180,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
         case 'edit':
         case 'clone':
         case 'remove':
+        case 'delete':
           $indexField = $this->metadata->getSingleIdentifierFieldName();
           $linkDefinition = array(
             'title' => ucfirst($item),
@@ -237,6 +238,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
         case 'edit':
         case 'clone':
         case 'remove':
+        case 'delete':
           // Not for this section
           break;
 

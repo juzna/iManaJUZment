@@ -47,7 +47,7 @@ class DoctrineForm extends AppForm {
       // It's simple field
       if($this->metadata->hasField($fieldName)) {
         $def = $this->metadata->getFieldMapping($fieldName);
-        if(!$this->isFieldEditable($def)) continue;
+        if(!$this->isFieldEditable($def, '')) continue;
         $label = $this->_getLabel($def, $description);
         $fieldName = $def['fieldName'];
 
@@ -66,8 +66,14 @@ class DoctrineForm extends AppForm {
       // It's mapping
       elseif($this->metadata->hasAssociation($fieldName)) {
         $def = $this->metadata->getAssociationMapping($fieldName);
-        if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) {
+        if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required']) && isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Immutable'])) {
           $this->addHidden($fieldName);
+        }
+
+        // Generate select box
+        elseif(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Editable']) && ($def['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE)) {
+          $label = $this->_getLabel($def);
+          $this->addSelectBox($fieldName, $label, $def['targetEntity']);
         }
       }
 
@@ -215,7 +221,7 @@ class DoctrineForm extends AppForm {
       $fieldName = $def['fieldName'];
       $needToBeSet = $def['type'] != 'boolean';
 
-      if(($needToBeSet && !array_key_exists($fieldName, $values)) || !$this->isFieldEditable($def)) continue;
+      if(($needToBeSet && !array_key_exists($fieldName, $values)) || !$this->isFieldEditable($def, $action)) continue;
       $value = @$values[$fieldName];
 
       switch($def['type']) {
@@ -263,8 +269,9 @@ class DoctrineForm extends AppForm {
    * @param array $def Field definition
    * @return bool
    */
-  protected function isFieldEditable($def) {
+  protected function isFieldEditable($def, $action) {
     if(!empty($def['id'])) return false; // It's index of table -> not editable
+    if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Immutable']) && $action != 'add') return false; // Immutable field and we are editing -> not possible
 
     return true; // Editable by default
   }

@@ -25,6 +25,9 @@ class CustomerAddress extends \ActiveEntity\Entity
   protected $customer;
 
 
+
+  /*****   flags  ******/
+
   /**
    * @var boolean $isOdberna
    * @Column(name="isOdberna", type="boolean", nullable=false)
@@ -48,6 +51,11 @@ class CustomerAddress extends \ActiveEntity\Entity
    * @Column(name="popis", type="string", length=255, nullable=true)
    */
   protected $popis;
+
+
+
+
+  /******  personal info *****/
 
   /**
    * @var string $firma
@@ -97,6 +105,45 @@ class CustomerAddress extends \ActiveEntity\Entity
    */
   protected $titulZa;
 
+
+
+
+  /********  adresa  ********/
+
+  /**
+   * @var string $ulice
+   * @Column(name="ulice", type="string", length=50, nullable=true)
+   */
+  protected $ulice;
+
+  /**
+   * @var string $cisloPopisne
+   * @Column(name="cisloPopisne", type="string", length=20, nullable=true)
+   */
+  protected $cisloPopisne;
+
+  /**
+   * @var string $mesto
+   * @Column(name="mesto", type="string", length=50, nullable=true)
+   */
+  protected $mesto;
+
+  /**
+   * @var string $PSC Post code
+   * @Column(name="PSC", type="string", length=10, nullable=true)
+   */
+  protected $PSC;
+
+  /**
+   * @var integer $uir_objekt
+   * @Column(name="uir_objekt", type="integer", length=11, nullable=true)
+   */
+  protected $uir_objekt;
+
+
+
+  /*********   misc   ******/
+
   /**
    * @var string $ICO
    * @Column(name="ICO", type="string", length=20, nullable=true)
@@ -126,5 +173,21 @@ class CustomerAddress extends \ActiveEntity\Entity
    * @Column(name="datumNarozeni", type="string", length=20, nullable=true)
    */
   protected $datumNarozeni;
+
+  /**
+   * Get full name as string
+   * @return string
+   */
+  public function getFullName() {
+    $ret = implode(' ', array(
+      $this->titulPred,
+      $this->jmeno,
+      $this->druheJmeno,
+      $this->prijmeni,
+      $this->titulZa,
+    ));
+
+    return trim(preg_replace('/[ ]{2,}/', ' ', $ret));
+  }
 
 }

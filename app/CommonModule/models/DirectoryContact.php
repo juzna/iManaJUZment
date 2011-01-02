@@ -3,11 +3,11 @@
 
 
 /**
- * AdresarKontakt
+ * DirectoryContact
  *
  * @Table @Entity
  */
-class AdresarKontakt extends \ActiveEntity\Entity {
+class DirectoryContact extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
@@ -15,11 +15,11 @@ class AdresarKontakt extends \ActiveEntity\Entity {
   protected $ID;
 
   /**
-   * @ManyToOne(targetEntity="Adresar", inversedBy="Contacts")
-   * @JoinColumn(name="adresarId", referencedColumnName="ID")
+   * @ManyToOne(targetEntity="DirectoryEntry", inversedBy="Contacts")
+   * @JoinColumn(name="directoryId", referencedColumnName="ID")
    * @ae:immutable @ae:required
    */
-  protected $adresar;
+  protected $directory;
 
   /**
    * @var string $type

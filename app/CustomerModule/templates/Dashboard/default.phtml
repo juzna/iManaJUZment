@@ -12,11 +12,13 @@
 <tr>
 	<th>Internal ID</th>
 	<th>Contract number</th>
-	<th>&nbsp;</th>
+  <th>Name</th>
+	<th>Actions</th>
 </tr>
 <tr n:foreach="$customers as $customer">
 	<td>{$customer->custId}</td>
 	<td><a href="{link detail, $customer->custId}">{$customer->contractNumber}</a></td>
+  <td n:inner-if="$customer->address">{= $customer->address->getFullName()}</td>
 	<td>
 		<a href="{link edit, 'customer', $customer->custId}">Edit</a>
 		<a href="{link delete, 'customer', $customer->custId}">Delete</a>

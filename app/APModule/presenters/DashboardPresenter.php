@@ -44,7 +44,7 @@ class DashboardPresenter extends \DashboardPresenter {
    * Adds or removes tag from an AP
    * @param int $apId AP id
    * @param int $tagId Tag id
-   * @param string $what What action to do: add, remove
+   * @param string $what What action to do: add, delete, (remove)
    * @return void
    */
   public function handleSetTag($apId, $tagId, $what) {
@@ -54,7 +54,7 @@ class DashboardPresenter extends \DashboardPresenter {
 
     // Do it
     if($what == 'add') $ap->Tags->add($tag);
-    elseif($what == 'remove') $ap->Tags->removeElement($tag);
+    elseif($what == 'delete' || $what == 'remove') $ap->Tags->removeElement($tag);
     else throw new \InvalidArgumentException("Wrong action - what parameter");
     
     $ap->flush();

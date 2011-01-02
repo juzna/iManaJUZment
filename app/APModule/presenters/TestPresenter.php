@@ -44,7 +44,7 @@ class TestPresenter extends BasePresenter
 
   // Show metadata of entity
   public function renderMetadata($what) {
-    $cls = $this->getEntityName($what);
+    try { $cls = $this->getEntityName($what); } catch(\Exception $e) { $cls = $what; }
     dump(Entity::getClassMetadata($cls), true, 5);
     exit;
   }

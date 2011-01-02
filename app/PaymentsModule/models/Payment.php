@@ -22,7 +22,7 @@ class Payment extends \ActiveEntity\Entity {
   protected $customer;
 
   /**
-   * @ManyToOne(targetEntity="Adresar")
+   * @ManyToOne(targetEntity="DirectoryEntry")
    * @JoinColumn
    */
   protected $adresar;

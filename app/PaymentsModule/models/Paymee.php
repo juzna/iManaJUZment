@@ -3,19 +3,19 @@
 
 
 /**
- * Uhrada
+ * Paymee
  *
  * @Entity
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="type", type="string")
  * @DiscriminatorMap({
- *   "basic" = "Uhrada",
- *   "tariff" = "UhradaTariff",
- *   "install-fee" = "UhradaInstalationFee",
- *   "service-fee" = "UhradaServiceFee"
+ *   "basic" = "Paymee",
+ *   "tariff" = "PaymeeTariff",
+ *   "install-fee" = "PaymeeInstalationFee",
+ *   "service-fee" = "PaymeeServiceFee"
  * })
  */
-class Uhrada extends \ActiveEntity\Entity {
+class Paymee extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
