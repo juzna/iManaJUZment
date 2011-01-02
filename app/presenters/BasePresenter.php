@@ -65,8 +65,10 @@ abstract class BasePresenter extends Presenter {
 	  switch($this->_templateFactory) {
 	    case 'default':
 	    case '':
-  	    return parent::createTemplate();
-  	    
+  	    $template = parent::createTemplate();
+        $template->registerHelperLoader('ActiveEntity\\Helper::loader'); // Add helpers
+        return $template;
+
 	    case 'code':
 	      return new \CodeTemplate(parent::createTemplate());
 	      
@@ -110,6 +112,7 @@ abstract class BasePresenter extends Presenter {
     }
     
     // Get data source
+    if(is_array($ds)) $ds = new \ArrayIterator($ds);
     if(empty($ds)) $ds = Tables\DataSourceFactory::fromTableDefinition($def, $variables);
     elseif(!($ds instanceof Traversable)) throw new Exception("Data source is not Traversable");
     

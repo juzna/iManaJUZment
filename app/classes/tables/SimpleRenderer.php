@@ -193,7 +193,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
 
   protected function renderLink(\ActiveEntity\Annotations\Link $link, $fixVariableNames = true) {
     // Prepare target
-    $target = $link->module ? ":$link->module:" : '';
+    $target = $link->module ? ":{$link->module}:" : '';
     $target .= $link->presenter . ':';
     $target .= $link->action ? "$link->action!" : $link->view;
 

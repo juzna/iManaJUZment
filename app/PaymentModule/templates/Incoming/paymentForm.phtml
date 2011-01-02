@@ -1,0 +1,56 @@
+{block #content}
+
+<h1 n:block="title">New payment for {= $customer->getFullName()}</h1>
+
+
+{$form->render('begin')}
+{$form->render('errors')}
+<table>
+<tr>
+	<th>{$form['method']->label}</th>
+	<td>{$form['method']->control}</td>
+</tr>
+<tr>
+	<th>{$form['dateAdded']->label}</th>
+	<td>{$form['dateAdded']->control}</td>
+</tr>
+<tr>
+	<th>{$form['datePaid']->label}</th>
+	<td>{$form['datePaid']->control}</td>
+</tr>
+<tr>
+	<th>{$form['amount']->label}</th>
+	<td>{$form['amount']->control} {$form['currency']->control}</td>
+</tr>
+</table>
+
+<h2>Paymees</h2>
+<table n:if="$paymees">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr n:foreach="$paymees as $i => $item">
+      <td>
+        <input type="checkbox" name="paymee[{$i}][use]" value="1" />
+        <input type="hidden" name="paymee[{$i}][type]" value="{$item[type]}" />
+        <input type="hidden" name="paymee[{$i}][index]" value="{$item[index]}" />
+        <input type="hidden" name="paymee[{$i}][months]" value="{$item[months]}" />
+        {$item[type]}
+      </td>
+      <td>
+        <input type="text" name="paymee[{$i}][amount]" value="{$item[amount]}" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p n:if="!$paymees">No available paymees!</p>
+
+
+<input type="submit" value="Save" />
+
+
+{$form->render('end')}

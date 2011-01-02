@@ -11,6 +11,7 @@ class Payment extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
+   * @ae:show @ae:link(module="Payment", presenter="dashboard", view="detail", params={"$ID"}, title="Payment detail")
    */
   protected $ID;
 
@@ -18,12 +19,14 @@ class Payment extends \ActiveEntity\Entity {
    * @var Customer
    * @ManyToOne(targetEntity="Customer")
    * @JoinColumn(referencedColumnName="custId")
+   * @ae:show(helper="name")
    */
   protected $customer;
 
   /**
    * @ManyToOne(targetEntity="DirectoryEntry")
    * @JoinColumn(name="adresar_id")
+   * @ae:show
    */
   protected $directory;
 
@@ -41,7 +44,7 @@ class Payment extends \ActiveEntity\Entity {
 
   /**
    * @Column(type="enum")
-   * @ae:enumValues("prevod,hotove,slozenka,sipo,jine,dobirka")
+   * @ae:enumValues("prevod,hotove,slozenka,sipo,jine,dobirka") @ae:show
    */
   protected $method;
 
@@ -52,11 +55,13 @@ class Payment extends \ActiveEntity\Entity {
 
   /**
    * @Column(type="date")
+   * @ae:show
    */
   protected $datePaid;
 
   /**
    * @Column(type="float")
+   * @ae:show
    */
   protected $amount;
 
@@ -77,8 +82,14 @@ class Payment extends \ActiveEntity\Entity {
 
 
   function __construct() {
-    $this->Uhrady = new ArrayCollection;
+    $this->paymees = new ArrayCollection;
   }
-  
+
+
+  function addPaymee(Paymee $paymee) {
+    $paymee->payment = $this;
+    $this->paymees->add($paymee);
+    return $this;
+  }
 
 }

@@ -91,7 +91,7 @@ class CustomerTariff extends \ActiveEntity\Entity {
   protected $datumDo;
 
   /**
-   * @var date $predplaceno
+   * @var DateTime $predplaceno
    * @Column(name="predplaceno", type="date", nullable=true)
    */
   protected $predplaceno;
@@ -194,10 +194,55 @@ class CustomerTariff extends \ActiveEntity\Entity {
     $date = $this->datumOd;
 
     foreach($this->getPaymees() as $paymee) {
-      $date->add(new \DateInterval('P' . $paymee->months . 'M'));
+      $date->modify("+$paymee->months months");
     }
 
-    return $date;
+    // Remove one last day
+    $date->modify("-1 day");
+
+    return $this->predplaceno = $date;
   }
 
+
+  public function getAvailablePaymees() {
+    $ret = array();
+
+    // Debt
+    $debt = date_diff($this->predplaceno, new DateTime('now'));
+    if($debt->days > 15) { // TODO: check this
+      $cnt = $debt->days / 30;
+      $price = $this->getPrice(1);
+
+      for($i = 0; $i < $cnt; $i++) $ret[] = array(
+        'type'    => 'tariff',
+        'index'   => $this->ID,
+        'months'  => 1,
+        'amount'  => $price,
+        'debt'    => true,
+      );
+    }
+
+    foreach($this->getAllPrices() as $months => $price) {
+      if($price <= 0) continue;
+
+      $ret[] = array(
+        'type'    => 'tariff',
+        'index'   => $this->ID,
+        'months'  => $months,
+        'amount'  => $price,
+      );
+    }
+
+    return $ret;
+  }
+
+  /**
+   * Add specified number of months to prepaid date
+   * @param int $months
+   * @return CustomerTariff Provides fluent interface
+   */
+  public function addMonths($months) {
+    $this->predplaceno->modify("+$months months");
+    return $this;
+  }
 }

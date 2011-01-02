@@ -161,7 +161,7 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
    * @return ActiveEntity\ClassMetadata
    */
   public static function getClassMetadata($className = null) {
-    return self::getEntityManager()->getClassMetadata(isset($className) ? $className : get_called_class());
+    return self::getEntityManager()->getClassMetadata(isset($className) ? self::_sanitizeClassName($className) : get_called_class());
   }
   
   /**
@@ -185,6 +185,25 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
     return self::getEntityManager()->createQueryBuilder()->
       select("partial i.{" . "$key, $val}")->from($className, 'i')->
       getQuery()->getPairsResult('i_' . $key, 'i_' . $val);
+  }
+
+  /**
+   * Get real name of a class. If proxy given, convert to real class
+   * @throws InvalidArgumentException
+   * @param string $cls
+   * @return string
+   */
+  public static function _sanitizeClassName($cls) {
+    if(is_object($cls)) $cls = get_class($cls);
+
+    if($cls instanceof Proxy) {
+      if(preg_match('/^Proxy\\\\(.+)Proxy$/', $cls, $match)) {
+        $cls = $match[1];
+      }
+      else throw new \InvalidArgumentException("Dont understand class $cls");
+    }
+
+    return $cls;
   }
 }
 

@@ -136,6 +136,18 @@ class Customer extends \ActiveEntity\Entity {
   protected $Tariffs;
 
   /**
+   * @var array of CustomerInstalationFee
+   * @OneToMany(targetEntity="CustomerInstalationFee", mappedBy="customer", cascade={"all"})
+   */
+  protected $InstalationFees;
+
+  /**
+   * @var array of CustomerServiceFee
+   * @OneToMany(targetEntity="CustomerServiceFee", mappedBy="customer", cascade={"all"})
+   */
+  protected $ServiceFees;
+
+  /**
    * @var array of CustomerInactivity
    * @OneToMany(targetEntity="CustomerInactivity", mappedBy="customer", cascade={"all"})
    */
@@ -155,8 +167,73 @@ class Customer extends \ActiveEntity\Entity {
     $this->IPs = new ArrayCollection;
     $this->Tariffs = new ArrayCollection;
     $this->Inactivities = new ArrayCollection;
+    $this->InstalationFees = new ArrrayCollection;
+    $this->ServiceFees = new ArrayCollection;
   }
 
+  /**
+   * Get all payments of this user
+   * @return array
+   */
+  public function getPayments() {
+    return \Payment::getRepository()->findBy(array('customer' => $this->custId));
+  }
+
+  /**
+   * Get list of paymees which are available to be paid
+   * @return array
+   */
+  public function getAvailablePaymees() {
+    return array_merge(
+      $this->getAvailablePaymeesTariff(),
+      $this->getAvailablePaymeesInstalationFee(),
+      $this->getAvailablePaymeesServiceFee()
+    );
+  }
+
+  public function getAvailablePaymeesTariff() {
+    $ret = array();
+    foreach($this->Tariffs as $tariff) $ret += $tariff->getAvailablePaymees();
+    return $ret;
+  }
+
+  public function getAvailablePaymeesInstalationFee() {
+    $ret = array();
+
+    foreach($this->InstalationFees as $item) {
+      $x = $item->getAmountToBePaid();
+      if($x > 0) $ret[] = array(
+        'type'    => 'install-fee',
+        'index'   => $item->ID,
+        'amount'  => $x,
+      );
+    }
+
+    return $ret;
+  }
+
+  public function getAvailablePaymeesServiceFee() {
+    $ret = array();
+
+    foreach($this->ServiceFees as $item) {
+      $x = $item->getAmountToBePaid();
+      if($x > 0) $ret[] = array(
+        'type'    => 'service-fee',
+        'index'   => $item->ID,
+        'amount'  => $x,
+      );
+    }
+
+    return $ret;
+  }
+
+  /**
+   * Get full name as string
+   * @return string
+   */
+  public function getFullName() {
+    return $this->address ? $this->address->getFullName() : "[$this->contractNumber]";
+  }
 
 
 }

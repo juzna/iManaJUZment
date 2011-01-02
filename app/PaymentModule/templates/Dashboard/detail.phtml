@@ -1,0 +1,20 @@
+{block #content}
+
+<h1 n:block="title">Payment detail #{$p->ID}</h1>
+
+<table>
+<tr><th>ID:</th><td>{$p->ID}</td></tr>
+<tr><th>Customer:</th><td>{$p->customer|name}</td></tr>
+<tr><th>Directory:</th><td>{$p->directory|name}</td></tr>
+<tr><th>Vat:</th><td>{$p->vat}</td></tr>
+<tr><th>Outgoing:</th><td>{$p->outgoing|bool}</td></tr>
+<tr><th>Method:</th><td>{$p->method}</td></tr>
+<tr><th>DateAdded:</th><td>{$p->dateAdded|date}</td></tr>
+<tr><th>DatePaid:</th><td>{$p->datePaid|date}</td></tr>
+<tr><th>Amount:</th><td>{$p->amount}</td></tr>
+<tr><th>Currency:</th><td>{$p->currency}</td></tr>
+</table>
+
+
+<h2>Paymees</h2>
+{table 'Paymee', $p->paymees}

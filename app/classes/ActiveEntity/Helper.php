@@ -6,6 +6,35 @@ use Doctrine\ORM\Proxy\Proxy;
 
 class Helper {
   /**
+   * Helper loader (based on name it gives helper callback)
+   */
+  public static function loader($helper) {
+    $callback = callback('ActiveEntity\\Helper', $helper);
+    if ($callback->isCallable()) {
+      return $callback;
+    }
+  }
+
+  /**
+   * Name field of an entity
+   */
+  public static function name($entity) {
+    if(!$entity) return;
+    
+    $metadata = Entity::getClassMetadata($entity);
+    $field = $metadata->getNameField();
+
+    return $entity->$field;
+  }
+
+  /**
+   * Bool value
+   */
+  public static function bool($val) {
+    return $val ? 'Y' : 'N';
+  }
+
+  /**
    * Dumps all variables from entity into a table
    * TODO: use metadata for title
    */
@@ -53,7 +82,7 @@ class Helper {
     }
   }
 
-  public static function DoctrineProxyIdentifier($item, $fieldName) {
+  public static function DoctrineProxyIdentifier($item, $fieldName = 'ID') {
     if(!isset($item)) return;
 
     if($item instanceof Proxy) {
@@ -61,6 +90,10 @@ class Helper {
       $prop->setAccessible(true);
       $ret = $prop->getValue($item);
       return $ret[$fieldName];
+    }
+
+    else {
+      return $item->$fieldName;
     }
   }
 

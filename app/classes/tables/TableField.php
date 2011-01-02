@@ -39,29 +39,36 @@ class TableField {
     else $this->_render();
   }
 
-  protected function _renderLink() {
+  protected function _renderLink($fixVariableNames = true) {
     /** @var $link ActiveEntity\Annotations\Link */
     $link = $this->parameters['link'];
-    if($link->presenter) {
-      if(strpos($link->presenter, ':') === -1) $target = "$link->presenter:$link->view";
-      else $target = ":$link->presenter:$link->view";
-    }
-    else $target = $link->view;
 
+    // Prepare target
+    $target = $link->module ? ":{$link->module}:" : '';
+    $target .= $link->presenter . ':';
+    $target .= $link->action ? "$link->action!" : $link->view;
+
+    // Prepare parameters
     $params = array();
-    foreach($link->params as $p) {
-      if(substr($p, 0, 1) === '$') $params[] = '$item->' . substr($p, 1);
-      else $params[] = var_export($p, true);
+    foreach($link->params as $k => $p) {
+      $prefix = is_int($k) ? '' : "$k => ";
+
+      if(substr($p, 0, 1) === '$') {
+        if($fixVariableNames) $params[] = $prefix . '$item->' . substr($p, 1);
+        else $params[] = $prefix . $p;
+      }
+      else $params[] = $prefix . var_export($p, true);
     }
     $params = implode(', ', $params);
 
-    echo '<a href="{plink ' . $target . ($params ? ", $params" : '') . '}">';
+    $href = '{plink ' . $target . ($params ? ", $params" : '') . '}';
+    echo '    <a href="' . $href . '">';
     $this->_render();
     echo '</a>';
   }
 
   protected function _render() {
-    if($this->variable) echo '{$item->' . $this->variable . '}';
+    if($this->variable) echo '{$item->' . $this->variable . (!empty($this->parameters['show']->helper) ? '|' . $this->parameters['show']->helper : '') . '}';
     else echo preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)/i', '\\1item->\\2', $this->contentCode);
   }
 }

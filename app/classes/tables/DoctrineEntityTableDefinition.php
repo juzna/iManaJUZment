@@ -123,9 +123,8 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
   protected function _setupTableFieldFromMetadata(TableField $field, array $def) {
     if(!$md = @$def['fieldMetadata']) return;
 
-    if($link = @$md['ActiveEntity\\Annotations\\Link']) {
-      $field->parameters['link'] = $link;
-    }
+    if($link = @$md['ActiveEntity\\Annotations\\Link']) $field->parameters['link'] = $link;
+    if($p = @$md['ActiveEntity\\Annotations\\Show']) $field->parameters['show'] = $p;
   }
   
   /**

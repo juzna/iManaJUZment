@@ -2,8 +2,9 @@
 
 /**
  * @Entity
+ * @ae:links(module="Customer", presenter="dashboard", alias="servicefee", common={"add", "edit", "remove"})
  */
-class CustomerServiceFee {
+class CustomerServiceFee extends \ActiveEntity\Entity {
   /**
    * @var integer $ID
    * @Column(name="ID", type="integer") @Id @GeneratedValue
@@ -14,6 +15,7 @@ class CustomerServiceFee {
    * @var Customer $customer
    * @ManyToOne(targetEntity="Customer")
    * @JoinColumn(name="custId", referencedColumnName="custId")
+   * @ae:required @ae:immutable
    */
   protected $customer;
 
@@ -37,4 +39,11 @@ class CustomerServiceFee {
    */
   protected $comment;
 
+  public function getAmountToBePaid() {
+    return $this->amount - $this->getPaid();
+  }
+
+  public function getPaid() {
+    return (float) em()->createQuery('select sum(p.amount) from PaymeeServiceFee p where p.serviceFee=' . $this->ID)->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SINGLE_SCALAR);
+  }
 }

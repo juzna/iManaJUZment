@@ -79,3 +79,11 @@
 
 {** Tariffs **}
 {table 'CustomerTariff', $c->Tariffs, customer => $c->custId}
+
+{table 'CustomerInstalationFee', $c->InstalationFees, customer => $c->custId}
+{table 'CustomerServiceFee', $c->ServiceFees, customer => $c->custId}
+
+{table 'Payment', $c->getPayments()}
+
+<a href="{link requestedPaymees, $c->custId}">Requested paymees of this customer</a>
+<a href="{link :Payment:incoming:paymentForm, $c->custId}">Add new payment</a>

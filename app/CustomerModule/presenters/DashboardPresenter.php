@@ -17,6 +17,8 @@ class DashboardPresenter extends \DashboardPresenter {
     'contact'   => 'CustomerContact',
     'tariff'    => 'CustomerTariff',
     'inactivity'=> 'CustomerInactivity',
+    'servicefee' => 'CustomerServiceFee',
+    'instalationfee' => 'CustomerInstalationFee',
   );
 
   /**
@@ -33,6 +35,14 @@ class DashboardPresenter extends \DashboardPresenter {
    */
   function renderDetail($id) {
     $this->template->c = \Customer::find($id);
+  }
+
+  /**
+   * Items to be paid by customer
+   * @param int $id
+   */
+  function renderRequestedPaymees($id) {
+    $this->template->list = \Customer::find($id)->getAvailablePaymees();
   }
 
 

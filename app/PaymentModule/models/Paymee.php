@@ -23,7 +23,7 @@ class Paymee extends \ActiveEntity\Entity {
   protected $ID;
 
   /**
-   * @ManyToOne(targetEntity="Payment")
+   * @ManyToOne(targetEntity="Payment", inversedBy="paymees")
    * @JoinColumn()
    */
   protected $payment;
@@ -38,4 +38,10 @@ class Paymee extends \ActiveEntity\Entity {
    */
   protected $currency;
 
+
+  public function __construct(Payment $payment, $amount) {
+    $this->payment = $payment;
+    $this->amount = $amount;
+    $this->currency = $payment->currency;
+  }
 }
