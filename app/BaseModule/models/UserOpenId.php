@@ -19,4 +19,11 @@ class UserOpenId extends ActiveEntity\Entity {
    * @column(type="string", length="255")
    */
   protected $identity;
+
+  public function __construct(User $user, $identity) {
+    $this->user = $user;
+    $this->identity = $identity;
+
+    $user->openIds->add($this);
+  }
 }

@@ -18,8 +18,7 @@ class UserAuthenticator extends Object implements Nette\Security\IAuthenticator 
 	 * @return IIdentity
 	 * @throws AuthenticationException
 	 */
-	public function authenticate(array $credentials)
-	{
+	public function authenticate(array $credentials) {
 		switch($credentials[0]) {
 		  case self::MODE_PASS: return $this->authenticateByPassword($credentials[1], $credentials[2]);
 		  case self::MODE_OPENID: return $this->authenticateByOpenId($credentials[1]);
@@ -28,18 +27,19 @@ class UserAuthenticator extends Object implements Nette\Security\IAuthenticator 
   }
   
   private function authenticateByPassword($username, $password) {
-		$row = dibi::select('*')->from('users')->where('username=%s', $username)->fetch();
+    try {
+      /** @var $user User */
+      $user = User::getRepository()->findOneByUsername($username);
+    }
+    catch(Exception $e) {
+      throw new AuthenticationException("User '$username' not found.", self::IDENTITY_NOT_FOUND);
+    }
 
-		if (!$row) {
-			throw new AuthenticationException("User '$username' not found.", self::IDENTITY_NOT_FOUND);
-		}
+    if($this->calculateHash($password, $user->hashMethod) != $user->password) {
+      throw new AuthenticationException("Invalid password.", self::INVALID_CREDENTIAL);
+    }
 
-		if ($row->password !== $this->calculateHash($password)) {
-			throw new AuthenticationException("Invalid password.", self::INVALID_CREDENTIAL);
-		}
-
-		unset($row->password);
-		return new Nette\Security\Identity($row->id, NULL, $row);
+    return $this->authenticateUser($user);
 	}
 	
 	/**
@@ -47,8 +47,7 @@ class UserAuthenticator extends Object implements Nette\Security\IAuthenticator 
 	 * @param  string
 	 * @return string
 	 */
-	public function calculateHash($password)
-	{
+	public function calculateHash($password, $method) {
 		return md5($password . str_repeat('*random salt*', 10));
 	}
   
@@ -56,13 +55,13 @@ class UserAuthenticator extends Object implements Nette\Security\IAuthenticator 
   * Authenticate via OpenID URI
   */	
 	private function authenticateByOpenId($uri) {
-	  $row = dibi::select('*')->from('openid')->where('openid=%s', $uri)->fetch();
-	  if(!$row) throw new AuthenticationException("Unknown OpenID");
-	  
-	  // Find user
-	  $user = dibi::select('*')->from('users')->where('id=%i', $row->userid)->fetch();
-	
-		unset($user->password);
-		return new Nette\Security\Identity($user->id, NULL, $user);
+    $openId = UserOpenId::getRepository()->findOneByIdentity($uri);
+    return $this->authenticateUser($openId->user);
 	}
+
+  private function authenticateUser(\User $user) {
+    if(!$user->active) throw new AuthenticationException("User is not active, ask admin to allow access");
+
+    return new Nette\Security\Identity($user->ID, NULL, $user->toArray(false));
+  }
 }

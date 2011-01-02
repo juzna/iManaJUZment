@@ -8,9 +8,24 @@ use Nette\Application\Presenter,
  * Base class for all application presenters.
  */
 abstract class BasePresenter extends Presenter {
+  protected $public = false;
+
   // Parameters for creating templates
   protected $_templateFactory = 'default';
   protected $_templateFactoryParams = null;
+
+  function startup() {
+    parent::startup();
+
+		// user authentication
+		if(!$this->public && !$this->user->isLoggedIn()) {
+			if ($this->user->logoutReason === Nette\Web\User::INACTIVITY) {
+				$this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
+			}
+			$backlink = $this->application->storeRequest();
+			$this->redirect(':Base:Sign:in', array('backlink' => $backlink));
+		}
+  }
 
   /**
    * Prepare file name for template, allows some custom paths

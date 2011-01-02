@@ -32,7 +32,12 @@ class User extends ActiveEntity\Entity {
   protected $realName;
 
   /**
-   * @OneToMany(targetEntity="UserOpenId", mappedBy="user")
+   * @column(type="boolean")
+   */
+  protected $active;
+
+  /**
+   * @OneToMany(targetEntity="UserOpenId", mappedBy="user", cascade={"all"})
    */
   protected $openIds;
 
