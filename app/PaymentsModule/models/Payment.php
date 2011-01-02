@@ -23,9 +23,15 @@ class Payment extends \ActiveEntity\Entity {
 
   /**
    * @ManyToOne(targetEntity="DirectoryEntry")
-   * @JoinColumn
+   * @JoinColumn(name="adresar_id")
    */
-  protected $adresar;
+  protected $directory;
+
+  /**
+   * @var PaymentVAT
+   * @oneToOne(targetEntity="PaymentVAT", mappedBy="payment")
+   */
+  protected $vat;
 
 
   /**
@@ -52,7 +58,7 @@ class Payment extends \ActiveEntity\Entity {
   /**
    * @Column(type="float")
    */
-  protected $ammount;
+  protected $amount;
 
   /**
    * @Column(type="string")
@@ -63,6 +69,11 @@ class Payment extends \ActiveEntity\Entity {
 
   /******    Associations *******/
 
+  /**
+   * @var array of Paymee
+   * @oneToMany(targetEntity="Paymee", mappedBy="payment", cascade={"all"})
+   */
+  protected $paymees;
 
 
   function __construct() {
