@@ -71,7 +71,7 @@ class SignPresenter extends BasePresenter {
   /** Signing in via OpenId */
 	public function actionSignViaGoogle() {
 	  $mode = @$_GET['openid_mode'];
-    $openid = $this->getOpenIdAuthenticator('signInViaGoogle');
+    $openid = $this->getOpenIdAuthenticator('signViaGoogle');
 
     // First request
 	  if(empty($mode)) {
