@@ -252,6 +252,12 @@ class AP extends \ActiveEntity\BehavioralEntity
   protected $Tags;
 
   /**
+   * @var \Shaper
+   * @oneToOne(targetEntity="Shaper", mappedBy="ap")
+   */
+  protected $shaper;
+
+  /**
    * 
    */
   public function __construct() {
