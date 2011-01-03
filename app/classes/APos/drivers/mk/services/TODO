@@ -1,0 +1,4 @@
+Services which need to be implemented:
+ - DHCP + firewall rules
+ - remote syslog
+ - blocking IP addresses
