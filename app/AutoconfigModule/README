@@ -1,0 +1,13 @@
+Autoconfig parameters:
+ $alias
+ $mode = nat, route, bridge
+ $allowWifi = true
+ $wifiMode = client, ap
+ $ip = { mode(config, dhcp), addr, netmask, gateway, dns, dns2 } - in case of bridge or nat
+ $lan, $wan = ip
+ $dhcpServer = { enabled, from, to } - in case of NAT or route
+ $wifiMode = { ssid, band(abgn), channel }
+ $wifiEnc = { type, key }
+ $wifiPower = { tx, rx }
+ $ntp
+ $auth = { user, password, allowWan }
