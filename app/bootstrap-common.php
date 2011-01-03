@@ -39,7 +39,7 @@ use Doctrine\ORM\Configuration,
 
   // Proxy
   $config->setProxyNamespace('Proxy');
-  $config->setProxyDir(__DIR__ . '/temp/proxy');
+  $config->setProxyDir(__DIR__ . '/../temp/proxy');
 
   // Database
   $database = (array) Environment::getConfig('database');
