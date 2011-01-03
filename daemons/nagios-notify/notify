@@ -1,0 +1,33 @@
+#!/usr/local/bin/php
+<?php
+/**
+* Send a message from Nagios to listener
+*/
+
+@list(, $hostName, $hostState, $hostAddress) = $_SERVER['argv'];
+if(!isset($hostAddress)) die("Zadejte argumenty!\n");
+
+require_once(__DIR__ . '/../bootstrap.php');
+$unixPath = TMP_DIR . '/sock/nagios-notify';
+
+$socket = new TSocket("unix://$unixPath", -1);
+$transport = new TBufferedTransport($socket, 1024, 1024);
+$protocol = new TBinaryProtocol($transport);
+$client = new \Thrift\Nagios\ListenerClient($protocol);
+
+/*
+  1: string hostName,
+  2: common.ipAddress hostIp,
+  3: string newState
+  */
+$transport->open();
+$client->processEvent(new \Thrift\Nagios\Event(array(
+	'hostName'	=> $hostName,
+	'hostIP'	=> $hostAddress,
+	'newState'	=> $hostState,
+)));
+
+$transport->close();
+
+echo "Message sent\n";
+

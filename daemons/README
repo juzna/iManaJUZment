@@ -1,0 +1,3 @@
+Daemons, which should be executed from console
+
+- APos - communication with Access Points. Script spawner.php should always run, because it spawns new dwarfs when they're needed
