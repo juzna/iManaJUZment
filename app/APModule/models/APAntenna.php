@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Úhel se udává ve stupních při pohledu na mapu. Na východé je 0, na severu 90, západ 180, jih 270.<br />
+ * Směr udává kam směruje anténa při pohledu na mapu. Rozsah je úhel, ve kterém vyzařuje signal. <br />
+ * Dosah udává poloměr kruhové výseče v metrech, kde by měl být příjem bez problému.<br />
+ */
 
 use Doctrine\Common\Collections\ArrayCollection;
 
