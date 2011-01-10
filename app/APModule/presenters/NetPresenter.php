@@ -16,6 +16,7 @@ class NetPresenter extends BasePresenter {
 		echo '<pre>';
 		echo "<h2>Pingam $ip...</h2>";
 
+
 		// Pingame
 		$limit = @$_GET['limit'] or $limit = 5;
 		$cmd = "ping -c $limit -w 5000 $ip";
@@ -61,6 +62,8 @@ class NetPresenter extends BasePresenter {
 
 		echo '<br /><b>Konec</b>';
 		exit();
+
+
 	}
 
 }

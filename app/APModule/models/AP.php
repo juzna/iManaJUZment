@@ -312,4 +312,8 @@ class AP extends \ActiveEntity\BehavioralEntity
 
     return $ret;
   }
+
+  public function getIP() {
+    return $this->IP;
+  }
 }
