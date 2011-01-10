@@ -1,0 +1,142 @@
+Index: ssh2.c
+===================================================================
+--- ssh2.c	(revision 307356)
++++ ssh2.c	(working copy)
+@@ -352,6 +352,7 @@
+ 	data = ecalloc(1, sizeof(php_ssh2_session_data));
+ 	SSH2_TSRMLS_SET(data);
+ 	data->socket = socket;
++	data->stream = 0;
+ 
+ 	session = libssh2_session_init_ex(php_ssh2_alloc_cb, php_ssh2_free_cb, php_ssh2_realloc_cb, data);
+ 	if (!session) {
+@@ -443,6 +444,81 @@
+ }
+ /* }}} */
+ 
++static int php_ssh2_connection_stream_cast(php_stream *stream, int castas, void **ret TSRMLS_DC)
++{
++	php_ssh2_connection_data *data;
++	
++	// Get stream data
++	data = (php_ssh2_connection_data *) stream->abstract;
++	
++	// Load socket
++	if(ret) *ret = (int) data->socket;
++	
++	return SUCCESS;
++}
++
++static int php_ssh2_connection_close(php_stream *stream, int close_handle TSRMLS_DC)
++{
++  php_ssh2_connection_data *data;
++  
++  // Get stream data
++  data = (php_ssh2_connection_data *) stream->abstract;
++  data->session_data->stream = 0;
++  
++  return SUCCESS;
++}
++
++
++php_stream_ops php_ssh2_connection_stream_ops = {
++	NULL,
++	NULL,
++	php_ssh2_connection_close, /* close */
++	NULL,
++	PHP_SSH2_CONNECTION_STREAM_NAME,
++	NULL, /* seek */
++	php_ssh2_connection_stream_cast, /* cast */
++	NULL, /* stat */
++	NULL,
++};
++
++
++/* {{{ proto resource ssh2_get_stream(resource connection)
++ * Get connection's stream
++ */
++PHP_FUNCTION(ssh2_get_stream)
++{
++	LIBSSH2_SESSION *session;
++	zval *zsession;
++	php_ssh2_session_data *data;
++  php_ssh2_connection_data *cdata;
++
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &zsession) == FAILURE) {
++		RETURN_FALSE;
++	}
++	
++	ZEND_FETCH_RESOURCE(session, LIBSSH2_SESSION*, &zsession, -1, PHP_SSH2_SESSION_RES_NAME, le_ssh2_session);
++	
++	// Get abstract
++	data = *libssh2_session_abstract(session);
++	
++	// Stream not yet created
++	if(!data->stream) {
++		zend_list_addref(Z_LVAL_P(zsession));
++    cdata = emalloc(sizeof(php_ssh2_connection_data));
++    cdata->session_data = data;
++    cdata->socket = data->socket;
++    
++		data->stream = php_stream_alloc(&php_ssh2_connection_stream_ops, cdata, 0, "r+");
++	}
++	
++	php_stream_to_zval(data->stream, return_value);
++  
++  // data->stream = 0; //
++}
++/* }}} */
++
++
++
+ /* {{{ proto resource ssh2_connect(string host[, int port[, array methods[, array callbacks]]])
+  * Establish a connection to a remote SSH server and return a resource on success, false on error
+  */
+@@ -1258,6 +1334,7 @@
+  */
+ zend_function_entry ssh2_functions[] = {
+ 	PHP_FE(ssh2_connect,						NULL)
++	PHP_FE(ssh2_get_stream,					NULL)
+ 	PHP_FE(ssh2_methods_negotiated,				NULL)
+ 	PHP_FE(ssh2_fingerprint,					NULL)
+ 
+Index: php_ssh2.h
+===================================================================
+--- php_ssh2.h	(revision 307356)
++++ php_ssh2.h	(working copy)
+@@ -43,6 +43,7 @@
+ #define PHP_SSH2_DEFAULT_TERM_UNIT		PHP_SSH2_TERM_UNIT_CHARS
+ 
+ #define PHP_SSH2_SESSION_RES_NAME		"SSH2 Session"
++#define PHP_SSH2_CONNECTION_STREAM_NAME	"SSH2 Connection"
+ #define PHP_SSH2_CHANNEL_STREAM_NAME	"SSH2 Channel"
+ #define PHP_SSH2_LISTENER_RES_NAME		"SSH2 Listener"
+ #define PHP_SSH2_SFTP_RES_NAME			"SSH2 SFTP"
+@@ -67,6 +68,7 @@
+ 	zval *disconnect_cb;
+ 
+ 	int socket;
++	php_stream *stream;
+ 
+ #ifdef ZTS
+ 	/* Avoid unnecessary TSRMLS_FETCH() calls */
+@@ -74,6 +76,11 @@
+ #endif
+ } php_ssh2_session_data;
+ 
++typedef struct _php_ssh2_connection_data {
++  php_ssh2_session_data *session_data;
++  int socket;
++} php_ssh2_connection_data;
++
+ typedef struct _php_ssh2_sftp_data {
+     LIBSSH2_SESSION *session;
+     LIBSSH2_SFTP *sftp;
+@@ -190,6 +197,7 @@
+ 											TSRMLS_DC);
+ 
+ extern php_stream_ops php_ssh2_channel_stream_ops;
++extern php_stream_ops php_ssh2_connection_stream_ops;
+ 
+ extern php_stream_wrapper php_ssh2_stream_wrapper_shell;
+ extern php_stream_wrapper php_ssh2_stream_wrapper_exec;

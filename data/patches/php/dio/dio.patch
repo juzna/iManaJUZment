@@ -1,0 +1,60 @@
+Index: dio.c
+===================================================================
+--- dio.c	(revision 299344)
++++ dio.c	(working copy)
+@@ -119,6 +119,24 @@
+ }
+ /* }}} */
+ 
++/* {{{ proto resource dio_open(int fd filename)
++   Open a new filename with specified permissions of flags and creation permissions of mode */
++PHP_FUNCTION(dio_get)
++{
++	php_fd_t *f;
++	int       fd;
++
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &fd) == FAILURE) {
++		return;
++	}
++
++	if (!new_php_fd(&f, fd)) {
++		RETURN_FALSE;
++	}
++	ZEND_REGISTER_RESOURCE(return_value, f, le_fd);
++}
++/* }}} */
++
+ /* {{{ proto string dio_read(resource fd[, int n])
+    Read n bytes from fd and return them, if n is not specified, read 1k */
+ PHP_FUNCTION(dio_read)
+@@ -648,6 +666,10 @@
+ 	ZEND_ARG_INFO(0, mode)
+ ZEND_END_ARG_INFO()
+ 
++ZEND_BEGIN_ARG_INFO_EX(dio_get_args, 0, 0, 1)
++	ZEND_ARG_INFO(0, fd)
++ZEND_END_ARG_INFO()
++
+ ZEND_BEGIN_ARG_INFO_EX(dio_read_args, 0, 0, 1)
+ 	ZEND_ARG_INFO(0, fd)
+ 	ZEND_ARG_INFO(0, n)
+@@ -714,6 +736,7 @@
+ 
+ 	/* Legacy functions (Deprecated - See dio_legacy.c) */
+ 	PHP_FE(dio_open, dio_open_args)
++	PHP_FE(dio_get, dio_get_args)
+ #ifndef PHP_WIN32
+ 	PHP_FE(dio_truncate, dio_truncate_args)
+ #endif
+Index: php_dio.h
+===================================================================
+--- php_dio.h	(revision 299344)
++++ php_dio.h	(working copy)
+@@ -35,6 +35,7 @@
+ 
+ /* Legacy functions. */
+ PHP_FUNCTION(dio_open);
++PHP_FUNCTION(dio_get);
+ PHP_FUNCTION(dio_truncate);
+ PHP_FUNCTION(dio_stat);
+ PHP_FUNCTION(dio_seek);

@@ -1,0 +1,420 @@
+Index: compiler/cpp/src/generate/t_php_generator.cc
+===================================================================
+--- compiler/cpp/src/generate/t_php_generator.cc	(revision 942544)
++++ compiler/cpp/src/generate/t_php_generator.cc	(working copy)
+@@ -29,7 +29,13 @@
+ #include "platform.h"
+ using namespace std;
+ 
++#define NSGLOBAL  (nsglobal_.size() ? nsglobal_ : "")
++#define NSGLOBAL_A ("\\" + NSGLOBAL )
++#define NSGLOBAL_B ( NSGLOBAL + "\\")
++#define NSGLOBAL_AB ("\\" + NSGLOBAL + "\\")
++#define NS_ROOT ( namespace53_ ? "\\" : "")
+ 
++
+ /**
+  * PHP code generator.
+  *
+@@ -59,6 +65,18 @@
+     iter = parsed_options.find("oop");
+     oop_ = (iter != parsed_options.end());
+ 
++    iter = parsed_options.find("namespace53");
++    namespace53_ = (iter != parsed_options.end());
++
++    iter = parsed_options.find("nsglobal");
++    if(iter != parsed_options.end()) {
++      if(namespace53_) nsglobal_ = iter->second;
++      else throw "cannot use nsglobal without namespace53.";
++    }
++    else {
++      nsglobal_ = "Thrift";
++    }
++
+     if (oop_ && binary_inline_) {
+       throw "oop and inlined are mutually exclusive.";
+     }
+@@ -179,10 +197,17 @@
+   std::string type_to_enum(t_type* ttype);
+ 
+   std::string php_namespace(t_program* p) {
++    if(!p) return "";
+     std::string ns = p->get_namespace("php");
+-    return ns.size() ? (ns + "_") : "";
++    if(namespace53_) return NSGLOBAL_AB + (ns.size() ? (ns + "\\") : "");
++    else return ns.size() ? (ns + "_") : "";
+   }
+ 
++  std::string php_namespace_suffix(const t_program* p) {
++    std::string ns = p->get_namespace("php");
++    return NSGLOBAL + (ns.size() ? ("\\" + ns) : "");
++  }
++
+  private:
+ 
+   /**
+@@ -218,7 +243,16 @@
+    * Whether to use OOP base class TBase
+    */
+   bool oop_;
+-
++  
++  /**
++   * Generate namespaces in PHP5.3 style
++   */
++  bool namespace53_;
++ 
++  /**
++   * Global namespace for PHP 5.3
++   */
++  std::string nsglobal_;
+ };
+ 
+ 
+@@ -239,9 +273,9 @@
+ 
+   // Print header
+   f_types_ <<
+-    "<?php" << endl <<
+-    autogen_comment() <<
+-    php_includes();
++    "<?php" << endl;
++  if(namespace53_) f_types_ << "namespace " << php_namespace_suffix(get_program()) << ";" << endl;
++  f_types_ << autogen_comment() << php_includes();
+ 
+   // Include other Thrift includes
+   const vector<t_program*>& includes = program_->get_includes();
+@@ -257,8 +291,9 @@
+     string f_consts_name = package_dir_+program_name_+"_constants.php";
+     f_consts_.open(f_consts_name.c_str());
+     f_consts_ <<
+-      "<?php" << endl <<
+-      autogen_comment() <<
++      "<?php" << endl;
++    if(namespace53_) f_consts_ << "namespace " << php_namespace_suffix(get_program()) << ";" << endl;
++    f_consts_ << autogen_comment() <<
+       "include_once $GLOBALS['THRIFT_ROOT'].'/packages/" + program_name_ + "/" + program_name_ + "_types.php';" << endl <<
+       endl <<
+       "$GLOBALS['" << program_name_ << "_CONSTANTS'] = array();" << endl <<
+@@ -327,7 +362,7 @@
+   // code but you can't do things like an 'extract' on it, which is a bit of
+   // a downer.
+   f_types_ <<
+-    "final class " << php_namespace(tenum->get_program()) << tenum->get_name() << " {" << endl;
++    "final class " << tenum->get_name() << " {" << endl;
+   indent_up();
+ 
+   value = -1;
+@@ -411,7 +446,7 @@
+   } else if (type->is_enum()) {
+     indent(out) << value->get_integer();
+   } else if (type->is_struct() || type->is_xception()) {
+-    out << "new " << php_namespace(type->get_program()) << type->get_name() << "(array(" << endl;
++    out << "new " << NS_ROOT << php_namespace(type->get_program()) << type->get_name() << "(array(" << endl;
+     indent_up();
+     const vector<t_field*>& fields = ((t_struct*)type)->get_members();
+     vector<t_field*>::const_iterator f_iter;
+@@ -504,17 +539,20 @@
+ void t_php_generator::generate_php_type_spec(ofstream& out,
+                                              t_type* t) {
+   t = get_true_type(t);
+-  indent(out) << "'type' => " << type_to_enum(t) << "," << endl;
++  indent(out) << "'name' => '" << php_namespace(t->get_program()) << t->get_name() << "'," << endl;
++  indent(out) << "'type' => " << NS_ROOT << type_to_enum(t) << "," << endl;
+ 
+-  if (t->is_base_type() || t->is_enum()) {
++  if (t->is_base_type()) {
+     // Noop, type is all we need
++  } else if(t->is_enum()) {
++    indent(out) << "'enum' => '" << php_namespace(t->get_program()) << "E_" << t->get_name() << "'," << endl;    
+   } else if (t->is_struct() || t->is_xception()) {
+     indent(out) << "'class' => '" << php_namespace(t->get_program()) << t->get_name() <<"'," << endl;
+   } else if (t->is_map()) {
+     t_type* ktype = get_true_type(((t_map*)t)->get_key_type());
+     t_type* vtype = get_true_type(((t_map*)t)->get_val_type());
+-    indent(out) << "'ktype' => " << type_to_enum(ktype) << "," << endl;
+-    indent(out) << "'vtype' => " << type_to_enum(vtype) << "," << endl;
++    indent(out) << "'ktype' => " << NS_ROOT << type_to_enum(ktype) << "," << endl;
++    indent(out) << "'vtype' => " << NS_ROOT << type_to_enum(vtype) << "," << endl;
+     indent(out) << "'key' => array(" << endl;
+     indent_up();
+     generate_php_type_spec(out, ktype);
+@@ -532,7 +570,7 @@
+     } else {
+       etype = get_true_type(((t_set*)t)->get_elem_type());
+     }
+-    indent(out) << "'etype' => " << type_to_enum(etype) <<"," << endl;
++    indent(out) << "'etype' => " << NS_ROOT << type_to_enum(etype) <<"," << endl;
+     indent(out) << "'elem' => array(" << endl;
+     indent_up();
+     generate_php_type_spec(out, etype);
+@@ -612,11 +650,11 @@
+   vector<t_field*>::const_iterator m_iter;
+ 
+   out <<
+-    "class " << php_namespace(tstruct->get_program()) << tstruct->get_name();
++    "class " << tstruct->get_name();
+   if (is_exception) {
+-    out << " extends TException";
++    out << " extends " << NS_ROOT << "TException";
+   } else if (oop_) {
+-    out << " extends TBase";
++    out << " extends " << NS_ROOT << "TBase";
+   }
+   out <<
+     " {" << endl;
+@@ -728,7 +766,7 @@
+       t_field ffid(g_type_i16, "fid");
+       generate_deserialize_field(out, &fftype);
+       out <<
+-        indent() << "if ($ftype == TType::STOP) {" << endl <<
++        indent() << "if ($ftype == " << NS_ROOT << "TType::STOP) {" << endl <<
+         indent() << "  break;" << endl <<
+         indent() << "}" << endl;
+       generate_deserialize_field(out, &ffid);
+@@ -737,7 +775,7 @@
+         "$xfer += $input->readFieldBegin($fname, $ftype, $fid);" << endl;
+       // Check for field STOP marker and break
+       indent(out) <<
+-        "if ($ftype == TType::STOP) {" << endl;
++        "if ($ftype == " << NS_ROOT << "TType::STOP) {" << endl;
+       indent_up();
+       indent(out) <<
+         "break;" << endl;
+@@ -764,7 +802,7 @@
+         out <<
+           indent() << "} else {" << endl;
+         if (binary_inline_) {
+-          indent(out) <<  "  $xfer += TProtocol::skipBinary($input, $ftype);" << endl;
++          indent(out) <<  "  $xfer += " << NS_ROOT << "TProtocol::skipBinary($input, $ftype);" << endl;
+         } else {
+           indent(out) <<  "  $xfer += $input->skip($ftype);" << endl;
+         }
+@@ -777,7 +815,7 @@
+       // In the default case we skip the field
+       indent(out) <<  "default:" << endl;
+       if (binary_inline_) {
+-        indent(out) <<  "  $xfer += TProtocol::skipBinary($input, $ftype);" << endl;
++        indent(out) <<  "  $xfer += " << NS_ROOT << "TProtocol::skipBinary($input, $ftype);" << endl;
+       } else {
+         indent(out) <<  "  $xfer += $input->skip($ftype);" << endl;
+       }
+@@ -856,7 +894,7 @@
+         indent() << "if (!is_" << expect << "($this->" << (*f_iter)->get_name() << ")) {" << endl;
+       indent_up();
+       out <<
+-        indent() << "throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);" << endl;
++        indent() << "throw new " << NS_ROOT << "TProtocolException('Bad type in structure.', " << NS_ROOT << "TProtocolException::INVALID_DATA);" << endl;
+       scope_down(out);
+     }
+ 
+@@ -889,7 +927,7 @@
+ 
+   if (binary_inline_) {
+     out <<
+-      indent() << "$output .= pack('c', TType::STOP);" << endl;
++      indent() << "$output .= pack('c', " << NS_ROOT << "TType::STOP);" << endl;
+   } else {
+     out <<
+       indent() << "$xfer += $output->writeFieldStop();" << endl <<
+@@ -914,9 +952,9 @@
+   string f_service_name = package_dir_+service_name_+".php";
+   f_service_.open(f_service_name.c_str());
+ 
+-  f_service_ <<
+-    "<?php" << endl <<
+-    autogen_comment() <<
++  f_service_ << "<?php" << endl;
++  if(namespace53_) f_service_ << "namespace " << php_namespace_suffix(tservice->get_program()) << ";" << endl;
++  f_service_ << autogen_comment() <<
+     php_includes();
+ 
+   f_service_ <<
+@@ -960,7 +998,7 @@
+   string extends_processor = "";
+   if (tservice->get_extends() != NULL) {
+     extends = tservice->get_extends()->get_name();
+-    extends_processor = " extends " + extends + "Processor";
++    extends_processor = " extends " + php_namespace(tservice->get_extends()->get_program()) + extends + "Processor";
+   }
+ 
+   // Generate the header portion
+@@ -1018,10 +1056,10 @@
+       indent() << "  throw new Exception('Function '.$fname.' not implemented.');" << endl;
+   } else {
+     f_service_ <<
+-      indent() << "  $input->skip(TType::STRUCT);" << endl <<
++      indent() << "  $input->skip(" << NS_ROOT << "TType::STRUCT);" << endl <<
+       indent() << "  $input->readMessageEnd();" << endl <<
+-      indent() << "  $x = new TApplicationException('Function '.$fname.' not implemented.', TApplicationException::UNKNOWN_METHOD);" << endl <<
+-      indent() << "  $output->writeMessageBegin($fname, TMessageType::EXCEPTION, $rseqid);" << endl <<
++      indent() << "  $x = new " << NS_ROOT << "TApplicationException('Function '.$fname.' not implemented.', " << NS_ROOT << "TApplicationException::UNKNOWN_METHOD);" << endl <<
++      indent() << "  $output->writeMessageBegin($fname, " << NS_ROOT << "TMessageType::EXCEPTION, $rseqid);" << endl <<
+       indent() << "  $x->write($output);" << endl <<
+       indent() << "  $output->writeMessageEnd();" << endl <<
+       indent() << "  $output->getTransport()->flush();" << endl <<
+@@ -1135,14 +1173,14 @@
+   }
+ 
+   f_service_ <<
+-    indent() << "$bin_accel = ($output instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');" << endl;
++    indent() << "$bin_accel = ($output instanceof " << NS_ROOT << "TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');" << endl;
+ 
+   f_service_ <<
+     indent() << "if ($bin_accel)" << endl;
+   scope_up(f_service_);
+ 
+   f_service_ <<
+-    indent() << "thrift_protocol_write_binary($output, '" << tfunction->get_name() << "', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());" << endl;
++    indent() << "thrift_protocol_write_binary($output, '" << tfunction->get_name() << "', " << NS_ROOT << "TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());" << endl;
+ 
+   scope_down(f_service_);
+   f_service_ <<
+@@ -1152,7 +1190,7 @@
+   // Serialize the request header
+   if (binary_inline_) {
+     f_service_ <<
+-      indent() << "$buff = pack('N', (0x80010000 | TMessageType::REPLY)); " << endl <<
++      indent() << "$buff = pack('N', (0x80010000 | " << NS_ROOT << "TMessageType::REPLY)); " << endl <<
+       indent() << "$buff .= pack('N', strlen('" << tfunction->get_name() << "'));" << endl <<
+       indent() << "$buff .= '" << tfunction->get_name() << "';" << endl <<
+       indent() << "$buff .= pack('N', $seqid);" << endl <<
+@@ -1161,7 +1199,7 @@
+       indent() << "$output->flush();" << endl;
+   } else {
+     f_service_ <<
+-      indent() << "$output->writeMessageBegin('" << tfunction->get_name() << "', TMessageType::REPLY, $seqid);" << endl <<
++      indent() << "$output->writeMessageBegin('" << tfunction->get_name() << "', " << NS_ROOT << "TMessageType::REPLY, $seqid);" << endl <<
+       indent() << "$result->write($output);" << endl <<
+       indent() << "$output->getTransport()->flush();" << endl;
+   }
+@@ -1229,8 +1267,8 @@
+   string extends = "";
+   string extends_if = "";
+   if (tservice->get_extends() != NULL) {
+-    extends = " extends " + tservice->get_extends()->get_name();
+-    extends_if = " extends " + tservice->get_extends()->get_name() + "If";
++    extends = " extends " + php_namespace(tservice->get_extends()->get_program()) + tservice->get_extends()->get_name();
++    extends_if = " extends " + php_namespace(tservice->get_extends()->get_program()) + tservice->get_extends()->get_name() + "If";
+   }
+   f_service_ <<
+     "interface " << service_name_ << "If" << extends_if << " {" << endl;
+@@ -1253,8 +1291,8 @@
+   string extends = "";
+   string extends_if = "";
+   if (tservice->get_extends() != NULL) {
+-    extends = " extends " + tservice->get_extends()->get_name();
+-    extends_if = " extends " + tservice->get_extends()->get_name() + "Rest";
++    extends = " extends " + php_namespace(tservice->get_extends()->get_program()) + tservice->get_extends()->get_name();
++    extends_if = " extends " + php_namespace(tservice->get_extends()->get_program()) + tservice->get_extends()->get_name() + "Rest";
+   }
+   f_service_ <<
+     "class " << service_name_ << "Rest" << extends_if << " {" << endl;
+@@ -1350,11 +1388,11 @@
+   string extends_client = "";
+   if (tservice->get_extends() != NULL) {
+     extends = tservice->get_extends()->get_name();
+-    extends_client = " extends " + extends + "Client";
++    extends_client = " extends " + php_namespace(tservice->get_extends()->get_program()) + extends + "Client";
+   }
+ 
+   out <<
+-    "class " << service_name_ << "Client" << extends_client << " implements " << service_name_ << "If {" << endl;
++    "class " << service_name_ << "Client" << extends_client << " implements " <<  (namespace53_ ? php_namespace(tservice->get_program()) : "") << service_name_ << "If {" << endl;
+   indent_up();
+ 
+   // Private members
+@@ -1424,7 +1462,7 @@
+       "public function send_" << function_signature(*f_iter) << endl;
+     scope_up(out);
+ 
+-      std::string argsname = php_namespace(tservice->get_program()) + service_name_ + "_" + (*f_iter)->get_name() + "_args";
++      std::string argsname = (namespace53_ ? php_namespace(tservice->get_program()) : "") + service_name_ + "_" + (*f_iter)->get_name() + "_args";
+ 
+       out <<
+         indent() << "$args = new " << argsname << "();" << endl;
+@@ -1435,14 +1473,14 @@
+       }
+ 
+       out <<
+-        indent() << "$bin_accel = ($this->output_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');" << endl;
++        indent() << "$bin_accel = ($this->output_ instanceof " << NS_ROOT << "TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');" << endl;
+ 
+       out <<
+         indent() << "if ($bin_accel)" << endl;
+       scope_up(out);
+ 
+       out <<
+-        indent() << "thrift_protocol_write_binary($this->output_, '" << (*f_iter)->get_name() << "', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());" << endl;
++        indent() << "thrift_protocol_write_binary($this->output_, '" << (*f_iter)->get_name() << "', " << NS_ROOT << "TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());" << endl;
+ 
+       scope_down(out);
+       out <<
+@@ -1452,13 +1490,13 @@
+       // Serialize the request header
+       if (binary_inline_) {
+         out <<
+-          indent() << "$buff = pack('N', (0x80010000 | TMessageType::CALL));" << endl <<
++          indent() << "$buff = pack('N', (0x80010000 | " << NS_ROOT << "TMessageType::CALL));" << endl <<
+           indent() << "$buff .= pack('N', strlen('" << funname << "'));" << endl <<
+           indent() << "$buff .= '" << funname << "';" << endl <<
+           indent() << "$buff .= pack('N', $this->seqid_);" << endl;
+       } else {
+         out <<
+-          indent() << "$this->output_->writeMessageBegin('" << (*f_iter)->get_name() << "', TMessageType::CALL, $this->seqid_);" << endl;
++          indent() << "$this->output_->writeMessageBegin('" << (*f_iter)->get_name() << "', " << NS_ROOT << "TMessageType::CALL, $this->seqid_);" << endl;
+       }
+ 
+       // Write to the stream
+@@ -1493,7 +1531,7 @@
+       scope_up(out);
+ 
+       out <<
+-        indent() << "$bin_accel = ($this->input_ instanceof TProtocol::$TBINARYPROTOCOLACCELERATED)"
++        indent() << "$bin_accel = ($this->input_ instanceof " << NS_ROOT << "TProtocol::$TBINARYPROTOCOLACCELERATED)"
+                  << " && function_exists('thrift_protocol_read_binary');" << endl;
+ 
+       out <<
+@@ -1516,14 +1554,14 @@
+           indent() << "$ver = $ver[1];" << endl <<
+           indent() << "$mtype = $ver & 0xff;" << endl <<
+           indent() << "$ver = $ver & 0xffff0000;" << endl <<
+-          indent() << "if ($ver != 0x80010000) throw new TProtocolException('Bad version identifier: '.$ver, TProtocolException::BAD_VERSION);" << endl;
++          indent() << "if ($ver != 0x80010000) throw new " << NS_ROOT << "TProtocolException('Bad version identifier: '.$ver, " << NS_ROOT << "TProtocolException::BAD_VERSION);" << endl;
+         generate_deserialize_field(out, &ffname, "", true);
+         generate_deserialize_field(out, &fseqid, "", true);
+       } else {
+         out <<
+           indent() << "$this->input_->readMessageBegin($fname, $mtype, $rseqid);" << endl <<
+-          indent() << "if ($mtype == TMessageType::EXCEPTION) {" << endl <<
+-          indent() << "  $x = new TApplicationException();" << endl <<
++          indent() << "if ($mtype == " << NS_ROOT << "TMessageType::EXCEPTION) {" << endl <<
++          indent() << "  $x = new " << NS_ROOT << "TApplicationException();" << endl <<
+           indent() << "  $x->read($this->input_);" << endl <<
+           indent() << "  $this->input_->readMessageEnd();" << endl <<
+           indent() << "  throw $x;" << endl <<
+@@ -1565,7 +1603,7 @@
+           "return;" << endl;
+       } else {
+         out <<
+-          indent() << "throw new Exception(\"" << (*f_iter)->get_name() << " failed: unknown result\");" << endl;
++          indent() << "throw new " << NS_ROOT << "Exception(\"" << (*f_iter)->get_name() << " failed: unknown result\");" << endl;
+       }
+ 
+     // Close function
+@@ -2277,7 +2315,7 @@
+       return "TType::DOUBLE";
+     }
+   } else if (type->is_enum()) {
+-    return "TType::I32";
++    return "TType::ENUM";
+   } else if (type->is_struct() || type->is_xception()) {
+     return "TType::STRUCT";
+   } else if (type->is_map()) {
+@@ -2297,4 +2335,5 @@
+ "    autoload:        Generate PHP with autoload\n"
+ "    oop:             Generate PHP with object oriented subclasses\n"
+ "    rest:            Generate PHP REST processors\n"
++"    namespace53      Generate PHP namespaces as defined in PHP 5.3\n"
+ );

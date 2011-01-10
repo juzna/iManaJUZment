@@ -1,0 +1,265 @@
+Index: lib/php/src/Thrift.php
+===================================================================
+--- lib/php/src/Thrift.php	(revision 942544)
++++ lib/php/src/Thrift.php	(working copy)
+@@ -42,6 +42,7 @@
+   const LST    = 15;    // N.B. cannot use LIST keyword in PHP!
+   const UTF8   = 16;
+   const UTF16  = 17;
++  const ENUM   = 18;
+ }
+ 
+ /**
+@@ -405,7 +406,9 @@
+  * function calls for every field or member of a container..
+  */
+ abstract class TBase {
+-
++  static $allowEnumConversion = false;
++  static $convertToArrays = false;
++  
+   static $tmethod = array(TType::BOOL   => 'Bool',
+                           TType::BYTE   => 'Byte',
+                           TType::I16    => 'I16',
+@@ -428,7 +431,7 @@
+       }
+     }
+   }
+-
++  
+   private function _readMap(&$var, $spec, $input) {
+     $xfer = 0;
+     $ktype = $spec['ktype'];
+@@ -454,9 +457,7 @@
+       } else {
+         switch ($ktype) {
+         case TType::STRUCT:
+-          $class = $kspec['class'];
+-          $key = new $class();
+-          $xfer += $key->read($input);
++          $xfer += $this->_readStruct($key, $kspec, $input);
+           break;
+         case TType::MAP:
+           $xfer += $this->_readMap($key, $kspec, $input);
+@@ -467,6 +468,9 @@
+         case TType::SET:
+           $xfer += $this->_readList($key, $kspec, $input, true);
+           break;
++        case TType::ENUM:
++          $xfer += $this->_readEnum($key, $kspec, $input);
++          break;
+         }
+       }
+       if ($vread !== null) {
+@@ -474,9 +478,7 @@
+       } else {
+         switch ($vtype) {
+         case TType::STRUCT:
+-          $class = $vspec['class'];
+-          $val = new $class();
+-          $xfer += $val->read($input);
++          $xfer += $this->_readStruct($val, $vspec, $input);
+           break;
+         case TType::MAP:
+           $xfer += $this->_readMap($val, $vspec, $input);
+@@ -487,6 +489,9 @@
+         case TType::SET:
+           $xfer += $this->_readList($val, $vspec, $input, true);
+           break;
++        case TType::ENUM:
++          $xfer += $this->_readEnum($val, $vspec, $input);
++          break;
+         }
+       }
+       $var[$key] = $val;
+@@ -519,9 +524,7 @@
+         $espec = $spec['elem'];
+         switch ($etype) {
+         case TType::STRUCT:
+-          $class = $espec['class'];
+-          $elem = new $class();
+-          $xfer += $elem->read($input);
++          $xfer += $this->_readStruct($elem, $espec, $input);
+           break;
+         case TType::MAP:
+           $xfer += $this->_readMap($elem, $espec, $input);
+@@ -532,6 +535,9 @@
+         case TType::SET:
+           $xfer += $this->_readList($elem, $espec, $input, true);
+           break;
++        case TType::ENUM:
++          $xfer += $this->_readEnum($elem, $espec, $input);
++          break;
+         }
+       }
+       if ($set) {
+@@ -548,6 +554,37 @@
+     return $xfer;
+   }
+ 
++  private function _readEnum(&$var, $spec, $input) {
++    $xfer = $input->readI32($tmp);
++    
++    if(self::$allowEnumConversion) {
++      // Try to convert to string
++      $className = $spec['name'];
++      if(class_exists($className)) {
++        if(isset($className::$__names[$tmp])) $var = $className::$__names[$tmp];
++        else $var = $tmp;
++      } else $var = $tmp;
++    }
++    else $var = $tmp;
++    
++    return $xfer;
++  }
++  
++  private function _readStruct(&$var, $fspec, $input) {
++    $class = $fspec['class'];
++    $obj = new $class();
++    $xfer = $obj->read($input);
++    
++    if(self::$convertToArrays) {
++      $var = array();
++      foreach($obj::$_TSPEC as $field) {
++        $f = $field['var'];
++        if(isset($obj->$f)) $var[$f] = $obj->$f;
++      }
++    }
++    else $var = $obj;
++  }
++  
+   protected function _read($class, $spec, $input) {
+     $xfer = 0;
+     $fname = null;
+@@ -570,9 +607,7 @@
+           } else {
+             switch ($ftype) {
+             case TType::STRUCT:
+-              $class = $fspec['class'];
+-              $this->$var = new $class();
+-              $xfer += $this->$var->read($input);
++              $xfer += $this->_readStruct($this->$var, $fspec, $input);
+               break;
+             case TType::MAP:
+               $xfer += $this->_readMap($this->$var, $fspec, $input);
+@@ -583,6 +618,9 @@
+             case TType::SET:
+               $xfer += $this->_readList($this->$var, $fspec, $input, true);
+               break;
++            case TType::ENUM:
++              $xfer += $this->_readEnum($this->$var, $fspec, $input);
++              break;
+             }
+           }
+         } else {
+@@ -596,7 +634,7 @@
+     $xfer += $input->readStructEnd();
+     return $xfer;
+   }
+-
++  
+   private function _writeMap($var, $spec, $output) {
+     $xfer = 0;
+     $ktype = $spec['ktype'];
+@@ -619,7 +657,7 @@
+       } else {
+         switch ($ktype) {
+         case TType::STRUCT:
+-          $xfer += $key->write($output);
++          $xfer += $this->_writeStruct($key, $kspec, $output);
+           break;
+         case TType::MAP:
+           $xfer += $this->_writeMap($key, $kspec, $output);
+@@ -630,6 +668,9 @@
+         case TType::SET:
+           $xfer += $this->_writeList($key, $kspec, $output, true);
+           break;
++        case TType::ENUM:
++          $xfer += $this->_writeEnum($key, $kspec, $output);
++          break;
+         }
+       }
+       if (isset($vwrite)) {
+@@ -637,7 +678,7 @@
+       } else {
+         switch ($vtype) {
+         case TType::STRUCT:
+-          $xfer += $val->write($output);
++          $xfer += $this->_writeStruct($val, $vspec, $output);
+           break;
+         case TType::MAP:
+           $xfer += $this->_writeMap($val, $vspec, $output);
+@@ -648,6 +689,9 @@
+         case TType::SET:
+           $xfer += $this->_writeList($val, $vspec, $output, true);
+           break;
++        case TType::ENUM:
++          $xfer += $this->_writeEnum($val, $vspec, $output);
++          break;
+         }
+       }
+     }
+@@ -676,7 +720,7 @@
+       } else {
+         switch ($etype) {
+         case TType::STRUCT:
+-          $xfer += $elem->write($output);
++          $xfer += $this->_writeStruct($elem, $espec, $output);
+           break;
+         case TType::MAP:
+           $xfer += $this->_writeMap($elem, $espec, $output);
+@@ -687,6 +731,9 @@
+         case TType::SET:
+           $xfer += $this->_writeList($elem, $espec, $output, true);
+           break;
++        case TType::ENUM:
++          $xfer += $this->_writeEnum($elem, $espec, $output);
++          break;
+         }
+       }
+     }
+@@ -697,7 +744,25 @@
+     }
+     return $xfer;
+   }
++  
++  private function _writeEnum($var, $fspec, $output) {
++    // Convert enum to I32
++    if(self::$allowEnumConversion && !is_numeric($var)) $var = (int) @$GLOBALS[$fspec['enum']][$var];
++    return $output->writeI32($var);
++  }
+ 
++  private function _writeStruct($var, $fspec, $output) {
++    if($var instanceof TBase) $xfer = $var->write($output);
++    elseif(is_array($var)) {
++      $className = $fspec['name'];
++      $obj = new $className($var);
++      $xfer = $obj->write($output);
++    }
++    else throw new Exception("{$fspec['var']} is not an object, supposed to be {$fspec['name']}");
++    
++    return $xfer;
++  }
++
+   protected function _write($class, $spec, $output) {
+     $xfer = 0;
+     $xfer += $output->writeStructBegin($class);
+@@ -712,7 +777,7 @@
+         } else {
+           switch ($ftype) {
+           case TType::STRUCT:
+-            $xfer += $this->$var->write($output);
++            $xfer += $this->_writeStruct($this->$var, $fspec, $output);
+             break;
+           case TType::MAP:
+             $xfer += $this->_writeMap($this->$var, $fspec, $output);
+@@ -723,6 +788,9 @@
+           case TType::SET:
+             $xfer += $this->_writeList($this->$var, $fspec, $output, true);
+             break;
++          case TType::ENUM:
++            $xfer += $this->_writeEnum($this->$var, $fspec, $output);
++            break;
+           }
+         }
+         $xfer += $output->writeFieldEnd();
