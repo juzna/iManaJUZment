@@ -4,36 +4,23 @@
 */
 namespace APos\Handlers;
 
-// Load Thrift
-require_once __DIR__ . '/../../../../3rdParty/thrift/bootstrap.php';
 
-// Old communication classes
-require_once __DIR__ . '/fce.inc.php';
-require_once __DIR__ . '/mikrotikos.inc.php';
-require_once __DIR__ . '/mikrotik.inc.php';
-require_once __DIR__ . '/routeros.inc.php';
-
-// Services
-require_once __DIR__ . '/../../base.php';
-require_once __DIR__ . '/services/base.php';
-
-
-
+/**
+ * Command handler for Mikrotik OS
+ */
 class MkHandler implements \Thrift\APos\MkIf {
-	private $ap;	// Access point info
-	private $mk;	// mikrotikos
-	private $shell;	// SSH shell
-	private $api;	// Mikrotik API class
+	private $ap;	// Access point
+  private $mk;
 	private $debug = true;
 	
 	/**
 	* Connect to AP
 	*/
-	public function __construct($apid) {
-		if(!$this->ap = \Doctrine::getTable('AP')->find($apid)) throw new \NotFoundException;
-		
-		// Connect to API
-		$this->api = new \RouterOS($this->ap->IP, $this->ap->username, $this->ap->pass);
+	public function __construct(\AP $ap) {
+    $this->ap = $ap;
+
+    // Create new Mikrotik connection
+    $this->mk = new \Mikrotik\Mikrotik($ap->getIP());
 	}
 	
 	/**
@@ -59,14 +46,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 		}
 		return $this->mk;
 	}
-	
-	function __get($name) {
-		switch(strtolower($name)) {
-			case 'ap': return $this->ap;
-			case 'api': return $this->api;
-		}
-	}
-	
+
 	public function setDebug($mode) {
 		$this->debug = $mode;
 		if($this->mk) $this->mk->setDebug($mode);

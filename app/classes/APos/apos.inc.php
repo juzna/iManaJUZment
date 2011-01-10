@@ -27,12 +27,7 @@ abstract class APos {
 		
 		if(!$name) $name = self::$defaultConnector;
 		if(!isset($cache[$name])) {
-			$file = APOS_DIR . "/connectors/$name.php";
 			$className = "\\APos\\Connector\\$name";
-			
-			if(!file_exists($file)) throw new Exception("APos connector '$name' file not exists");
-			require_once $file;
-			
 			if(!class_exists($className)) throw new Exception("APos connector '$name' class not exists");
 			
 			// Instantiate

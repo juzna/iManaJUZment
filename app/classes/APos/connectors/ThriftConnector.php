@@ -4,7 +4,7 @@
 */
 namespace APos\Connector;
 
-class Thrift implements IConnector, IConnectorServer {
+class ThriftConnector implements IConnector, IConnectorServer {
 	private $socket;
 	private $transport;
 	private $protocol;
@@ -38,21 +38,12 @@ class Thrift implements IConnector, IConnectorServer {
 	}
 	
 	/**
-	* Load driver
-	*/
-	public function load($driver) {
-		require_once APP_DIR . "/3rdParty/thrift/bootstrap.php";
-	}
-	
-	/**
 	* Check if operating system exists
 	* @return bool
 	*/
 	public function exists($driver) {
-		$this->load($driver);
 		$className = $this->getClassName($driver);
-		
-		return class_exists($className, false);
+		return class_exists($className);
 	}
 	
 	/**
@@ -63,8 +54,7 @@ class Thrift implements IConnector, IConnectorServer {
 	public function create($driver, $apid) {
 		$className = self::getClassName($driver);
 		
-		if(!class_exists($className, false)) $this->load($driver);
-		if(!class_exists($className)) throw new \Exception("Connector didnt find className");
+		if(!class_exists($className)) throw new \Exception("Connector did not find driver class: '$className'");
 		
 		// Create socket
 		if(!$this->protocol && !$this->transport && !$this->socket) {

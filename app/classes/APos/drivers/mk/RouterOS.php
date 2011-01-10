@@ -1,8 +1,10 @@
 <?php
 
+namespace Mikrotik;
+
 /**
 * RouterOS API for Mikrotik v3
-* @author juzna - www.juzna.cz - juzna@helemik.cz
+* @author Jan Dolecek - juzna.cz
 */
 class RouterOS {
 	public $debug = false;		// Show debug information
@@ -23,7 +25,7 @@ class RouterOS {
 	private $delay = 3;		// Delay between connection attempts in seconds
 	private $timeout = 3;		// Connection attempt timeout and data read timeout
 	public $version;		// Version of MK
-	public $lastMedaData;
+	public $lastMetadata;
 	private $doneResult = array();
 	public $lastDoneResult;
 	
@@ -148,7 +150,7 @@ class RouterOS {
 		$ret = $this->readArr($tag, $timeout);
 		
 		// Save metadata
-		$this->lastMedaData = $metaData = @$this->arrBufferMetadata[$tag];
+		$this->lastMetadata = $metaData = @$this->arrBufferMetadata[$tag];
 		$this->lastDoneResult = @$this->doneResult[$tag]['ret'];
 		
 		return $ret;
@@ -166,7 +168,7 @@ class RouterOS {
 		$retData = $this->readArr($tag, $timeout);
 		
 		// Save metadata
-		$this->lastMedaData = @$this->arrBufferMetadata[$tag];
+		$this->lastMetadata = @$this->arrBufferMetadata[$tag];
 		
 		// Get result
 		$retDone = @$this->doneResult[$tag]['ret'];
@@ -188,7 +190,7 @@ class RouterOS {
 		$this->readArr($tag, $timeout);
 		
 		// Save metadata
-		$this->lastMedaData = @$this->arrBufferMetadata[$tag];
+		$this->lastMetadata = @$this->arrBufferMetadata[$tag];
 		
 		// Get result
 		$ret = $this->doneResult[$tag]['ret'];
@@ -253,9 +255,9 @@ class RouterOS {
 	* @return array List of items
 	*/
 	public function query($path, $conditions, $proplist = null, $timeout = 10) {
-		if($this->version < '3.21') throw new UnsupportedException("Unsupported operation in this version ($this->version) of Mikrotik, please upgrade at least to 3.21");
+		if($this->version < '3.21') throw new \UnsupportedException("Unsupported operation in this version ($this->version) of Mikrotik, please upgrade at least to 3.21");
 		
-		if(!is_array($path)) $path = split('[/ ]', $path);
+		if(!is_array($path)) $path = preg_split('|[/ ]|', $path);
 		
 		// Remove first empty item
 		if(empty($path[0])) array_shift($path);
@@ -569,7 +571,7 @@ class RouterOS {
 							var_dump($word);
 							var_dump($words);
 						}
-						Assert::condition(isset($x[1]), "Neznama data");
+						//\Assert::condition(isset($x[1]), "Neznama data");
 						
 						$ret[$x[1]] = isset($x[2]) ? $x[2] : true;
 					}
@@ -804,4 +806,4 @@ class RouterOS {
 }
 
 
-class RouterOSException extends Exception {}
+class RouterOSException extends \Exception {}

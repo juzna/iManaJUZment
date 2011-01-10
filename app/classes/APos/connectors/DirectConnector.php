@@ -4,7 +4,7 @@
 */
 namespace APos\Connector;
 
-class Direct implements IConnector {
+class DirectConnector implements IConnector {
 	public function __construct($options) {}
 	
 	/**
