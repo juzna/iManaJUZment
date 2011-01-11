@@ -8,8 +8,9 @@ class ThriftConnector implements IConnector, IConnectorServer {
 	private $socket;
 	private $transport;
 	private $protocol;
+  protected $cache;
 	public $onServerReady;
-	
+
 	public function __construct($options) {
 		// Store socket
 		if(isset($options['socket'])) {
@@ -52,6 +53,11 @@ class ThriftConnector implements IConnector, IConnectorServer {
 	* @param int $apid Index of AP
 	*/
 	public function create($driver, $apid) {
+    if(!isset($this->cache[$apid])) $this->cache[$apid] = $this->_create($driver, $apid);
+    return $this->cache[$apid];
+  }
+
+  protected function _create($driver, $apid) {
 		$className = self::getClassName($driver);
 		
 		if(!class_exists($className)) throw new \Exception("Connector did not find driver class: '$className'");
@@ -70,7 +76,9 @@ class ThriftConnector implements IConnector, IConnectorServer {
 		
 		return new $className($this->protocol);
 	}
-	
+
+
+
 	private function _openSocket($apid) {
 		$unixPath = TMP_DIR . '/sock/apos-' . $apid;
 		

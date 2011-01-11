@@ -504,4 +504,27 @@ class MkHandler implements \Thrift\APos\MkIf {
 		}
 		return $ret;
 	}
+
+  /**
+   * Add new item to MK
+   * @param string $path
+   * @param array $args
+   * @return string ID of new itme
+   */
+  public function add($path, $args) {
+    return $this->getROS()->add($path, $args);
+  }
+
+  /**
+   * Add multiple items at once
+   * @param string $path
+   * @param string $list Array of items
+   * @return array List of IDs of newly added items
+   */
+  public function addMulti($path, $list) {
+    $ret = array();
+    foreach($list as $k => $v) $ret[$k] = $this->add($path, $list);
+
+    return $ret;
+  }
 }

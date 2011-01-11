@@ -2,7 +2,7 @@
 
 namespace APOs\Handlers\Services;
 
-interface APService {
+interface IAPService {
 	/**
 	* Create service handler
 	*/

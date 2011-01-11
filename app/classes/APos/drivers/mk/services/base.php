@@ -4,7 +4,7 @@ namespace APos\Handlers\Mikrotik\Services;
 /**
 * Base class for Mikrotik services
 */
-abstract class APService implements \APos\Handlers\Services\APService {
+abstract class APService implements \APos\Handlers\Services\IAPService {
   /** @var APos\Handlers\MkHandler */
 	protected $handler;
 
