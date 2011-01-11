@@ -10,6 +10,7 @@ class SSHClient extends \SSHClient {
 
   /**
    * Find version when we're connected
+   * callback: when ssh client gets connected
    */
   public function connected() {
     $this->getVersion();
@@ -99,9 +100,8 @@ class SSHClient extends \SSHClient {
    * @param array $arr
    * @return array
    */
-  protected function unifyValues($arr) {
-    // TODO:
-    return $arr;
+  public function unifyValues($arr) {
+    return RouterOS::unifyValues($arr, $this->version);
   }
 
   /**
@@ -137,35 +137,40 @@ class SSHClient extends \SSHClient {
 
   /*****************    Exporters   **************/
 
-  protected function printTerse($path, $from = null) {
+  public function printTerse($path, $from = null, $shell = true) {
     $cmd = "/$path print terse without-paging " . (isset($from) ? " from=$from " : '' ) ." ]";
-    return $this->_parsePrintTerse($this->execShellWait($cmd));
+    return $this->_parsePrintTerse($this->_execute($shell, $cmd));
   }
 
-  protected function printAsValue($path, $from = null) {
+  public function printAsValue($path, $from = null, $shell = true) {
     if($this->major != 3) throw new \Exception("'print as-value' is not supported by MK $this->version");
     $cmd = ":put [/$path print as-value without-paging " . (isset($from) ? " from=$from " : '' ) ." ]";
-    return $this->_parsePrintAsValue($this->execShellWait($cmd));
+    return $this->_parsePrintAsValue($this->_execute($shell, $cmd));
   }
 
-  protected function printDetail($path, $from = null) {
+  public function printDetail($path, $from = null, $shell = true) {
     $cmd = "/$path print detail without-paging " . (isset($from) ? " from=$from " : '' ) ." ]";
-    return $this->_parsePrintDetail($this->execShellWait($cmd));
+    return $this->_parsePrintDetail($this->_execute($shell, $cmd));
   }
 
-  protected function printExport($path, $from = null) {
+  public function printExport($path, $from = null, $shell = true) {
     $cmd = "/$path export" . (isset($from) ? " from=$from " : '' ) ." ]";
-    return $this->_parseExport($this->execShellWait($cmd));
+    return $this->_parseExport($this->_execute($shell, $cmd));
+  }
+
+  public function _execute($useShell, $cmd) {
+    if($useShell) return $this->execShellWait($cmd);
+    else return $this->execWait($cmd);
   }
 
 
   /***********    Parsers     *************/
 
-  protected function _parsePrintTerse($data) {
+  public function _parsePrintTerse($data) {
     throw new \Exception("Not implemented yet");
   }
 
-  protected function _parsePrintAsValue($data, $ids = null) {
+  public function _parsePrintAsValue($data, $ids = null) {
 		if(trim($data) === '') return array(); // No data present
 
 		// There's an error
@@ -222,7 +227,7 @@ class SSHClient extends \SSHClient {
   }
 
 
-  protected function _parsePrintDetail($data, $ids = null) {
+  public function _parsePrintDetail($data, $ids = null) {
     if(trim($data) === '') return array(); // No data present
 
     // There's an error
@@ -358,7 +363,7 @@ class SSHClient extends \SSHClient {
 		else throw new \InvalidStateException("Invalid export commands: got " . sizeof($idList) . " indexes and " . sizeof($ret) . " items");
   }
 
-  protected function _parseExport($data, $ids = null) {
+  public function _parseExport($data, $ids = null) {
     $ret = Commands::parseList($data);
 
     // Remove some special values

@@ -4,11 +4,10 @@
 */
 namespace APos\Handlers;
 
-// Load Thrift
-require_once __DIR__ . '/../../../3rdParty/thrift/bootstrap.php';
 
-
-
+/**
+ * Dummy APos handler
+ */
 class NullHandler implements \Thrift\APos\APosIf {
 	/**
 	* Constructor for this AP
@@ -54,4 +53,5 @@ class NullHandler implements \Thrift\APos\APosIf {
 	public function deactivateService($serviceName) {}
 	public function getAvailableServices() {}
 	public function isSupported($serviceName) {}
+  public function checkAllServices() {}
 }

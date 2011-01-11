@@ -55,6 +55,16 @@ class RouterOS {
 	public function __destruct() {
 		$this->disconnect();
 	}
+
+  /**
+   * Get client from AP model
+   * @throws Exception
+   * @param AP $ap
+   * @return Mikrotik\RouterOS
+   */
+  public static function fromAP(\AP $ap, $version = null) {
+    return new RouterOS($ap->getIP(), $ap->username, $ap->pass, $version);
+  }
 	
 	public function getVersion() {
 		$ret = $this->getall('system resource');

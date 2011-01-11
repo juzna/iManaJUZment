@@ -1,244 +1,284 @@
 <?php
-/**
- * TO BE REMOVED
- * after taking all interesting ideas
- *
- */
 
 namespace Mikrotik;
 
 /**
  * Unified communication with Mikrotik
+ *
+ * Export method can be:
+ *  api-{find, query, getall}
+ *  ssh-{printAsValue, printTerse, printDetail, export}-{from,where}-{shell,exec}
  */
 class Mikrotik {
+  /** @var AP AP info */
+  protected $ap;
 
-	/**
-	* Export data from Mikrotik
-	* @param string $path Path in MK to export (see mikrotik console commands)
-	* @param array $conditions List of conditions [ name, operator, value ]
-	* @param string $proplist List of properties to export
-	* @param int $timeout Max time to wait in seconds
-	* @return array List of found items
-	*/
-	public function export($path, $conditions = null, $proplist = null, $timeout = 5) {
-		switch($this->exportMethod) {
-			// Export via Mikrotik API (using find)
-			case 'api-find':
-				// Connect to API
-				$this->connectRouterOS();
-				$ret = array();
-				foreach($this->ros->find($path, $conditions, $proplist, $timeout) as $item) {
-					$id = @$item['.id'];
-					if($id) $ret[$id] = $item;
-					else $ret[] = $item;
-				}
-				return $ret;
-				
-				
-			// Export via Mikrotik API using queries
-			case 'api-query':
-				// Connect to API
-				$this->connectRouterOS();
-				$ret = array();
-				foreach($this->ros->query($path, $conditions, $proplist, $timeout) as $item) {
-					$id = @$item['.id'];
-					if($id) $ret[$id] = $item;
-					else $ret[] = $item;
-				}
-				return $ret;
-				
-			
-			// Print asValue (available in MK3 via ssh), using separate ssh exec and 'print where' in MK
-			case 'print-asValue-exec-where':
-			case 'print-asValue-shell-where':
-				if($this->major != 3) throw new Exception("'print where' nor 'print as-value' is not supported by MK $this->version");
-				
-				// Create conditions
-				$cond = '';
-				if(is_array($conditions)) foreach($conditions as $_c) {
-					if(isset($_c[2])) {
-						// Unify value
-						if(in_array($_c[0], self::$booleanKeys) && in_array($_c[2], array('no', 'false', 'yes', 'true'))) {
-							$_c[2] = ($_c[2] == 'no' || $v == 'false') ? 'no' : 'yes';
-						}
-					}
-					$cond .= isset($_c[1]) ? "{$_c[0]}{$_c[1]}\"{$_c[2]}\" " : $_c[0];
-				}
-				elseif(is_string($conditions)) $cond = $conditions;
-				
-				// Send command to Mikrotik via SSH
-				$cmd = ":put [/$path print as-value without-paging " . ($cond ? "where $cond" : '') . " ]";
-				$data = ($this->exportMethod == 'print-asValue-exec-where') ? $this->ssh->execWait($cmd) : str_replace("\n", '', $this->ssh->shellCmdWait($cmd));
-				
-				return RouterOS::unifyValues(Mikrotik::parse_asValue($data), $this->version);
-				
-				
-			// Print asValue - using separate
-			case 'print-asValue-exec-find':
-			case 'print-asValue-shell-find':
-				if($this->major != 3) throw new Exception("'print as-value' is not supported by MK $this->version");
-			
-				// Create conditions
-				$cond = '';
-				if(is_array($conditions)) foreach($conditions as $_c) {
-					if(isset($_c[2])) {
-						// Unify value
-						if(in_array($_c[0], self::$booleanKeys) && in_array($_c[2], array('no', 'false', 'yes', 'true'))) {
-							$_c[2] = ($_c[2] == 'no' || $v == 'false') ? 'no' : 'yes';
-						}
-					}
-					$cond .= isset($_c[1]) ? "{$_c[0]}{$_c[1]}\"{$_c[2]}\" " : $_c[0];
-				}
-				elseif(is_string($conditions)) $cond = $conditions;
-				
-				// Send command to Mikrotik via SSH
-				$cmd = ":put [/$path print as-value without-paging from=[find $cond ] ]";
-				$data = ($this->exportMethod == 'print-asValue-exec-find') ? $this->ssh->execWait($cmd) : str_replace("\n", '', $this->ssh->shellCmdWait($cmd));
-				
-				return RouterOS::unifyValues(Mikrotik::parse_asValue($data), $this->version);
-			
-			// Print detail command (avail in MK2.9)
-			case 'print-detail-exec':
-			case 'print-detail-shell':
-				// Get filter for MK 2.9 (needed in some command such ad 'ip firewall mangle print')
-				if($this->major == 3) $filter = '';
-				else $filter = $this->getFilter($path);
-				
-				// Create conditions
-				$cond = '';
-				if(is_array($conditions)) foreach($conditions as $_c) $cond .= isset($_c[1]) ? "{$_c[0]}{$_c[1]}\"{$_c[2]}\" " : $_c[0];
-				elseif(is_string($conditions)) $cond = $conditions;
-				
-				// Get ID's
-				$cmd = ":put [/$path find $cond]";
-				$ids = ($this->exportMethod == 'print-detail-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-				if(empty($ids)) return array();
-				
-				// Send command to Mikrotik via SSH
-				$cmd = "/$path print $filter detail without-paging from=$ids";
-				$data = ($this->exportMethod == 'print-detail-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-						
-				return RouterOS::unifyValues(Mikrotik::parse_printDetail($data, $ids), $this->version);
-			
-			// Using export function in MK
-			case 'export-exec':
-			case 'export-shell':
-				if($this->major == 3) throw new UnsupportedException("export method is not supported in MK $this->version"); // Not working because it would export subsections
-				if($conditions && $this->major == 3) throw new UnsupportedException("'export from' is not supported in MK $this->version");
-				
-				// Mikrotik 3 - without from= clause
-				if($this->major == 3) {
-					$cmd = "/$path export";
-					$data = ($this->exportMethod == 'export-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-					
-					return Mikrotik::parse_export(null, $data);
-				}
-				// In MK2.9 use from=[find...]
-				else {
-					// Create conditions
-					$cond = '';
-					foreach($conditions as $_c) $cond .= isset($_c[1]) ? "{$_c[0]}{$_c[1]}\"{$_c[2]}\" " : $_c[0];
-					
-					// Get ID's
-					$cmd = ":put [/$path find $cond ]";
-					$ids = ($this->exportMethod == 'export-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-					if(empty($ids)) return array();
-					
-					$cmd = "/$path export from=$ids";
-					$data = ($this->exportMethod == 'export-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-					
-					return RouterOS::unifyValues(Mikrotik::parse_export($ids, $data));
-				}
-				
-			default:
-				throw new Exception("Export method '$this->exportMethod' is not supported");
-		}
-	}
-	
-	/**
-	* Export data from Mikrotik witch given ID's
-	* @param string $path Path in MK to export (see mikrotik console commands)
-	* @param array $ids List of item ID's
-	* @param string $proplist List of properties to export
-	* @param int $timeout Max time to wait in seconds
-	* @return array List of found items
-	*/
-	public function exportFrom($path, $ids = null, $proplist = null, $timeout = 5) {
-		switch($this->exportFromMethod) {
-			// Export via Mikrotik API (using find)
-			case 'api-find':
-				throw new UnsupportedException;
-				
-				
-			// Export via Mikrotik API using queries
-			case 'api-query':
-				throw new UnsupportedException;
-				
-			// Print asValue - using separate
-			case 'print-asValue-exec':
-			case 'print-asValue-shell':
-				if($this->major != 3) throw new Exception("'print as-value' is not supported by MK $this->version");
-			
-				// Send command to Mikrotik via SSH
-				$cmd = ":put [/$path print as-value without-paging from=$ids ]";
-				$data = ($this->exportFromMethod == 'print-asValue-exec-find') ? $this->ssh->execWait($cmd) : str_replace("\n", '', $this->ssh->shellCmdWait($cmd));
-				
-				return RouterOS::unifyValues(Mikrotik::parse_asValue($data, $ids), $this->version);
-			
-			// Print detail command (avail in MK2.9)
-			case 'print-detail-exec':
-			case 'print-detail-shell':
-				// Get filter for MK 2.9 (needed in some command such ad 'ip firewall mangle print')
-				if($this->major == 3) $filter = '';
-				else $filter = $this->getFilter($path);
-				
-				// Send command to Mikrotik via SSH
-				$cmd = "/$path print $filter detail without-paging from=$ids";
-				$data = ($this->exportFromMethod == 'print-detail-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-				
-				return RouterOS::unifyValues(Mikrotik::parse_printDetail($data, $ids), $this->version);
-			
-			// Using export function in MK
-			case 'export-exec':
-			case 'export-shell':
-				if($this->major == 3) throw new UnsupportedException("export method is not supported in MK $this->version"); // Not working because it would export subsections
-				
-				$cmd = "/$path export from=$ids";
-				$data = ($this->exportFromMethod == 'export-exec') ? $this->ssh->execWait($cmd) : $this->ssh->shellCmdWait($cmd);
-				
-				return RouterOS::unifyValues(Mikrotik::parse_export($ids, $data));
-				
-			default:
-				throw new Exception("Export method '$this->exportFromMethod' is not supported");
-		}
-	}
-	
-	/**
-	* Get filter parameter for print command on console
-	* (Needed for some command in 2.9)
-	* @param string $path Path to be printed
-	* @return string 
-	*/
-	public function getFilter($path) {
-		if($this->major != '2.9') throw UnsupportedException("Filter is valid only for Mikrotik 2.9");
-		
-		// Normalize path
-		{
-			if(!is_array($path)) $path = split('[/ ]', $path);
-			
-			// Remove first empty item
-			if(empty($path[0])) array_shift($path);
-			
-			$path = implode(' ', $path);
-		}
-		
-		switch($path) {
-			case 'ip firewall mangle':	return 'all';
-			case 'ip firewall nat':		return 'all';
-			case 'ip firewall filter':	return 'all';
-		}
-	}
-	
+  /** @var Mikrotik\SSHClient SSH client */
+  protected $ssh;
+
+  /** @var Mikrotik\RouterOS  */
+  protected $ros;
+
+  /** @var string */
+  protected $version;
+
+  /** @var string Method to be used for exporting data */
+  protected $exportMethod;
+
+  /** @var string Method to be used for exporting data by IDs */
+  protected $exportFromMethod;
+
+  /** @var int Default timeout in seconds */
+  public $timeout = 5;
+
+  /** @var array List of supported operating systems of AP */
+  public static $supportedOS = array('mk', 'mk3');
+
+
+
+
+  public function __construct(\AP $ap) {
+    if(!in_array($ap->os, self::$supportedOS)) throw new \NotSupportedException("Mikrotik driver is not supported for OS '$ap->os'");
+    $this->ap = $ap;
+  }
+
+  /**
+   * Gets SSH client connected to this mikrotik
+   * @return Mikrotik\SSHClient
+   */
+  public function getSSH() {
+    if(!isset($this->ssh)) {
+      $this->ssh = SSHClient::fromAP($this->ap);
+      if(!isset($this->version)) $this->version = $this->ssh->getVersion();
+    }
+
+    return $this->ssh;
+  }
+
+  /**
+   * Gets RouterOS API client connected to this Mikrotik
+   * @return Mikrotik\RouterOS
+   */
+  public function getROS() {
+    if(!isset($this->ros)) {
+      $this->ros = RouterOS::fromAP($this->ap, $this->version);
+      if(!isset($this->version)) $this->version = $this->ros->getVersion();
+    }
+
+    return $this->ros;
+  }
+
+  /**
+   * Gets version number
+   * @return string
+   */
+  public function getVersion() {
+    if(!isset($this->version)) $this->getSSH(); // Connect to SSH to determine version
+    return $this->version;
+  }
+
+
+  /*******    Export methods configuration    **********/
+
+  public function setExportMethod($exportMethod) {
+    $this->exportMethod = $exportMethod;
+    return $this;
+  }
+
+  public function setExportFromMethod($exportFromMethod) {
+    $this->exportFromMethod = $exportFromMethod;
+    return $this;
+  }
+
+  public function getExportMethod() {
+    if(!isset($this->exportMethod)) $this->exportMethod = $this->_getDefaultExportMethod();
+    return $this->exportMethod;
+  }
+
+  public function getExportFromMethod() {
+    if(!isset($this->exportFromMethod)) $this->exportFromMethod = $this->_getDefaultExportFromMethod();
+    return $this->exportFromMethod;
+  }
+
+  protected function _getDefaultExportMethod() {
+    // TODO:
+  }
+
+  protected function _getDefaultExportFromMethod() {
+    // TODO:
+  }
+
+
+  /**
+   * Prepare conditions for specific version of MK
+   */
+  protected function unifyConditions($path, $conditions) {
+    // TODO: rework
+
+    // Create conditions
+    $cond = '';
+    if(is_array($conditions)) foreach($conditions as $_c) {
+      if(isset($_c[2])) {
+        // Unify value
+        if(in_array($_c[0], self::$booleanKeys) && in_array($_c[2], array('no', 'false', 'yes', 'true'))) {
+          $_c[2] = ($_c[2] == 'no' || $v == 'false') ? 'no' : 'yes';
+        }
+      }
+      $cond .= isset($_c[1]) ? "{$_c[0]}{$_c[1]}\"{$_c[2]}\" " : $_c[0];
+    }
+    elseif(is_string($conditions)) $cond = $conditions;
+
+  }
+  
+  /**
+   * Post-process returned list
+   */
+  protected function _postprocess($list) {
+    $ret = array();
+    
+    // Make associative array by IDs
+    foreach($list as $item) {
+      if(isset($item['.id'])) $ret[$item['.id']] = $item;
+      else $ret[] = $item;
+    }
+    
+    return $ret;
+  }
+
+  /*********     Export methods    *********/
+  
+  /**
+   * Export whole section (without any conditions)
+   * @param string $path Path in MK to export
+   * @param int $timeout Timeout in seconds
+   * @return array
+   */
+  public function export($path, $timeout = null, $method = null) {
+    if(!isset($timeout)) $timeout = $this->timeout;
+    
+    @list($method1, $method2, $method3, $method4) = explode('-', $method ?: $method = $this->getExportMethod());
+    
+    if($method1 == 'api') {
+      $ret = $this->getROS()->getall($path, null, $timeout);
+    }
+    
+    elseif($method1 == 'ssh') {
+      /** @var $ssh Mikrotik\SSHClient */
+      $ssh = $this->getSSH();
+      
+      switch($method2) {
+        case 'printAsVal':
+          $ret = $ssh->display($path, 'print-as-value');
+          break;
+        
+        case 'printTerse':
+          $ret = $ssh->display($path, 'print-terse');
+          break;
+          
+        case 'printDetail':
+          $ret = $ssh->display($path, 'print-detail');
+          break;
+          
+        case 'export':
+          $ret = $ssh->display($path, 'print-export');
+          break;
+      }
+    }
+    
+    if(isset($ret)) return $this->_postprocess($ret);
+    else throw new \NotSupportedException("Unknown method: $method");
+  }
+  
+  public function exportByIds($path, $ids, $timeout = null, $method = null) {
+    if(!isset($timeout)) $timeout = $this->timeout;
+    
+    @list($method1, $method2, $method3, $method4) = explode('-', $method ?: $method = $this->getExportMethod());
+    
+    // Use MK API
+    if($method1 == 'api') {
+      throw new \NotImplementedException("Dunno how :/");
+    }
+    
+    // Use SSH client
+    elseif($method1 == 'ssh') {
+      /** @var $ssh Mikrotik\SSHClient */
+      $ssh = $this->getSSH();
+      $useShell = $method4 == 'shell';
+      
+      if($method2 == 'printAsVal') $ret = $ssh->printAsValue($path, $ids, $useShell);
+      elseif($method2 == 'printTerse') $ret = $ssh->printTerse($path, $ids, $useShell);
+      elseif($method2 == 'printDetail') $ret = $ssh->printDetail($path, $ids, $useShell);
+      elseif($method2 == 'export') $ret = $ssh->_parseExport($ssh->_execute($useShell, "/$path export from=$ids"));
+    }
+    
+    if(isset($ret)) return $this->_postprocess($ret);
+    else throw new \NotSupportedException("Unknown method: $method");    
+  }
+  
+  /**
+   * Export section and filter based on conditions
+   * @param string $path Path in MK to export
+   * @param misc $conditions List of conditions
+   * @param int $timeout Timeout in seconds
+   * @return array
+   */
+  public function exportByConditions($path, $conditions, $timeout = null, $method = null) {
+    if(empty($conditions)) return $this->export($path, $timeout);
+    else $conditions = $this->unifyConditions($path, $conditions);
+    
+    if(!isset($timeout)) $timeout = $this->timeout;
+    
+    @list($method1, $method2, $method3, $method4) = explode('-', $method ?: $method = $this->getExportMethod());
+    
+    // Use MK API
+    if($method1 == 'api') {
+      if($method2 == 'find') $ret = $this->getROS()->find($path, $conditions, null, $timeout);
+      elseif($method2 = 'query') $this->getROS()->query($path, $conditions, null, $timeout);
+      elseif($method2 == 'getall') throw new \NotImplementedException;
+    }
+    
+    // Use SSH client
+    elseif($method1 == 'ssh') {
+      /** @var $ssh Mikrotik\SSHClient */
+      $ssh = $this->getSSH();
+      $useShell = $method4 == 'shell';
+      
+      // SSH print from -> will use exportFromIds
+      if($method3 == 'from') {
+        $ids = $this->getSSH()->_execute($useShell, ":put [/$path find $conditions]");
+        return $this->exportByIds($path, $ids, $timeout, $method);
+      }
+      
+      elseif($method2 == 'printAsVal') {
+        $cmd = ":put [/$path print as-value without-paging where $conditions ]";
+        $ret = $ssh->_parsePrintAsValue($ssh->_execute($useShell, $cmd));
+      }
+      
+      elseif($method2 == 'printTerse') {
+        $cmd = "/$path print terse without-paging where $conditions";
+        $ret = $ssh->_parsePrintTerse($ssh->_execute($useShell, $cmd));
+      }
+      
+      elseif($method2 == 'printDetail') {
+        $cmd = "/$path print detail without-paging where $conditions";
+        $ret = $ssh->_parsePrintDetail($ssh->_execute($useShell, $cmd));
+      }
+      
+      elseif($method2 == 'export') {
+        $cmd = "/$path export without-paging where $conditions";
+        $ret = $ssh->_parseExport($ssh->_execute($useShell, $cmd));
+      }
+    }
+    
+    if(isset($ret)) return $this->_postprocess($ret);
+    else throw new \NotSupportedException("Unknown method: $method");
+  }
+  
+
+
+  /****   Reimport section  *****/
+  
+
 	/**
 	* Import dat s porovnanim existujicich
 	* @param string $path Cesta, ktera se ma exportovat
@@ -456,122 +496,6 @@ class Mikrotik {
 		return $cmd_list;
 	}
 
-	
-	/**
-	* Parse response to command 'export' from Mikrotik
-	* @param string $ids List of IDs which are exported
-	* @param string $data Data received from console
-	* @return array Array of items
-	*/
-	public static function parse_export($ids, $data) {
-		// Get parameters
-		$paramList = Mikrotik::parse_commands($data);
-		unset($paramList[0]);
-		while(list($key) = each($paramList)) unset($paramList[$key][0]);
-		
-		if(is_null($ids)) return $paramList; // No ID's, just values
-		
-		// List of ID's
-		$idList = split('[;,]', $ids);
-		
-		// Combine ids and params and return
-		if($paramList && (sizeof($idList) == sizeof($paramList))) return array_combine($idList, $paramList);
-		else throw new Exception("Invalid export commands: got " . sizeof($idList) . " indexes and " . sizeof($paramList) . " items");
-	}
-	
-	/**
-	* Split command list in one string to array of commands
-	* @param string $data Command list from MK console
-	* @return array of string List of commands
-	*/
-	public static function parse_cmdList($data) {
-		$cmdIndex = 0; // Index of processed command
-		$ret = array();
-		
-		// Pocess each line
-		foreach(explode("\n", $data) as $line) {
-			if(!$line = trim($line)) continue;
-			if($line[0] == '#') continue; // Comment -> skip it
-			
-			$continuous = (substr($line, -1) == '\\');
-			if($continuous) $line = substr($line, 0, -1); // Remove trailing backslash
-			
-			// Store command
-			@$ret[$cmdIndex] .= $line;
-			
-			if(!$continuous) $cmdIndex++;
-		}
-		
-		return $ret;
-	}
-	
-	/**
-	* Parse commands in string into list of commands represented as arrays (eg [ add, chain => prerouting .... ])
-	* @param string $data Commands from MK console
-	* @return array of arrays
-	*/
-	public static function parse_commands($data) {
-		// TODO: should be rewritten
-		$cmd_list = Mikrotik::parse_cmdList($data);
-		$ret_list = array();
-	
-		// Rozparsujeme prikazy
-		foreach($cmd_list as $k => $line) {	
-			$line .= "\n"; // Ukoncovaci znak
-	
-			$is_command = false;
-			$is_string = false;
-			$command = $param_name = $prev = $tmp = '';
-			$params = $m = $m2 = array();
-			
-			$len = strlen($line);
-			for($x = 0; $x < $len; $x++) { // Projdeme kazdy znak
-				$znak = $line{$x};
-				$slashed = (bool) ($prev=='\\');
-				
-				$save = true;
-				
-				if(($znak==' ' or $znak=="\r" or $znak=="\n") && !$is_string) { // Konec parametru
-					if($is_command) { // Skoncil nam prikaz
-						$command = $tmp;
-						$is_command = false;
-						
-					
-					} else { // Skoncil nam parametr
-						// Ulozime jej
-						if($param_name) $params[$param_name] = $tmp;
-						else $params[] = $tmp;
-						
-						$param_name = '';
-					}
-					$tmp = '';
-					
-				} elseif($znak=='=') { // Zadan nazev parametru
-					$param_name = $tmp;
-					$tmp = '';
-					
-				} elseif($znak=='"' && !$slashed) { //Hranice stringu
-					if($is_string) {
-						$is_string = false;	
-					} else {
-						$is_string = true;
-					}
-				
-				} elseif($znak=='\\' && !$slashed) { //Backslash
-					$save = false;
-				
-				} else { // Znak
-					$tmp .= $znak;
-					$save = false;
-				}
-				
-			
-				$prev = $znak;
-			}
-			
-			$ret_list[$k] = $params;
-		}
-		
-		return $ret_list;
-	}
+
+
 }

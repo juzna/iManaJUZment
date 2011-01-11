@@ -92,7 +92,14 @@ class Shell extends \Nette\Object {
    */
   public function execWait($cmd, $writeNewLine = true) {
     $this->exec($cmd, $writeNewLine);
-    return $this->waitForPrompt();
+
+    $ret = $this->waitForPrompt();
+
+    // First row is repeating the command, skip it
+    $pos = strpos($ret, "\n");
+    if($pos !== false) $ret = substr($ret, $pos + 1);
+
+    return trim($ret);
   }
 
   /**
