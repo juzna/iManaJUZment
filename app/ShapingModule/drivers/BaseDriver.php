@@ -3,32 +3,23 @@
 namespace ShapingModule\Drivers;
 
 abstract class BaseDriver implements IShapingDriver {
+  protected $apos;
 
-	protected $shaperId;
-	protected $shaperInfo;
-	protected $queueByParent = array();
-	protected $queueById = array();
-	protected $apos;
-	
-	/**
-	* Prepare new driver
-	* @param array $shaperInfo Shaper info from table QueueShaper
-	*/
-	public function __construct($shaperInfo) {
-		$this->shaperInfo = $shaperInfo;
-		$this->shaperId = $shaperInfo['ID'];
-	}
-	
-	/**
-	* Store connected APos driver
-	*/
-	public function setAPos(\Thrift\APos\APosIf $apos) {
-		// Need mikrotik
-		if(!($apos instanceof \Thrift\APos\MkIf)) throw new Exception("APos for QSimple is not mikrotik, cannot proceed");
-		
-		$this->apos = $apos;
-	}
-	
+  // Map: parent -> index -> Queue
+  protected $queueByParent = array();
+
+  // Map: id -> Queue
+  protected $queueById = array();
+
+  
+
+  /**
+   * Store connected APos driver
+   */
+  function setAPOsHandler(\Thrift\APos\APosIf $apos) {
+    $this->apos = $apos;
+  }
+
 	/**
 	* Add queues to internal DB
 	* @param array $arr Array of queues

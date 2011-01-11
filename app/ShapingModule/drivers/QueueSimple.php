@@ -5,26 +5,71 @@ namespace ShapingModule\Drivers;
 * Queue simple on Mikrotik
 */
 class QueueSimple extends BaseDriver {
-	private $qsimpeList;
-	private $commands;
-	
-	/**
-	* Get interface of APos, which is needed to implements this queues
-	* @return string
-	*/
-	public function getAPosInterfaceName() {
-		return "\\Thrift\\APos\\MkIf";
-	}
-	
-	/**
-	* Show commands for preview
-	* @param bool $synced Show commands for sync, not for new config
-	* @return string
-	*/
-	public function previewCommands($synced = false) {
-		// Generate commands
-		if(!isset($this->commands)) $this->generateCommands($synced);
-		
+  // Internal: list of simple queues to be created
+  protected $queueList;
+
+  // Internal: list of commands to be executed
+  protected $commands;
+
+  // Internal: were generated commands synced with Mk?
+  protected $commandsSynced;
+
+
+
+  /**
+   * Get interface of APos, which is needed to implements this queues
+   * @return string
+   */
+  function getRequiredAPosInterfaceName() {
+    return "\\Thrift\\APos\\MkIf";
+  }
+
+  /**
+   * Generate list of commands
+   */
+  protected function generateCommands($sync) {
+    if(empty($this->queueList)) $this->generateQueueList();
+
+    if($sync) {
+      $this->commandsSynced = true;
+      $this->generateSyncedCommands();
+    }
+    else {
+      $this->commandsSynced = false;
+      $this->generateAddCommands();
+    }
+  }
+
+  /**
+   * Generate commands which will synchronize with MK
+   */
+  protected function generateSyncedCommands() {
+    // TODO:
+  }
+
+  /**
+   * Generate commands for new MK
+   */
+  protected function generateAddCommands() {
+    $this->commands = array_map(function($item) { $item[0] = 'add'; return $item; }, $this->queueList);
+  }
+
+  /**
+   * Generate list of simple queues which should exist on router
+   */
+  protected function generateQueueList() {
+    // TODO:
+  }
+
+
+  /**
+   * Preview commands to be sent
+   * @param bool $sync Show commands for sync, not for new config
+   * @return string
+   */
+  function preview($sync = false) {
+   if(empty($this->commands)) $this->generateCommands($sync);
+
 		// Convert commands array to strings
 		$ret = array_map(function($item) {
 			$cmd = $item[0];
@@ -32,45 +77,47 @@ class QueueSimple extends BaseDriver {
 			foreach($item as $k => $v) if($k !== 0 && isset($v)) $ret .= "$k=\"$v\" ";
 			return $ret;
 		}, $this->commands);
-		
+
 		return implode("\n", $ret);
-	}
-	
-	/**
-	* Commit changes thru APos
-	*/
-	public function commit() {
-		// Prepare commands
-		$this->generateCommands(true);
-		
-		// Prepare API commands
+  }
+
+  /**
+   * Synchronize it
+   */
+  function commit() {
+    // Clear cached commands if they're not synced
+    if(is_bool($this->commandsSynced) && !$this->commandsSynced) $this->commands = null;
+
+    // Generate commands if needed
+    if(empty($this->commands)) $this->generateCommands(true);
+
+		// Prepare API commands (for using via Thrift)
 		$apiCommands = array();
 		foreach($this->commands as $row) {
 			$cmd = array_shift($row);
-			
+
 			$apiCommands[] = array(
 				'path'		=> 'queue simple',
 				'command'	=> $cmd,
 				'params'	=> $row,
 			);
 		}
-		
-		// Execute it
-		$ret = $this->apos->executeAPIMulti($apiCommands);
-	}
-	
-	private function generateCommands($sync = false) {
-		// Clear old results
-		$this->qsimpeList = $this->commands = null;
-		
-		// Generate list of simple queues, which are required
-		$this->generateQSimpleList();
-		
-		// Prepare commands
-		if($sync) $this->sync();
-		else $this->commands = array_map(function($item) { $item[0] = 'add'; return $item; }, $this->qsimpeList);
-	}
-	
+
+    // Execute
+    $ret = $this->apos->executeAPIMulti($apiCommands);
+
+    // TODO: validate result
+    return $ret ? 1 : 1;
+  }
+
+
+
+
+
+
+}
+
+class XXX {
 	/**
 	* Prepare sync commands
 	*/

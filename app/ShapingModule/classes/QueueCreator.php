@@ -5,122 +5,87 @@ namespace ShapingModule;
 /**
  * Creator of abstract queues
  */
-class QueueCreator extends \Nette\Object {
-  /** @var string */
-  private $driverName;
+class QueueCreator extends \Nette\Object implements IQueueCreator {
+  private $shaper;
 
-  /** @var \ShapingModule\Drivers\IShapingDriver */
-  private $driver;
+  // Map: id -> flag -> Tariff (loaded from database)
+  private $tariffMap;
 
-  /** @var string */
-  private $connectorName;
+  // Map: parent, index -> ShaperQueue (loaded from database)
+  private $queueMap;
 
-  private $connector;
-
+  // Internal variables
 	private $queueByParent = array();
 	private $queueById = array();
 	private $ipUsed = array();
 
-	// Defaultni rychlost
+	// Default speed
 	private $defaultSpeed = array(
-		'rxmin' => '10k',    	'txmin' => '10k', 
-		'rxmax' => '2M', 	'txmax' => '512k', 
+		'rxmin' => '10k',   'txmin' => '10k',
+		'rxmax' => '2M', 	  'txmax' => '512k',
 		'rxburst' => '0', 	'txburst' => '0',
 		'rxtresh' => '0', 	'txtresh' => '0',
 		'rxtime' => '0',  	'txtime' => '0',
 		'rxpriority' => 7,	'txpriority' => 7,
 	);
 
-  /**
-   * Prepare creator
-   * @param string $driverName Name of driver, from which is created class name for driver
-   */
-  public function __construct($driverName, $connectorName = 'thrift') {
-    $this->driverName = $driverName;
-    $this->connectorName = $connectorName;
 
-    if(!class_exists($driverClass = $this->getDriverClass($driverName))) throw new \InvalidArgumentException("Shaping driver class '$driverClass' not exists");
-  }
+
 
   /**
-   * Get class name of driver
+   * Get list of prepared queues
+   * @return array
    */
-  protected function getDriverClass($driverName) {
-    return "ShapingModule\\Drivers\\{$driverName}Driver";
+  function getQueues() {
+    // TODO: Implement getQueues() method.
   }
 
   /**
-   * Get used driver
-   * @return \ShapingModule\Drivers\IShapingDriver
+   * Create queues for given shaper
+   * @param Shaper $shaper
+   * @return void
    */
-  public function getDriver() {
-    if(!isset($this->driver)) $this->driver = $this->createDriver();
-    return $this->driver;
+  function create(\Shaper $shaper) {
+    $this->shaper = $shaper;
+    $this->loadConfig();
+
+    // Create queues recursively
+    $this->createQueues(0);
+
+    // Compact queue structure
+    $this->compact();
   }
 
   /**
-   * Get connector to drivers
+   * Clean any state
+   * @return void
    */
-  public function getConnector() {
-    if(!isset($this->connector)) $this->connector = $this->createConnector();
-    return $this->connector;
-  }
-
-  protected function createConnector() {
-
-  }
-
-  protected function createDriver() {
-    $cls = $this->getDriverClass($this->driverName);
-    return new $cls($this->getConnector());
+  function clean() {
+    $this->shaper = $this->queueSettings = $this->tariffMap = null;
+    $this->queueByParent = $this->queueById = $this->ipUsed = null;
   }
 
 
 
-	/**
-	* Prepare queues for shaper
-	* @param int $shaper ID shaperu, pro ktery pripravujeme queue
-	* @param string $queueDriver Driver, ktery nastavuje queue (if null, just create queue and not attach driver)
-	* @param string $aposConnector Connector pro pripojeni k AP
-	* @return \Queue\Drivers\IDriver Driver for creating queues
-	*/
-	public function prepare(\Shaper $shaper) {
+  /*******   Internal functions  *********/
 
-		// Shaper info
-		$shaperInfo = mfa("select * from `QueueShaper` where ID='$shaperId'") ?: array(
-			'ID'		=> (int) $shaperId,
-			'txzbytek'	=> 0,
-			'rxzbytek'	=> 0,
-			'queuetype'	=> 'default',
-			'queuetypezak'	=> 'default',
-		);
-		
-		// Load queues
-		$this->queueSettings = q2('parent,', "select * from `Queue` where `shaper`='$shaperId' order by poradi, name");
-		
-		// Load tariffs
-		$this->tarifList = q2('tarif,flag', "select * from `TarifRychlost`");
-		
-		// Recursivly create queues
-		$this->createQueue(0);
-		
-		// Compact queue structure
-		$this->compact();
-		
-		if($queueDriver) {
-			// Initialize driver and APos
-			$driver = new $driverClass($shaperInfo);
-			$driver->addQueues($this->queueById);
-			$driver->setAPos(APos::get($shaperId, $aposConnector)); // Attach APos
-			
-			return $driver;
-		}
-	}
+  /**
+   * Loads configuration from database
+   */
+  protected function loadConfig() {
+    // Load queue map
+    foreach($this->shaper->queues as $queue) {
+      // TODO:
+    }
+    
+    // Loads tariff map
+    // TODO:
+  }
 	
 	/**
 	* Dump this queue tree
 	*/
-	function dump() {
+	public function dump() {
 		echo '<table>';
 		@$this->_dump();
 		echo '</table>';
@@ -156,7 +121,7 @@ class QueueCreator extends \Nette\Object {
 	}
 	
 	/**
-	* Recursivly create queues
+	* Recursively create queues
 	* @param string $parent ID of parent queue (or zero if top-most)
 	*/
 	function createQueue($parent) {
