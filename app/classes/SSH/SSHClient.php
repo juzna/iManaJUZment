@@ -43,6 +43,11 @@ class SSHClient extends \Nette\Object {
    */
   public $welcomeMessage;
 
+  /**
+   * @var bool Show debugging information to stdout
+   */
+  protected $debug = false;
+
 
   public function __construct($host, $port = 22) {
     $this->host = $host;
@@ -199,5 +204,13 @@ class SSHClient extends \Nette\Object {
       $this->welcomeMessage = $this->getShell()->waitForPrompt();
       $gotIt = true;
     }
+  }
+
+  public function setDebug($debug) {
+    $this->debug = $debug;
+  }
+
+  public function getDebug() {
+    return $this->debug;
   }
 }

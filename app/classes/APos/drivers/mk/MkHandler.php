@@ -9,85 +9,113 @@ namespace APos\Handlers;
  * Command handler for Mikrotik OS
  */
 class MkHandler implements \Thrift\APos\MkIf {
-	private $ap;	// Access point
+  /** @var AP Access point */
+	private $ap;
+
+  /** @var \Mikrotik\Mikrotik Connection to mikrotik */
   private $mk;
+
+  /** @var bool Show debug information */
 	private $debug = true;
-	
+
+
+
 	/**
 	* Connect to AP
 	*/
 	public function __construct(\AP $ap) {
     $this->ap = $ap;
-
-    // Create new Mikrotik connection
-    $this->mk = new \Mikrotik\Mikrotik($ap->getIP());
-	}
-	
-	/**
-	* Get's SSH shell
-	*/
-	protected function _getShell() {
-		if($this->shell) return $this->shell;
-		$this->_getMk();
-		
-		// Try to get Shell
-		$this->debug('getting shell');
-		$this->shell = $this->mk->ssh->_getShell();
-		$this->debug(' got shell');
-		
-		return $this->shell;
-	}
-	
-	protected function _getMk() {
-		if(!isset($this->mk)) {
-			// Connect to SSH
-			$this->mk = new \mikrotikos($this->ap->IP, 22, $this->ap->username, $this->ap->pass);
-			$this->mk->setDebug($this->debug);
-		}
-		return $this->mk;
+    $this->mk = new \Mikrotik\Mikrotik($ap);
 	}
 
-	public function setDebug($mode) {
-		$this->debug = $mode;
-		if($this->mk) $this->mk->setDebug($mode);
-	}
-	
+
+  /*******     Internal methods     *********/
+
+  /**
+   * Get's AP
+   * @return \AP
+   */
+  function getAP() {
+    return $this->ap;
+  }
+
+  /**
+   * Get class for unified communication with mikrotik
+   * @return \Mikrotik\Mikrotik
+   */
+  public function getMikrotik() {
+    return $this->mk;
+  }
+
+  /**
+   * Gets ssh client
+   * @return \Mikrotik\SSHClient
+   */
+  public function getSSH() {
+    return $this->mk->getSSH();
+  }
+
+  /**
+   * Get RouterOS API client
+   * @return \Mikrotik\RouterOS
+   */
+  public function getROS() {
+    return $this->mk->getROS();
+  }
+
+  /**
+   * Get version of connected mikrotik router
+   * @return string
+   */
+  public function getVersion() {
+    return $this->mk->getVersion();
+  }
+
+  function getDebug() {
+    return $this->debug;
+  }
+
+  function setDebug($x) {
+    $this->debug = $x;
+    $this->mk->setDebug($x);
+  }
+
 	protected function debug($text) {
 		if($this->debug) echo date('Y-m-d H:i:s') . "\t$text\n";
 	}
-	
+
+
+
+  /**************  Implemetation of MkIf  *******************/
+
 	/**
 	* Test connection to AP
 	*/
 	public function testConnection() {
-		try {
-			if($this->api->getVersion()) $connectionOK = true;
-			else $connectionOK = false;
-		}
-		catch(Exception $e) {
-			$connectionOK = false;
-		}
-		
-		// Try to reconnect
-		if(!$connectionOK) {
-			$this->debug("lost connection, disconnecting");
-			$this->api->disconnect();
-			sleep(2);
-			
-			$this->debug("connecting again");
-			$this->api->connect($this->ap->IP, $this->ap->username, $this->ap->pass);
-			$version = $this->api->getVersion();
-			$this->debug(" connected, version $version");
-		}
-		
-		return $connectionOK;
+    // Try to version from existing connection
+    if($this->mk->isROSConnected()) {
+      $ret = $this->mk->getROS()->getVersion();
+    }
+    elseif($this->mk->isSSHConnected()) {
+      $ret = $this->mk->getSSH()->getVersion();
+    }
+    else {
+      $ret = $this->mk->getSSH()->getVersion();
+    }
+
+    $conencted = !empty($ret);
+    if(!$conencted) {
+      // TODO: force reconnect
+    }
+
+    return $conencted;
 	}
 	
 	/**
 	* Get system name
 	*/
 	public function getSysName() {
-		$ret = $this->api->getall('system identity');
+		$ret = $this->getROS()->getall('system identity');
 		return $ret[0]['name'];
 	}
 	
@@ -95,25 +123,26 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Get uptime in seconds
 	*/
 	public function getUptime() {
-		$ret = $this->api->getall('system resource');
+		$ret = $this->getROS()->getall('system resource');
 		$tim = $ret[0]['uptime'];
 		
-		return $this->parseUptime($tim);
+		return $this->_parseUptime($tim);
 	}
 	
-	private function parseUptime($tim) {
+	private function _parseUptime($tim) {
 		if(preg_match('/^(?:(\d+)w)?(?:(\d+)d)?(\d{2}):(\d{2}):(\d{2})$/', $tim, $match)) {
 			list(, $weeks, $days, $h, $m, $s) = $match;
 			return ((((($weeks * 7) + $days) * 24) + $h) * 60 + $m) * 60 + $s;
 		}
 		else return -1;
 	}
-	
+
+
 	/**
 	* Get basic system info
 	*/
 	public function getSysInfo() {
-		$ret = $this->api->getall('system resource');
+		$ret = $this->getROS->getall('system resource');
 		
 		// Parse uptime
 		$uptime = $this->parseUptime($ret[0]['uptime']);
@@ -126,7 +155,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 		}
 		
 		return /*new \Thrift\APos\OSInfo*/(array(
-			'ap'	=> $this->ap->ID,
+			'ap'	  => $this->ap->ID,
 			'name'	=> $this->getSysName(),
 			'vMajor'=> $vMajor,
 			'vMinor'=> $vMinor,
@@ -140,7 +169,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Get list of visible MAC addresses
 	*/
 	public function getMacList($vlan = null, $ifName = null) {
-		$ret = $this->api->getall('ip arp');
+		$ret = $this->getROS()->getall('ip arp');
 		$ap = $this->ap;
 		return array_map(function($row) use($ap) {
 			$static = $row['dynamic'] == 'false' || $row['dynamic'] == 'no';
@@ -148,7 +177,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 			
 			return /*new \Thrift\APos\MacAddressEntry*/(array(
 				'ap'	=> $ap->ID,
-				'mac'	=> getMac($row['mac-address']),
+				'mac'	=> \Net::getMac($row['mac-address']),
 				'ifName'=> $row['interface'],
 				'state'	=> $active ? ($static ? 'configured' : 'learned') : 'unknown',
 			));
@@ -159,7 +188,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Get ARP list
 	*/
 	public function getArpList($vlan = null, $ifName = null) {
-		$ret = $this->api->getall('ip arp');
+		$ret = $this->getROS()->getall('ip arp');
 		$ap = $this->ap;
 		return array_map(function($row) use($ap) {
 			return /*new \Thrift\APos\ArpEntry*/(array(
@@ -182,9 +211,9 @@ class MkHandler implements \Thrift\APos\MkIf {
 	public function getRouteList($allowDynamic = true) {
 		// Find ARP for resolving MAC address or gateway
 		$arpList = array();
-		foreach($this->api->getall('ip arp') as $row) $arpList[$row['address']] = getMac($row['mac-address']);
+		foreach($this->getROS()->getall('ip arp') as $row) $arpList[$row['address']] = \Net::getMac($row['mac-address']);
 		
-		$ret = $this->api->getall('ip route');
+		$ret = $this->getROS()->getall('ip route');
 		$ap = $this->ap;
 		return array_map(function($row) use($ap, $arpList) {
 			list($dst, $netmask) = explode('/', $row['dst-address']);
@@ -198,7 +227,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 				'mac'		=> isset($row['gateway']) ? @$arpList[$row['gateway']] : null,
 				'ifName'	=> $row['interface'],
 				'isStatic'	=> !isset($row['dynamic']) || isFalse($row['dynamic']),
-				'isActive'	=> isFalse($row['disabled']),
+				'isActive'	=> \String::isFalse($row['disabled']),
 			));
 		}, $ret);
 	}
@@ -207,7 +236,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Get list of IP addresses
 	*/
 	public function getIPList() {
-		$ret = $this->api->getall('ip address');
+		$ret = $this->getROS()->getall('ip address');
 		$ap = $this->ap;
 		return array_map(function($row) use($ap) {
 			list($ip, $netmask) = explode('/', $row['address']);
@@ -217,7 +246,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 				'ip'		=> $ip,
 				'netmask'	=> $netmask,
 				'ifName'	=> $row['interface'],
-				'isEnabled'	=> isFalse($row['disabled']),
+				'isEnabled'	=> \String::isFalse($row['disabled']),
 			));
 		}, $ret);
 	}
@@ -229,8 +258,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 		// Clear cached stats
 		$this->_clearInterfaceStats();
 		
-		$ret = $this->api->getall('interface');
-		$ap = $this->ap; $oThis = $this;
+		$ret = $this->getROS()->getall('interface');
 		$result = array_map(array($this, '_getInterfaceList'), $ret);
 		
 		unset($this->_wifiInfo);
@@ -243,7 +271,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 			'ifName'	=> $row['name'],
 			'type'		=> $row['type'],
 			'mtu'		=> $row['mtu'],
-			'isEnabled'	=> isFalse($row['disabled']),
+			'isEnabled'	=> \String::isFalse($row['disabled']),
 			'isActive'	=> isTrue($row['running']),
 		));
 		
@@ -251,7 +279,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 		if($row['type'] == 'wlan') {
 			$wifi = $this->_getWirelessIfInfo($row['name']);
 			$if['wireless'] = /*new \Thrift\APos\WirelessIfInfo*/(array(
-				'bssid'		=> getMac($wifi['mac-address']),
+				'bssid'		=> \Net::getMac($wifi['mac-address']),
 				'essid'		=> $wifi['ssid'],
 				'band'		=> $this->getBandId($wifi['band']),
 				'frequency'	=> $wifi['frequency'],
@@ -298,7 +326,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Get info about wireless interface
 	*/
 	private function _getWirelessIfInfo($if) {
-		if(is_null($this->_wifiInfo)) $this->_wifiInfo = indexBy($this->api->getall('interface wireless'), 'name');
+		if(is_null($this->_wifiInfo)) $this->_wifiInfo = indexBy($this->getROS()->getall('interface wireless'), 'name');
 		return @$this->_wifiInfo[$if];
 	}
 	
@@ -306,7 +334,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Get security profile of given name
 	*/
 	private function _getSecurityProfile($name) {
-		if(is_null($this->_securityProfiles)) $this->_securityProfiles = indexBy($this->api->getall('interface wireless security-profiles'), 'name');
+		if(is_null($this->_securityProfiles)) $this->_securityProfiles = indexBy($this->getROS()->getall('interface wireless security-profiles'), 'name');
 		return @$this->_securityProfiles[$name];
 	}
 	
@@ -324,7 +352,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Associated clients (Registration Table)
 	*/
 	public function getRegistrationTable() {
-		$ret = $this->api->getall('interface wireless registration-table');
+		$ret = $this->getROS()->getall('interface wireless registration-table');
 		$ap = $this->ap;
 		return array_map(array($this, '_getRegistrationTable'), $ret);
 	}
@@ -333,7 +361,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 		return /*new \Thrift\APos\RegistrationTableEntry*/(array(
 			'ap'		=> $this->ap->ID,
 			'ifName'	=> $row['interface'],
-			'mac'		=> getMac($row['mac-address']),
+			'mac'		=> \Net::getMac($row['mac-address']),
 			'radioName'	=> $row['radio-name'],
 			'uptime'	=> $this->parseUptime($row['uptime']),
 			'snr'		=> $row['signal-to-noise'],
@@ -345,15 +373,14 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* Execute command on SSH
 	*/
 	public function execute($command) {
-		return (string) $this->mk->cmd($command);
+    return (string) $this->mk->getSSH()->execShellWait($command);
 	}
 	
 	/**
 	* Execute more commands at once
 	*/
 	public function executeList($commandList) {
-		$mk = $this->mk;
-		return array_map(function($cmd) use($mk) { return (string) $mk->cmd($cmd); }, $commandList);
+    return array_map(array($this, 'execute'), $commandList);
 	}
 	
 	/**
@@ -362,12 +389,8 @@ class MkHandler implements \Thrift\APos\MkIf {
 	* @return APService
 	*/
 	private function _getService($serviceName) {
-		$file = __DIR__ . "/services/$serviceName.php";
-		if(!file_exists($file)) throw new NotFoundException("APOs service $serviceName");
-		
-		// Load file
-		require_once $file;
 		$class = '\APos\Handlers\Mikrotik\Services\\' . $serviceName;
+    if(!class_exists($class)) throw new \NotFoundException("APOs service $serviceName");
 		return new $class($this, $serviceName);
 	}
 	
@@ -406,7 +429,7 @@ class MkHandler implements \Thrift\APos\MkIf {
 		try {
 			return $this->_getService($serviceName)->isSupported();
 		}
-		catch(NotFoundException $e) {
+		catch(\NotFoundException $e) {
 			return false;
 		}
 	}
@@ -419,8 +442,6 @@ class MkHandler implements \Thrift\APos\MkIf {
 		
 		// Load all service files
 		foreach(glob(__DIR__ . '/services/*.php') as $file) {
-			require_once $file;
-			
 			$serviceName = substr(basename($file), 0, -4);
 			$class = '\APos\Handlers\Mikrotik\Services\\' . $serviceName;
 			if(!class_exists($class)) continue;
@@ -446,21 +467,27 @@ class MkHandler implements \Thrift\APos\MkIf {
 		}
 		return $ret;
 	}
-	
-	public function export($path) {}
+
+
+
+  /********    MkIf interface implementation    ********/
+
+	public function export($path) {
+    return $this->mk->export($path);
+  }
 	
 	/**
 	* Print items from section
 	*/
 	public function getAll($path) {
-		return $this->api->getall($path);
+		return $this->getROS()->getall($path);
 	}
 	
 	/**
 	* Execute commands thru mikrotik API
 	*/
 	public function executeAPI($path, $cmd, $params) {
-		list($retDone, $retData) = $this->api->execute($path, $cmd, $params);
+		list($retDone, $retData) = $this->getROS()->execute($path, $cmd, $params);
 		return array(
 			'lst'	=> $retData,
 			'ret'	=> $retDone,

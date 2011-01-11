@@ -31,9 +31,11 @@ class Mikrotik {
   /** @var int Default timeout in seconds */
   public $timeout = 5;
 
+  /** @var bool Show debugging info to stdout*/
+  protected $debug = false;
+
   /** @var array List of supported operating systems of AP */
   public static $supportedOS = array('mk', 'mk3');
-
 
 
 
@@ -49,6 +51,7 @@ class Mikrotik {
   public function getSSH() {
     if(!isset($this->ssh)) {
       $this->ssh = SSHClient::fromAP($this->ap);
+      $this->ssh->setDebug($this->debug);
       if(!isset($this->version)) $this->version = $this->ssh->getVersion();
     }
 
@@ -62,6 +65,7 @@ class Mikrotik {
   public function getROS() {
     if(!isset($this->ros)) {
       $this->ros = RouterOS::fromAP($this->ap, $this->version);
+      $this->ros->setDebug($this->debug);
       if(!isset($this->version)) $this->version = $this->ros->getVersion();
     }
 
@@ -75,6 +79,14 @@ class Mikrotik {
   public function getVersion() {
     if(!isset($this->version)) $this->getSSH(); // Connect to SSH to determine version
     return $this->version;
+  }
+
+  public function isSSHConnected() {
+    return isset($this->ssh);
+  }
+
+  public function isROSConnected() {
+    return isset($this->ros);
   }
 
 
@@ -498,4 +510,13 @@ class Mikrotik {
 
 
 
+  public function setDebug($debug) {
+    $this->debug = $debug;
+    if(isset($this->ssh)) $this->ssh->setDebug($debug);
+    if(isset($this->ros)) $this->ros->setDebug($debug);
+  }
+
+  public function getDebug() {
+    return $this->debug;
+  }
 }

@@ -39,8 +39,8 @@ class SNMP extends APService {
 	* Get's current configuration
 	*/
 	private function getConfig() {
-		$settings = $this->getApi()->getall('snmp');
-		$communities = $this->getApi()->getall('snmp community');
+		$settings = $this->getROS()->getall('snmp');
+		$communities = $this->getROS()->getall('snmp community');
 		return array($settings[0], $communities);
 	}
 
@@ -51,7 +51,7 @@ class SNMP extends APService {
 	public function check() {
 		list($sett, $coms) = $this->getConfig();
 		
-		if(isFalse($sett['enabled'])) return false; // Disabled
+		if(\String::isFalse($sett['enabled'])) return false; // Disabled
 		if(!$this->ap->snmpAllowed) return false;
 		if(!is_array($coms) || !count($coms)) return false; // No communities defined
 		
@@ -72,18 +72,18 @@ class SNMP extends APService {
 	* Activate service
 	*/
 	public function activate() {
-		$api = $this->getApi();
-		list($sett, $coms) = $this->getConfig();
+		$api = $this->getROS();
+		list($sett, $communities) = $this->getConfig();
 		
 		// Prepare community name
-		$comName = $this->ap->snmpCommunity ?: (sizeof($coms) ? $coms[0]['name'] : "servisweb-" . randchar(8));
+		$comName = $this->ap->snmpCommunity ?: (sizeof($communities) ? $communities[0]['name'] : "servisweb-" . \String::randchar(8));
 		
 		// Enable it
 		$api->request('/snmp/set', array('enabled' => 'true'));
 		
 		// Check if community exists
 		$communityExists = false;
-		foreach($coms as $com) if($com['name'] == $comName) $communityExists = true;
+		foreach($communities as $com) if($com['name'] == $comName) $communityExists = true;
 		
 		// Add community
 		if(!$communityExists) $api->add('snmp community', array('name' => $comName));
@@ -91,18 +91,18 @@ class SNMP extends APService {
 		// Save changes to DB
 		$this->ap->snmpAllowed = true;
 		$this->ap->snmpCommunity = $comName;
-		$this->ap->save();
+		$this->ap->flush();
 	}
 	
 	/**
 	* Deactivate
 	*/
 	public function deactivate() {
-		$this->getApi()->request('/snmp/set', array('enabled' => 'false'));
+		$this->getROS()->request('/snmp/set', array('enabled' => 'false'));
 
 		// Save changes to DB
 		$this->ap->snmpAllowed = false;
-		$this->ap->save();
+		$this->ap->flush();
 	}
 	
 	/**

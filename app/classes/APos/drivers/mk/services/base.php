@@ -5,27 +5,35 @@ namespace APos\Handlers\Mikrotik\Services;
 * Base class for Mikrotik services
 */
 abstract class APService implements \APos\Handlers\Services\APService {
-	protected $apHandler;
-	protected $mk;
-	protected $api;
+  /** @var APos\Handlers\MkHandler */
+	protected $handler;
+
+  /** @var AP */
 	protected $ap;
+
+  /** @var string */
 	protected $serviceName;
-	
-	public function __construct($apHandler, $serviceName) {
+
+
+	public function __construct($handler, $serviceName) {
 		$this->serviceName = $serviceName;
 		
-		if(!($apHandler instanceof \Thrift\APos\MkIf)) throw new \InvalidArgumentException("AP handler must be \Thrift\APos\MkIf");
-		$this->apHandler = $apHandler;
-		$this->ap = $apHandler->ap; //_getAp();
+		if(!($handler instanceof \Thrift\APos\MkIf)) throw new \InvalidArgumentException("AP handler must be \\Thrift\\APos\\MkIf");
+		$this->handler = $handler;
+		$this->ap = $handler->getAP();
 	}
-	
-	protected function getMk() {
-		if(!isset($this->mk)) $this->mk = $this->apHandler->_getMk();
-		return $this->mk;
-	}
-	
-	protected function getApi() {
-		if(!isset($this->api)) $this->api = $this->apHandler->api; //_getApi();
-		return $this->api;
-	}
+
+  /**
+   * @return \Mikrotik\SSHClient
+   */
+  protected function getSSH() {
+    return $this->handler->getSSH();
+  }
+
+  /**
+   * @return \Mikrotik\RouterOS
+   */
+  protected function getROS() {
+    return $this->handler->getROS();
+  }
 }

@@ -29,6 +29,10 @@ Array
 )
 */
 
+/**
+ * NTP service
+ * Activates automatic time configuration on Mikrotik
+ */
 class NTP extends APService {
 	static $description = 'Network Time Protocol';
 	
@@ -36,8 +40,8 @@ class NTP extends APService {
 	* Get's current configuration
 	*/
 	private function getConfig() {
-		$clock = $this->getApi()->getall('system clock');
-		$ntp = $this->getApi()->getall('system ntp client');
+		$clock = $this->getROS()->getall('system clock');
+		$ntp = $this->getROS()->getall('system ntp client');
 		return array($clock[0], $ntp[0]);
 	}
 
@@ -58,8 +62,8 @@ class NTP extends APService {
 	* Activate service
 	*/
 	public function activate() {
-		$this->getApi()->request('/system/clock/set', array('time-zone-name' => 'Europe/Prague'));
-		$this->getApi()->request('/system/ntp/client/set', array(
+		$this->getROS()->request('/system/clock/set', array('time-zone-name' => 'Europe/Prague'));
+		$this->getROS()->request('/system/ntp/client/set', array(
 			'enabled'	=> 'true',
 			'mode'		=> 'unicast',
 			'primary-ntp'	=> '85.132.153.5',
@@ -71,7 +75,7 @@ class NTP extends APService {
 	* Deactivate
 	*/
 	public function deactivate() {
-		$this->getApi()->request('/system/ntp/client/set', array(
+		$this->getROS()->request('/system/ntp/client/set', array(
 			'enabled'	=> 'false',
 		));
 	}

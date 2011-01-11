@@ -32,7 +32,7 @@ class Radius extends APService {
 	* @return array(bool, string)
 	*/
 	public function check() {
-		$sett = $this->getApi()->getall('radius');
+		$sett = $this->getROS()->getall('radius');
 		return count($sett) > 0;
 	}
 	
@@ -40,7 +40,7 @@ class Radius extends APService {
 	* Activate service
 	*/
 	public function activate() {
-		$api = $this->getApi();
+		$api = $this->getROS();
 		
 		// Generate realm
 		if(empty($this->ap->realm)) {
@@ -87,7 +87,7 @@ class Radius extends APService {
 	* Deactivate
 	*/
 	public function deactivate() {
-		$this->getApi()->request('/system/ntp/client/set', array(
+		$this->getROS()->request('/system/ntp/client/set', array(
 			'enabled'	=> 'false',
 		));
 	}

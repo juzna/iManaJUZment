@@ -7,8 +7,6 @@ namespace Mikrotik;
 * @author Jan Dolecek - juzna.cz
 */
 class RouterOS {
-	public $debug = false;		// Show debug information
-	
 	private $ip;
 	private $username;
 	private $password;
@@ -28,7 +26,8 @@ class RouterOS {
 	public $lastMetadata;
 	private $doneResult = array();
 	public $lastDoneResult;
-	
+  protected $debug = false;		// Show debug information
+
 	// Keys which have boolean values
 	public static $booleanKeys = array(
 		'dynamic', 'static', 'invalid', 'active', 'enabled', 'disabled', 'passthru', 'running', 'slave', 'radius', 'blocked',
@@ -813,6 +812,14 @@ class RouterOS {
 	public function getSocket() {
 		return $this->socket;
 	}
+
+  public function setDebug($debug) {
+    $this->debug = $debug;
+  }
+
+  public function getDebug() {
+    return $this->debug;
+  }
 }
 
 
