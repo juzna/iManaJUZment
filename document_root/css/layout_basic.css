@@ -1,0 +1,151 @@
+/**************/
+/** COMMENTS **/
+/**************/
+
+/* Z INDEX
+0x - Normal 
+1x - Layout (fixed header, sidebar)
+2x - Popup menu and sidebar
+3x - Context menu
+
+ */
+
+/*************/
+/** GENERAL **/
+/*************/
+
+
+/* TYPOGRAPHY */
+body {font-family: 'Arial CE', Arial, Helvetica, sans-serif; font-size: 11px; color: #4d4d4d;}
+
+/* COMMON */
+hr.cleaner {clear: both; margin: -1px 0 0 0; height: 1px; padding: 0; border: none; visibility: hidden;}
+.wrapfix:after, .wizardWrapper:after
+{content: "."; clear: both; display: block; height: 0; visibility: hidden;}
+
+
+/******************/
+/** BASIC LAYOUT **/
+/******************/
+
+body {margin: 0; padding: 0; width: 100%; min-height: 100%; background: #E5DFD3 url(../img/theme_basic/body.png) repeat-y center top; text-align: center;}
+#body {position: relative; margin: 0 auto; width: 1000px; background: #FFFFFF; text-align: left;}
+#header {width: inherit; height: 110px; z-index: 11;}
+#content {position: relative; background: #FFFFFF url(../img/theme_basic/content.png) repeat-y left top;}
+#sidebar {position: absolute; top: 0; left: 0; z-index: 10;}
+#tabsWrapper {margin-left: 40px; overflow: auto;}
+#tabsWrapper .tab_content {padding: 5px 25px 20px 25px; position: relative;}
+#footer {position: relative; width: inherit; z-index: 11; clear: both;}
+#tabsSimpleContent { margin-left: 40px; padding: 5px 25px 20px 25px; }
+
+
+/**********/
+/* HEADER */
+/**********/
+
+/* LAYOUT */
+#header_logo {float: left; display: block; width: 200px; height: 100%; background-image: url(../img/theme_basic/header_logo.png);}
+#header_toolbar {margin-left: 200px; height: 100%; background: transparent url(../img/theme_basic/header.png) repeat-x;}
+#header_company, #header_userinfo {float: left; height: 30px; line-height: 30px;}
+#header_search {float: right; margin-right: 8px; height: 30px; line-height: 30px;}
+#header_controls {float: right; height: 30px; line-height: 30px;}
+#header_nav {display: block; clear: right; height: 40px;}
+#header_tab {height: 30px;}
+#header_title h1 { }
+
+/* COMPANY */
+#header_company {color: #FFFFFF;}
+#header_company a {font-weight: bold; color: #FFFFFF;}
+
+/* SEARCH */
+#header_search input[type="text"] {margin-right: 5px; padding: 3px 4px; width: 140px; font-size: 11px;}
+#header_search button {margin-right: 5px;}
+#header_search a {font-weight: bold; color: #FFFFFF;}
+
+/* CONTROLS */
+#header_controls a {float: left; display: block; height: 30px; cursor: pointer;}
+#togglePageSize {width: 38px; background: transparent url(../img/theme_basic/header_togglePageSize.png) no-repeat center right;}
+#togglePageSize.active {background-image: url(../img/theme_basic/header_togglePageSize_active.png);}
+#togglePageSize:hover {background-position: center left;}
+
+/* NAVIGATION */
+#header_nav, #header_nav ul {list-style: none; margin: 0; padding: 0;} #header_nav li {margin: 0; padding: 0;} /* Reset ul & li style */
+#header_nav li a img {position: relative; top: 5px; margin-right: 8px; width: 16px; height: 16px;} /* CHECK top */
+#header_nav > li {float: left; position: relative; margin-top: 10px; margin-right: 12px;}
+#header_nav > li.parent > a {display: block; padding-right: 24px; background: transparent url(../img/common/header_nav_main_parent.png) no-repeat right center;}
+#header_nav > li:hover {background-color: #D9D9D9;}
+#header_nav > li > a {display: block; height: 26px; padding: 0 8px; line-height: 26px; color: #6B6963; text-decoration: none; font-weight: bold;}
+#header_nav > li > a > img {top: 3px;} /* CHECK */
+#header_nav > li > ul {position: absolute; left: 0px; top: 26px; width: 200px; z-index: 20; border-bottom: 1px solid #B3B3B3; visibility: hidden;}
+ #header_nav > li.expandOpposite > ul {left: auto; right: 0px;}
+#header_nav li ul li {position: relative; float: none; background: #D6D6D6 url(../img/theme_basic/header_nav_btn.png) no-repeat left top;}
+#header_nav li ul li.parent > a {background: transparent url(../img/theme_basic/header_nav_btn_parent.png) no-repeat right center;}
+ #header_nav li.expandOpposite ul li.parent > a {background: transparent url(../img/theme_basic/header_nav_btn_parent_expandOpposite.png) no-repeat right center;}
+#header_nav li ul li:hover {background-position: left bottom;}
+#header_nav li ul li a {display: block; height: 30px; padding: 0 8px; line-height: 30px; color: #6B6963; text-decoration: none; font-weight: bold;}
+#header_nav li ul li a img {}
+#header_nav li ul li ul {position: absolute; left: 199px; top: 0px; width: 200px; z-index: 20; border-bottom: 1px solid #B3B3B3; visibility: hidden;}
+ #header_nav li.expandOpposite ul li ul {left: -199px;}
+/* Displaying submenus */
+#header_nav li ul, #header_nav li:hover ul li ul, #header_nav li ul li:hover ul li ul  {visibility: hidden;}
+#header_nav li:hover ul, #header_nav li ul li:hover ul, #header_nav li ul li ul li:hover ul {visibility: visible;}
+
+/* TAB HEAD */
+#header_tab {position: relative;}
+#header_tab_history {position: absolute; top: 8px; left: -35px;}
+#header_tab_history span {font-family: Verdana, sans-serif; font-weight: bold; font-size: 12px; cursor: pointer; padding: 3px}
+#header_tab_history span:hover {color: #3F83D4;}
+#header_tab_header {height: 30px; line-height: 30px; overflow: hidden;}
+#header_tab_header a {text-decoration: none; color: inherit;}
+#header_tab_header a:before {content: "<"; margin: 0 8px;}
+#header_tab_header a:first-child {margin-left: -1px; margin-right: 8px; font-size: 12px; font-weight: bold; cursor: default;}
+#header_tab_header a:first-child:before {content: "";}
+#header_tab_controls {float: right; line-height: 30px;}
+#header_tab_controls img {margin-top: 7px; margin-right: 13px;}
+
+
+/***********/
+/* CONTENT */
+/***********/
+
+/* SIDEBAR */
+#sidebar ul {position: relative; margin: 0; padding: 0; width: 40px; padding: 0 10px 10px 0; list-style: none;}
+#sidebar ul li {display: block; height: 30px; background: url(../img/theme_basic/sidebar.png) repeat-x 0px 30px; font-weight: bold; overflow: hidden; white-space: nowrap; cursor: pointer;}
+#sidebar ul li:hover {background-position: 0px 0px;}
+#sidebar ul li.active {background-position: 0px -30px;}
+#sidebar ul li.head {padding-bottom: 5px; background: url(../img/theme_basic/sidebar_head.png) repeat-x left top; color: #FFFFFF; text-transform: uppercase; cursor: default;}
+#sidebar ul li.head img.addTab {position: absolute; top: 7px; right: 10px;}
+#sidebar ul li.head .visDiv {position: absolute; right: 5px; top: 0; width: 5px; height: 35px; background: transparent url(../img/theme_basic/sidebar_head_visDiv.png) no-repeat left top;}
+#sidebar ul li .con_left {float: left; display: block; width: 40px; height: 100%; text-align: center;}
+#sidebar ul li .con_left img {margin-top: 7px;}
+#sidebar ul li.loading .con_left {background: transparent url(../img/theme_basic/sidebar_loading.gif) no-repeat center center;} #sidebar ul li.loading .con_left img {visibility: hidden;}
+#sidebar ul li .con_right {float: right; display: block; width: 210px; height: 100%; line-height: 30px; position: relative;}
+
+#sidebar ul:hover {width: 250px; background: url(../img/common/sidebar_shadow.png) right bottom;}
+#sidebar ul:hover li {background-color: #F0F0F0;}
+#sidebar li.tab img[src="img/common/null.gif"] {background-image: url(../img/common/icon_tab.png);}
+
+
+/**********/
+/* FOOTER */
+/**********/
+
+#footer {height: 30px; background: transparent url(../img/theme_basic/footer.png) repeat-x left top; color: #FFFFFF; font-size: 10px;}
+#footer a {color: #FFFFFF;} #footer p {margin: 0px;}
+#footer_developerShow {position: absolute; top: 11px; left: 24px; width: 9px; height: 9px;}
+#footer_togglePageSize {position: absolute; top: 11px; left: 4px; width: 9px; height: 9px;}
+#footer .con_left {float: left; padding-top: 9px; padding-left: 52px; height: 21px; background: url(../img/theme_basic/footer_left.png) no-repeat left center;}
+#footer .con_right {float: right; padding-top: 9px; padding-right: 13px; height: 21px; line-height: 21px; }
+#footer .con_right p { float: left; margin-left: 5px; }
+#footer #statusBarLoading {float: left; margin-top: 2px; padding-left: 24px; height: 16px; line-height: 16px; background-image: url(../img/theme_basic/footer_statusBarLoading.gif); background-repeat: no-repeat; background-position: 0px 16px; font-weight: bold;}
+#footer #statusBarLoading.loading {background-position: 0px 0px;}
+#footer #statusBar {margin-top: 2px; margin-left: 250px; padding-left: 24px; height: 16px; line-height: 16px; background-image: url(../img/common/footer_statusBar.png); background-repeat: no-repeat; background-position: 0px 16px; font-weight: bold; position: relative; }
+#footer #statusBar.ok {background-position: 0px 0px;}
+#footer #statusBar.info {background-position: 0px -16px;}
+#footer #statusBar.error {background-position: 0px -32px;}
+
+
+/************/
+/* MODAL BOX */
+.dialog.loading .bluelighting_title {background: url(../img/common/modalBox_loading.gif) no-repeat top center;}
+/************/

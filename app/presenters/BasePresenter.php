@@ -23,7 +23,7 @@ abstract class BasePresenter extends Presenter {
 				$this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
 			}
 			$backlink = $this->application->storeRequest();
-			$this->redirect(':Base:Sign:in', array('backlink' => $backlink));
+			$this->redirect(':Base:Sign:welcome', array('backlink' => $backlink));
 		}
   }
 

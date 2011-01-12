@@ -3,7 +3,6 @@
 namespace MonitoringModule;
 
 class NagiosPresenter extends \BasePresenter {
-
   /**
    * Get Thrift connection to Nagios server
    * @return
@@ -60,5 +59,16 @@ class NagiosPresenter extends \BasePresenter {
     // Tell the user result and redirect
     $this->flashMessage("Export has been finished");
     $this->redirect('default');
+  }
+
+  /**
+   * Callback: received new notification from nagios service
+   * @param string $hostName
+   * @param string $hostState
+   * @return void
+   */
+  function actionNotification($hostName, $hostState) {
+    // TODO: what to do with that?
+    // TODO: configure nagios notification listener to execute this method
   }
 }

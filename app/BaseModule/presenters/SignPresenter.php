@@ -23,7 +23,10 @@ class SignPresenter extends BasePresenter {
 		$this->session->start(); // required by $form->addProtection()
 	}
 
-  public function renderIn() {
+  /**
+   * Check if we're in supported browser
+   */
+  protected function browserCheck() {
     // Browser capabilities check
     if(isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') &&
             !strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe')) {
@@ -34,10 +37,15 @@ class SignPresenter extends BasePresenter {
     }
   }
 
+  public function renderIn() {
+    $this->browserCheck();
+  }
 
+  public function renderWelcome() {
+    $this->browserCheck();
+  }
 
 	/********************* component factories *********************/
-
 
 
 	/**
@@ -168,6 +176,6 @@ class SignPresenter extends BasePresenter {
 	public function actionOut() {
 		$this->getUser()->logout();
 		$this->flashMessage('You have been signed out.');
-		$this->redirect('in');
+		$this->redirect(':Base:Sign:welcome');
 	}
 }

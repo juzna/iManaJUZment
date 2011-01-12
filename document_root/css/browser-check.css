@@ -63,7 +63,7 @@ input, select, table, textarea {
   width: 443px;
   margin: -14em 0 0 -220px;
   background-color: #ffffff;
-  background-image: url(../images/browser-check/panel_bg.gif);
+  background-image: url(../img/browser-check/panel_bg.gif);
   background-repeat: no-repeat;
   background-position: 0 100%;
 }
@@ -71,7 +71,7 @@ input, select, table, textarea {
 h1 {
   padding: 5px 16px 3px 12px;
   background-color: #5590d2;
-  background-image: url(../images/browser-check/title_bg.gif);
+  background-image: url(../img/browser-check/title_bg.gif);
   background-repeat: no-repeat;
   font-size: 100%;
   color: #ffffff;
@@ -112,15 +112,15 @@ p {
 }
 
 #browserChrome {
-  background-image: url(../images/browser-check/browser_chrome.gif);
+  background-image: url(../img/browser-check/browser_chrome.gif);
   background-position: 50% 8px !important;
 }
 
 #browserSafari {
-  background-image: url(../images/browser-check/browser_safari.gif);
+  background-image: url(../img/browser-check/browser_safari.gif);
 }
 
 #browserFirefox {
-  background-image: url(../images/browser-check/browser_firefox.gif);
+  background-image: url(../img/browser-check/browser_firefox.gif);
   background-position: 50% 8px !important;
 }

@@ -8,28 +8,123 @@
  * @param string   $robots   tell robots how to index the content of a page (optinal)
  * @param array    $flashes  flash messages
  *}
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-	<meta name="description" content="Nette Framework web application skeleton">
-	<meta name="robots" content="{$robots}" n:ifset="$robots">
-
 	<title>ISP manager | {block #title|striptags}Welcome{/block}</title>
 
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
-	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
+  {* misc *}
+  <link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+  <meta name="description" content="Nette Framework web application skeleton">
+  <meta name="robots" content="{$robots}" n:ifset="$robots">
+
+  {* CSS files *}
+  <link rel="stylesheet" media="all" href="{$basePath}/css/reset.css" type="text/css" />
+  <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
+  <link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
+
+  <link rel="stylesheet" media="all" href="{$basePath}/css/layout_basic.css" type="text/css" />
+  <link rel="stylesheet" media="all" href="{$basePath}/css/content.css" type="text/css" />
   <link rel="stylesheet" href="{$basePath}/css/isp.css" type="text/css">
-	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+
+  {* JS files *}
   <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
   <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+
 </head>
 
 <body>
-	{foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
+<div id="body">
 
-	{include #content}
+  {* header *}
+	<div id="header">
+		<a id="header_logo" class="logo" href="{link :Base:Homepage:default}" title="Go to homepage"></a>
+		<div id="header_toolbar">
+			<div id="header_company">
+        **Company info will be here**
+      </div>
+
+      <div id="header_userinfo" n:inner-if="$user->loggedIn">
+        Signed in as {$user->identity->username}{if $user->identity->real_name} ({$user->identity->real_name}){/if}. <a href="{link :Base:Sign:out}">Sign out</a>
+      </div>
+
+			<div id="header_controls"><a id="togglePageSize" title="Change page width" onclick="alert('Not supported yet'); return false; Layout.toggleSize(this, true);"></a></div>
+
+			<form id="header_search" method="get" action="{link :Base:Search:search}">
+				<input type="text" class="inp" name="text" value="" ondblclick="this.value = '';" />
+				<button>Search</button>
+			</form>
+
+      {* second row *}
+			<ul id="header_nav">Menu will be here</ul>
+
+      {* third row *}
+			<div id="header_tab">
+				<div id="header_tab_history">
+					<span class="back" onclick="return false; HistoryHandler.go(-1);">&lt;</span>
+					<span class="forward" onclick="return false; HistoryHandler.go(1);">&gt;</span>
+				</div>
+        <div id="header_breadcrumbs">
+          ** Breadcrumbs navigation will be here **
+        </div>
+				<div id="header_tab_controls">
+          {*
+					<img class="icon print" title="Tisknout" onclick="window.print(); return false;" />
+					<img class="icon report" title="Nahlásit chybu" onclick="Communication.ErrorReporting.show(Tabs.active.url); return false;" />
+					<img class="icon send" title="Poslat tuto stránku" onclick="EditForm.add(event, 'Vzkaz', { def: { link: Tabs.active.url } } ); return false;" />
+					<img class="icon close" title="Zavřít záložku" onclick="Tabs.close(); return false;" />
+          *}
+				</div>
+				<div id="header_tab_header"></div>
+			</div>
+		</div>{* end of header_toolbar *}
+	</div>
+  {* end of header *}
+
+
+  {* content part *}
+	<div id="content">
+    {*
+		<div id="sidebar">
+			<ul id="sidebar_tabs">
+				<li class="head"><span class="con_left"><img class="icon tabs" /></span><span class="con_right">Open tabs<img class="icon addTab" title="Add new tab" href="#" onclick="Tabs.addHome(); return false;" oncontextmenu="if(url = prompt('Zadejte url:')) Tabs.add({ url: url, active: true}); return false;" /></span></li>
+			</ul>
+			<ul>
+				<li class="head"><span class="con_left"><img class="icon user" /></span><span class="con_right">User</span></li>
+				<li onclick="User.logout(event);"><span class="con_left"><img class="icon logout" /></span><span class="con_right">Log out</span></li>
+				<li onclick="User.exit(event);"><span class="con_left"><img class="icon leave" /></span><span class="con_right">Exit</span></li>
+				<li onclick="Tabs.navigate('settings', '?id=user&fce=settings', { active: true } );"><span class="con_left"><img class="icon settings" /></span><span class="con_right">Settings</span></li>
+			</ul>
+		</div>
+		<div id="tabsWrapper" class="content_data">
+      <div class="tab_content">
+        {foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
+        {include #content}
+      </div>
+		</div>
+    *}
+
+    <div id="tabsSimpleContent">
+      {foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
+      {include #content}
+    </div>
+
+	</div>
+
+	<div id="footer">
+		<div id="footer_developerShow" onclick="Developer.show();"></div>
+		<div class="con_left">
+			<p id="statusBarLoading"></p>
+			<p id="statusBar"></p>
+		</div>
+		<div class="con_right">
+      <p>Current date: {=date('Y-m-d')} | </p>
+			<p class="sign">Programmed by <a href="http://juzna.cz">juzna.cz</a>, designed by <a href="http://strajk.cz">strajk.cz</a></p>
+		</div>
+	</div>
+</div>
+
+
 </body>
 </html>
