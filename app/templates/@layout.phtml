@@ -46,7 +46,7 @@
       </div>
 
       <div id="header_userinfo" n:inner-if="$user->loggedIn">
-        Signed in as {$user->identity->username}{if $user->identity->real_name} ({$user->identity->real_name}){/if}. <a href="{link :Base:Sign:out}">Sign out</a>
+        Signed in as {$user->identity->username}{if $user->identity->realName} ({$user->identity->realName}){/if}. <a href="{link :Base:Sign:out}">Sign out</a>
       </div>
 
 			<div id="header_controls"><a id="togglePageSize" title="Change page width" onclick="alert('Not supported yet'); return false; Layout.toggleSize(this, true);"></a></div>
@@ -57,11 +57,11 @@
 			</form>
 
       {* second row *}
-			<ul id="header_nav">Menu will be here</ul>
+			<ul id="header_nav">**Menu will be here**</ul>
 
       {* third row *}
 			<div id="header_tab">
-				<div id="header_tab_history">
+				<div id="header_tab_history" style="display:none;">
 					<span class="back" onclick="return false; HistoryHandler.go(-1);">&lt;</span>
 					<span class="forward" onclick="return false; HistoryHandler.go(1);">&gt;</span>
 				</div>
@@ -69,12 +69,10 @@
           ** Breadcrumbs navigation will be here **
         </div>
 				<div id="header_tab_controls">
-          {*
 					<img class="icon print" title="Tisknout" onclick="window.print(); return false;" />
-					<img class="icon report" title="Nahlásit chybu" onclick="Communication.ErrorReporting.show(Tabs.active.url); return false;" />
-					<img class="icon send" title="Poslat tuto stránku" onclick="EditForm.add(event, 'Vzkaz', { def: { link: Tabs.active.url } } ); return false;" />
-					<img class="icon close" title="Zavřít záložku" onclick="Tabs.close(); return false;" />
-          *}
+					{* <img class="icon report" title="Nahlásit chybu" onclick="Communication.ErrorReporting.show(Tabs.active.url); return false;" /> *}
+					{* <img class="icon send" title="Poslat tuto stránku" onclick="EditForm.add(event, 'Vzkaz', { def: { link: Tabs.active.url } } ); return false;" /> *}
+					{* <img class="icon close" title="Zavřít záložku" onclick="Tabs.close(); return false;" /> *}
 				</div>
 				<div id="header_tab_header"></div>
 			</div>

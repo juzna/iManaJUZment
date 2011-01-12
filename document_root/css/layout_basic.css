@@ -47,6 +47,7 @@ body {margin: 0; padding: 0; width: 100%; min-height: 100%; background: #E5DFD3 
 #header_logo {float: left; display: block; width: 200px; height: 100%; background-image: url(../img/theme_basic/header_logo.png);}
 #header_toolbar {margin-left: 200px; height: 100%; background: transparent url(../img/theme_basic/header.png) repeat-x;}
 #header_company, #header_userinfo {float: left; height: 30px; line-height: 30px;}
+#header_breadcrumbs { float: left; }
 #header_search {float: right; margin-right: 8px; height: 30px; line-height: 30px;}
 #header_controls {float: right; height: 30px; line-height: 30px;}
 #header_nav {display: block; clear: right; height: 40px;}
