@@ -1,0 +1,126 @@
+body, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, li, ol, p, ul {
+  margin: 0;
+  border: 0 none #FFFFFF;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  min-height: 25em;
+  padding: 0;
+  background-color: #D8DCE0;
+  color: #000000;
+  line-height: 1.4;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 80%;
+  text-align: center;
+}
+
+a {
+  color: #003ea8;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #7159af;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+img {
+  border: 0 none transparent;
+}
+
+input, select, table, textarea {
+  font-size: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#page {
+  min-height: 100%;
+}
+
+* html #page {
+  height: 100%;
+}
+
+#pageInner {
+
+    height: 37em;
+
+}
+
+#panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 443px;
+  margin: -14em 0 0 -220px;
+  background-color: #ffffff;
+  background-image: url(../images/browser-check/panel_bg.gif);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+}
+
+h1 {
+  padding: 5px 16px 3px 12px;
+  background-color: #5590d2;
+  background-image: url(../images/browser-check/title_bg.gif);
+  background-repeat: no-repeat;
+  font-size: 100%;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: left;
+}
+
+#content {
+  margin: 0 6px 6px 2px;
+  padding: 0 2em 1.7em 2em;
+}
+
+h2 {
+  margin-top: 1.2em;
+  font-weight: normal;
+  font-size: 135%;
+  line-height: 1.2;
+}
+
+p {
+  margin-top: 1.2em;
+}
+
+#browsers {
+  width: 85%;
+  margin: 0.7em auto 0 auto;
+}
+
+#browsers td {
+  width: 33%;
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+}
+
+#browsers a {
+  display: block;
+  padding: 80px 0 0 0;
+}
+
+#browserChrome {
+  background-image: url(../images/browser-check/browser_chrome.gif);
+  background-position: 50% 8px !important;
+}
+
+#browserSafari {
+  background-image: url(../images/browser-check/browser_safari.gif);
+}
+
+#browserFirefox {
+  background-image: url(../images/browser-check/browser_firefox.gif);
+  background-position: 50% 8px !important;
+}

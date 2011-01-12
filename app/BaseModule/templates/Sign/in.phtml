@@ -1,10 +1,24 @@
+{extends '@layout.phtml'}
 {var $robots = noindex}
 
 {block #content}
 
-<h1 n:block="title">Sign in</h1>
+<h2 n:block="title">Sign in</h2>
+<p>You have to sing in to access this application</p>
 
-{control signInForm}
+<fieldset>
+  <legend>Sign in by password</legend>
+  {control signInForm}
+</fieldset>
 
-<a href="{link signViaGoogle}">Sign using Google</a>
-<a href="{link registerViaGoogle}">Register using Google</a>
+<fieldset>
+  <legend>Sign in using OpenID</legend>
+  <p>
+    <a href="{link signViaGoogle}">Sign using Google</a> |
+    <a href="{link registerViaGoogle}">Register using Google</a>
+  </p>
+</fieldset>
+
+
+
+

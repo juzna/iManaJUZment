@@ -23,6 +23,17 @@ class SignPresenter extends BasePresenter {
 		$this->session->start(); // required by $form->addProtection()
 	}
 
+  public function renderIn() {
+    // Browser capabilities check
+    if(isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') &&
+            !strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe')) {
+
+      // Allow using IE
+      if(@$_GET['useIE']) $_SESSION['useIE'] = true;
+      if(empty($_SESSION['useIE'])) $this->redirect('browser');
+    }
+  }
+
 
 
 	/********************* component factories *********************/
