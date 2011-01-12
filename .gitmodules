@@ -22,3 +22,6 @@
 [submodule "3rdParty/apigen"]
 	path = 3rdParty/apigen
 	url = git://github.com/nette/apigen.git
+[submodule "libs/Nella/Doctrine"]
+	path = libs/Nella/Doctrine
+	url = git://github.com/nella/Doctrine.git
