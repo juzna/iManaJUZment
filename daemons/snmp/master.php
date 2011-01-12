@@ -4,29 +4,22 @@
 * Manages child processes for actual reading snmp data from devices
 */
 
-error_reporting(E_ALL);
-ob_implicit_flush();
-
-define('RUNPAGE', 'MAIN'); // What kind of processing we do
-define('APP_DIR', realpath(__DIR__ . "/../../"));
+require_once(__DIR__ . '/../bootstrap.php');
 define('INTERVAL', 300);
 
-
-require_once __DIR__ . "/../../bootstrap.php";
-require_once __DIR__ . "/../../3rdParty/thrift/bootstrap.php";
 
 while(true) {
 	$childPath = __DIR__ . "/child.php";
 	
 	// Fork child processes
-	$aps = Doctrine::getTable('AP')->findBySnmpAllowed(true);
+	$aps = \AP::getRepository()->findBySnmpAllowed(true);
 	foreach($aps as $ap) {
 		$cmd = "php -f '$childPath' '$ap->ID' '$ap->IP' '$ap->snmpCommunity'";
 		echo "$cmd\n";
 		exec("$cmd &");
 	}
 	
-	// Sleep
+	// Sleep until next tick
 	$t = (time() + INTERVAL) % INTERVAL;
 	$d = time() - $t;
 	if($d < INTERVAL / 2) $d += INTERVAL;

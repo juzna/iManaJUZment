@@ -4,23 +4,18 @@
 */
 
 @list(, $hostIndex, $hostIP, $hostCommunity) = $_SERVER['argv'];
-if(!isset($hostIP) || !isset($hostCommunity)) die("Arguments not givven\n");
+if(!isset($hostIP) || !isset($hostCommunity)) die("Arguments not given\n");
 
-error_reporting(E_ALL);
-ob_implicit_flush();
-
-define('RUNPAGE', 'MAIN'); // What kind of processing we do
-define('APP_DIR', realpath(__DIR__ . "/../../"));
+require_once(__DIR__ . '/../bootstrap.php');
 define('LOG_NORMAL', APP_DIR . "/logs/snmp/$hostIndex.log");
 define('LOG_ERROR', APP_DIR . "/logs/snmp/$hostIndex.err");
-
-require_once __DIR__ . "/../../bootstrap.php";
 
 
 // Load data
 $snmp_time = time();
 $time_start = microtime(true);
-$snmp_data = snmp_mk_loadall($hostIP, $hostCommunity, true);
+$snmpLoader = new SNMP($hostIP, $hostCommunity);
+$snmp_data = $snmpLoader->mikrotikGetAll(true);
 $time_elapsed = ($time_end = microtime(true)) - $time_start;
 
 echo "Got data\n";
@@ -41,7 +36,7 @@ foreach($snmp_data['if'] as $if) {
 // Regtable
 foreach($snmp_data['regtable'] as $mac => $reg) {
 	unset($reg['mac-address']);
-	$reg['mac'] = str_replace(':', '', $mac);
+	$reg['mac'] = Net::getMac($mac, ''),
 	$reg['ap'] = $hostIndex;
 	
 	RRDTool::save('regtable', $reg);

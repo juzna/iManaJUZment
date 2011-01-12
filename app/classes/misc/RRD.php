@@ -1,5 +1,5 @@
 <?php
-define('RRD_DIR', APP_DIR . '/storage/rrd/');
+define('RRD_DIR', APP_DIR . '/../storage/rrd/');
 define('RRD_EXEC', '/usr/bin/rrdtool');
 
 class RRDTool {
@@ -179,4 +179,3 @@ class RRDTool {
 		return $cmd;
 	}
 }
-
