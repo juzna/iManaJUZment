@@ -35,7 +35,7 @@ class NagiosPresenter extends \BasePresenter {
       $conf->hosts[] = new \Thrift\Nagios\HostEntry(array(
         'hostName'	=> str_replace(',', '_', $ap->name),
         'ip'		    => $ap->IP,
-        'parents'	  => array(($p = $ap->getL3Parent()) ? str_replace(',', '_', $p->name) : null),
+        'parents'	  => array(($p = $ap->l3parent) ? str_replace(',', '_', $p->name) : null),
         'services'	=> array('ping','http'),
       ));
     }
