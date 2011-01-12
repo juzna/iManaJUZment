@@ -23,7 +23,7 @@ foreach(AP::getRepository()->findAll() as $ap) {
 	$conf->hosts[] = new \Thrift\Nagios\HostEntry(array(
 		'hostName'	=> str_replace(',', '_', $ap->name),
 		'ip'		    => $ap->IP,
-		'parents'	  => array(($p = $ap->getL3Parent()) ? str_replace(',', '_', $p->nazev) : null),
+		'parents'	  => array(($p = $ap->getL3Parent()) ? str_replace(',', '_', $p->name) : null),
 		'services'	=> array('ping','http'),
 	));
 }

@@ -1,0 +1,64 @@
+<?php
+
+namespace MonitoringModule;
+
+class NagiosPresenter extends \BasePresenter {
+
+  /**
+   * Get Thrift connection to Nagios server
+   * @return
+   */
+  private function getThrift() {
+    $unixPath = TMP_DIR . '/sock/nagios';
+
+    \TBase::$allowEnumConversion = true;
+    $socket = new \TSocket("unix://$unixPath", -1);
+    $transport = new \TBufferedTransport($socket, 1024, 1024);
+    $protocol = new \TBinaryProtocol($transport);
+    $client = new \Thrift\Nagios\NagiosClient($protocol);
+
+    $transport->open();
+
+    return $client;
+  }
+
+  /**
+   * Export all access points to Nagios server
+   */
+  function actionExport() {
+    $client = $this->getThrift();
+
+    // Prepare config
+    $conf = new \Thrift\Nagios\Configuration;
+
+    foreach(\AP::getRepository()->findAll() as $ap) {
+      $conf->hosts[] = new \Thrift\Nagios\HostEntry(array(
+        'hostName'	=> str_replace(',', '_', $ap->name),
+        'ip'		    => $ap->IP,
+        'parents'	  => array(($p = $ap->getL3Parent()) ? str_replace(',', '_', $p->name) : null),
+        'services'	=> array('ping','http'),
+      ));
+    }
+
+    /*
+      1: required string hostName,
+      2: optional string hostAlias,
+      3: required common.ipAddress ip,
+      4: required string contactGroup,
+      5: string template = "generic-host",
+      6: optional string image,		// Path to image
+      7: common.coordinates coords,	// Coordinates for map
+      8: string url,		// Action URL
+      9: list<string> groups = [ 'default' ],	// List of groups
+      10: list<CheckService> services = [ ping ],	// List of services to be checked
+      11: required list<string> parents,		// Lis
+    */
+
+    // Send config
+    $client->updateConfiguration($conf);
+
+    // Tell the user result and redirect
+    $this->flashMessage("Export has been finished");
+    $this->redirect('default');
+  }
+}
