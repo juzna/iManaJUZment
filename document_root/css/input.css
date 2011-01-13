@@ -1,0 +1,8 @@
+/* Color picker */
+.colorPickerContainerOuter { position: relative; width: 120px; }
+.colorPickerContainerOuter > input { width: 100px; }
+.colorPickerContainerOuter .arrow { position: absolute;  height: 18px; width: 15px; right: 6px; top: 2px; background-image: url("../img/select_arrow.gif"); }
+.colorPickerContainerOuter .arrow:hover { background-image: url("../img/select_arrow_over.gif"); }
+.colorPickerContainerOuter.visible .arrow { background-image: url("../img/select_arrow_down.gif"); }
+.colorPickerContainer { position: absolute; border: 1px solid  gray; background-color: white; padding: 10px;}
+table.colorPicker td { width: 10px; height: 10px; min-height: 10px; min-width: 10px; border: 1px solid black;}

@@ -1474,7 +1474,7 @@ Object.extend(Number.prototype, (function() {
     }
   }
 
-  function addCommas = function(char) {
+  function addCommas(char) {
 	  if(typeof char == 'undefined') char = ' ';
 	  var nStr = String(this);
 	  x = nStr.split('.');
@@ -2424,11 +2424,29 @@ Element.Methods = {
       Prototype.Selector.find(ancestors, expression, index);
   },
 
+  upOrSelf: function(element, expression, index) {
+    element = $(element);
+    if (arguments.length == 1) return $(element.parentNode);
+    var ancestors = element.ancestors();
+    ancestors.unshift(element);
+    return expression ? Selector.findElement(ancestors, expression, index) :
+      ancestors[index || 0];
+  },
+
   down: function(element, expression, index) {
     element = $(element);
     if (arguments.length == 1) return Element.firstDescendant(element);
     return Object.isNumber(expression) ? Element.descendants(element)[expression] :
       Element.select(element, expression)[index || 0];
+  },
+
+  downOrSelf: function(element, expression, index) {
+    element = $(element);
+    if (arguments.length == 1) return element.firstDescendant();
+    var descendants = element.descendants();
+    descendants.unshift(element);
+    return expression ? Selector.findElement(descendants, expression, index) :
+      descendants[index || 0];
   },
 
   previous: function(element, expression, index) {

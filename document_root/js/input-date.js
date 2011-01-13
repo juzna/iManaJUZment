@@ -254,7 +254,7 @@ inputFormats.add('date', function(inp, options, format) {
 
 	Calendar.setup(
 		{
-			parentElement: container,
+			parentElement: inp.parentElement,
 			inputField: inp,
 			ifFormat: '%d.%m.%Y',
 			button: icon
@@ -263,4 +263,17 @@ inputFormats.add('date', function(inp, options, format) {
 
 	// Inicializace
 	DateInput.init(inp);
+});
+
+
+inputFormats.add('time', function(inp, options, format) {
+	if(!inp.onblur) inp.onblur = function() {
+		if(this.value && !this.value.match(/^[0-2]?[0-9]:[0-5]?[0-9](:[0-5]?[0-9])?$/)) {
+			this.addClassName('invalidValue');
+			alert('Invalid time format!');
+			try { inp.focus(); } catch(e) {}
+		} else {
+			this.removeClassName('invalidValue');
+		}
+	};
 });

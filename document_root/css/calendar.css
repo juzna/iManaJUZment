@@ -1,0 +1,185 @@
+/* Distributed as part of The Coolest DHTML Calendar
+   Author: Mihai Bazon, www.bazon.net/mishoo
+   Copyright Dynarch.com 2005, www.dynarch.com
+*/
+
+/* The main calendar widget.  DIV containing a table. */
+
+div.popupCalendar {position: relative; z-index: 20;}
+.popupCalendar {border-color: #797979;}
+.popupCalendar table {background: url("../img/calendar/normal-bg.gif"); border: none;}
+
+
+
+/* Header part -- contains navigation buttons and day names. */
+
+.popupCalendar .button {text-align: center; padding: 2px; background: url("../img/calendar/title-bg.gif") repeat-x 0 100%; font-weight: bold;}
+.popupCalendar .nav {font-size: 12px; font-family: Verdana,sans-serif;}
+.popupCalendar .nav div {background: transparent url("../img/calendar/menuarrow.gif") no-repeat 100% 100%;}
+.popupCalendar thead tr {background: url("../img/calendar/title-bg.gif") repeat-x 0 100%;}
+.popupCalendar thead .title {padding: 2px; text-align: center; background: url("../img/calendar/title-bg.gif") repeat-x 0 100%; font-weight: bold;}
+.popupCalendar thead .headrow {} /* Row <TR> containing navigation buttons */
+.popupCalendar thead .name {border-bottom: 1px solid #797979; padding: 2px; text-align: center;} /* Cells <TD> containing the day names */
+.popupCalendar thead .weekend {color: #c44;} /* How a weekend day name shows in header */
+.popupCalendar thead .hilite {background: url("../img/calendar/hover-bg.gif"); border-bottom: 1px solid #797979; padding-bottom: 1px} /* How do the buttons in header appear when hover */
+.popupCalendar thead .active {background: url("../img/calendar/active-bg.gif"); color: #fff; padding: 3px 1px 0px 3px; border-bottom: 1px solid #797979;} /* Active (pressed) buttons in header */
+.popupCalendar thead .daynames {background: url("../img/calendar/dark-bg.gif");} /* Row <TR> containing the day names */
+
+/* The body part -- contains all the days in month. */
+
+.popupCalendar tbody .day { /* Cells <TD> containing month days dates */
+  font-family: verdana,tahoma,sans-serif;
+  width: 2em;
+  color: #000;
+  text-align: right;
+  padding: 2px 4px 2px 2px;
+}
+.popupCalendar tbody .day.othermonth {
+  font-size: 80%;
+  color: #999;
+}
+.popupCalendar tbody .day.othermonth.oweekend {
+  color: #f99;
+}
+
+.popupCalendar table .wn {
+  padding: 2px 3px 2px 2px;
+  border-right: 1px solid #797979;
+  background: url("../img/calendar/dark-bg.gif");
+}
+
+.popupCalendar tbody .rowhilite td,
+.popupCalendar tbody .rowhilite td.wn {
+  background: url("../img/calendar/rowhover-bg.gif");
+}
+
+.popupCalendar tbody td.today { font-weight: bold; /* background: url("../img/calendar/today-bg.gif") no-repeat 70% 50%; */ }
+
+.popupCalendar tbody td.hilite { /* Hovered cells <TD> */
+  background: url("../img/calendar/hover-bg.gif");
+  padding: 1px 3px 1px 1px;
+  border: 1px solid #bbb;
+}
+
+.popupCalendar tbody td.active { /* Active (pressed) cells <TD> */
+  padding: 2px 2px 0px 2px;
+}
+
+.popupCalendar tbody td.weekend { /* Cells showing weekend days */
+  color: #c44;
+}
+
+.popupCalendar tbody td.selected { /* Cell showing selected date */
+  font-weight: bold;
+  border: 1px solid #797979;
+  padding: 1px 3px 1px 1px;
+  background: url("../img/calendar/active-bg.gif"); color: #fff;
+}
+
+.popupCalendar tbody .disabled { color: #999; }
+
+.popupCalendar tbody .emptycell { /* Empty cells (the best is to hide them) */
+  visibility: hidden;
+}
+
+.popupCalendar tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
+  display: none;
+}
+
+/* The footer part -- status bar and "Close" button */
+
+.popupCalendar tfoot .footrow { /* The <TR> in footer (only one right now) */
+  text-align: center;
+  background: #565;
+  color: #fff;
+}
+
+.popupCalendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
+  padding: 2px;
+  background: url("../img/calendar/status-bg.gif") repeat-x 0 0; color: #000;
+}
+
+.popupCalendar tfoot .hilite { /* Hover style for buttons in footer */
+  background: #afa;
+  border: 1px solid #084;
+  color: #000;
+  padding: 1px;
+}
+
+.popupCalendar tfoot .active { /* Active (pressed) style for buttons in footer */
+  background: #7c7;
+  padding: 2px 0px 0px 2px;
+}
+
+/* Combo boxes (menus that display months/years for direct selection) */
+
+.popupCalendar .combo {
+  position: absolute;
+  display: none;
+  top: 0px;
+  left: 0px;
+  width: 4em;
+  cursor: default;
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  border-color: #797979;
+  background: url("../img/calendar/normal-bg.gif"); color: #000;
+  z-index: 100;
+  font-size: 90%;
+}
+
+.popupCalendar .combo .label,
+.popupCalendar .combo .label-IEfix {
+  text-align: center;
+  padding: 1px;
+}
+
+.popupCalendar .combo .label-IEfix {
+  width: 4em;
+}
+
+.popupCalendar .combo .hilite {
+  background: url("../img/calendar/hover-bg.gif"); color: #000;
+}
+
+.popupCalendar .combo .active {
+  background: url("../img/calendar/active-bg.gif"); color: #fff;
+  font-weight: bold;
+}
+
+.popupCalendar td.time {
+  border-top: 1px solid #797979;
+  padding: 1px 0px;
+  text-align: center;
+  background: url("../img/calendar/dark-bg.gif");
+}
+
+.popupCalendar td.time .hour,
+.popupCalendar td.time .minute,
+.popupCalendar td.time .ampm {
+  padding: 0px 5px 0px 6px;
+  font-weight: bold;
+  background: url("../img/calendar/normal-bg.gif"); color: #000;
+}
+
+.popupCalendar td.time .hour,
+.popupCalendar td.time .minute {
+  font-family: monospace;
+}
+
+.popupCalendar td.time .ampm {
+  text-align: center;
+}
+
+.popupCalendar td.time .colon {
+  padding: 0px 2px 0px 3px;
+  font-weight: bold;
+}
+
+.popupCalendar td.time span.hilite {
+  background: url("../img/calendar/hover-bg.gif"); color: #000;
+}
+
+.popupCalendar td.time span.active {
+  background: url("../img/calendar/active-bg.gif"); color: #fff;
+}

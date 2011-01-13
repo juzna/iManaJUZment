@@ -24,9 +24,13 @@ var inputFormats = {
     var format = inp.getAttribute('format');
     if(!inputFormats.definitions[format]) return; // Given format not exists
 
+    inputFormats.initializeAs(format, inp);
+  },
+
+  initializeAs: function(format, inp, options) {
     // Initialize it
     var def = inputFormats.definitions[format];
-    def.initializer(inp, def, format);
+    def.initializer(inp, options ? Object.extend(Object.clone(def), options) : def, format);
   }
 }
 
