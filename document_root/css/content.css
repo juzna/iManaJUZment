@@ -106,7 +106,7 @@ table.advanced tbody tr.details td {border-bottom: 1px dotted #cdcdcd; padding: 
 table.collapsed td, table.collapsed th { padding: 0px; }
 
 table tfoot td {background: #c6e3ff; border-top: 1px solid #b5cfe9; font-weight: bold;}
-/* TODO dodìlat */
+/* TODO dodï¿½lat */
 
 /* Effects */
 table.lines tbody tr:hover {background-image: url(../img/theme_basic/bgAlt.png);}
@@ -206,9 +206,9 @@ button.disabled:hover, button.disabled:hover span {background-position: left top
 
 /* ICONS */
 img.icon + img.icon {margin-left: 8px;}
-img.icon {width: 16px; height: 16px; background-repeat: no-repeat; background-position: center top;}
-img.icon[onClick]:hover, img.icon[href]:hover {background-position: center bottom;}
-img.icon[onClick], img.icon[href] {cursor: pointer;}
+img.icon {width: 16px; height: 16px; background-repeat: no-repeat; background-position: center top; display: inline-block;}
+img.icon[onclick]:hover, img.icon[href]:hover {background-position: center bottom;}
+img.icon[onclick], img.icon[href] {cursor: pointer;}
 img.icon.addTab {background-image: url(../img/common/icon_addTab.png);}
 img.icon.tabs {background-image: url(../img/common/icon_tabs.png);}
 img.icon.close {background-image: url(../img/common/icon_close.png);}

@@ -33,6 +33,8 @@
   </li>
 </ul>
 
+<div class="tabPanel" id="tabPanelAP">
+
 <fieldset>
   <legend>Basic info</legend>
   <a href="{link edit, 'ap', $AP->ID}">Edit</a>
@@ -84,3 +86,5 @@
 {table APCoverage, $AP->Coverages, AP => $AP->ID }
 {table APRoute, $AP->Routes, AP => $AP->ID }
 {table APService, $AP->Services, AP => $AP->ID }
+
+</div>
