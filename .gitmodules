@@ -18,7 +18,7 @@
 	url = git://github.com/doctrine/common.git
 [submodule "3rdParty/dibi"]
 	path = 3rdParty/dibi
-	url = git://github.com/nette/dibi.git
+	url = git://github.com/dg/dibi.git
 [submodule "3rdParty/apigen"]
 	path = 3rdParty/apigen
 	url = git://github.com/nette/apigen.git
