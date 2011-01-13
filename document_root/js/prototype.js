@@ -1474,6 +1474,19 @@ Object.extend(Number.prototype, (function() {
     }
   }
 
+  function addCommas = function(char) {
+	  if(typeof char == 'undefined') char = ' ';
+	  var nStr = String(this);
+	  x = nStr.split('.');
+	  x1 = x[0];
+	  x2 = x.length > 1 ? '.' + x[1] : '';
+	  var rgx = /(\d+)(\d{3})/;
+	  while (rgx.test(x1)) {
+		  x1 = x1.replace(rgx, '$1' + char + '$2');
+	  }
+	  return x1 + x2;
+  };
+
   return {
     toColorPart:    toColorPart,
     succ:           succ,
@@ -1483,7 +1496,8 @@ Object.extend(Number.prototype, (function() {
     round:          round,
     ceil:           ceil,
     floor:          floor,
-    fit:            fit
+    fit:            fit,
+    addCommas:      addCommas
   };
 })());
 
@@ -6143,7 +6157,13 @@ Element.addMethods();
 
   function executeLiveHandlers(container) {
     onLiveHandlers.each(function(item) {
-      item.callback(container)
+      try {
+        item.callback(container)
+      }
+      catch(e) {
+        console.log('Error while executing live callback', item.name);
+        console.error(e);
+      }
     })
   }
 
@@ -6405,4 +6425,110 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
       return Prototype.Selector.select(selector, element || document);
     }
   });
+})();
+if(typeof HTMLElement.prototype.insertAdjacentElement == 'undefined') {
+	HTMLElement.prototype.insertAdjacentElement = function(where, element) {
+		switch (where.toLowerCase()) {
+			case "beforebegin":
+				this.parentNode.insertBefore(element, this);
+				break;
+			case "afterbegin":
+				this.insertBefore(element, this.firstChild);
+				break;
+			case "beforeend":
+				this.appendChild(element);
+				break;
+			case "afterend":
+				this.parentNode.insertBefore(element, this.nextSibling);
+				break;
+		}
+	};
+
+	HTMLElement.prototype.insertAdjacentHTML = function(where,htmlStr) {
+		var r = this.ownerDocument.createRange();
+		r.setStartBefore(this);
+		var parsedHTML = r.createContextualFragment(htmlStr);
+		this.insertAdjacentElement(where,parsedHTML)
+	}
+
+
+	HTMLElement.prototype.insertAdjacentText = function(where,txtStr) {
+		var parsedText = document.createTextNode(txtStr)
+		this.insertAdjacentElement(where,parsedText)
+	}
+}
+
+HTMLElement.prototype.getText = function() {
+  if(typeof this.innerText != 'undefined') return this.innerText;
+
+  var _callback = function(el) {
+    var str = "";
+
+    var cs = el.childNodes;
+    var l = cs.length;
+    for (var i = 0; i < l; i++) {
+      switch (cs[i].nodeType) {
+        case 1: //ELEMENT_NODE
+          str += _callback(cs[i]);
+          break;
+        case 3:	//TEXT_NODE
+          str += cs[i].nodeValue;
+          break;
+      }
+    }
+    return str;
+  }
+  return _callback(this);
+};
+
+HTMLElement.prototype.disable = function() {
+	this.disabled = true;
+	this.addClassName('disabled');
+};
+
+HTMLElement.prototype.enable = function() {
+	this.disabled = false;
+	this.removeClassName('disabled');
+};
+
+HTMLInputElement.prototype.toggleChecked = function() {
+	if(this.type == 'checkbox') this.checked = !this.checked;
+};
+
+HTMLSelectElement.prototype.addOption = function(value, title) {
+    var op = document.createElement('option');
+    op.setAttribute('value', value);
+    op.innerHTML = title;
+
+    this.appendChild(op);
+    return this;
+};
+
+HTMLSelectElement.prototype.setValue = function(value) {
+	for(i = 0; i < this.childNodes.length; i++) {
+		var op = this.childNodes[i];
+		if(op instanceof HTMLOptionElement && op.value == value) op.selected = true;
+	}
+	return this;
+};
+
+HTMLSelectElement.prototype.getSelectedElement = function() {
+	return this.options[this.selectedIndex];
+};
+
+HTMLSelectElement.prototype.getSelectedText = function() {
+	var op = this.getSelectedElement();
+	if(op) return op.text;
+	else return op;
+};
+
+(function() {
+	{
+		var e = document.createEvent('HTMLEvents');
+		e.initEvent('click', true, true);
+		if(typeof e.originalTarget == 'undefined') {
+			Event.prototype.__defineGetter__('originalTarget', function() { return this.target; });
+			Event.prototype.__defineGetter__('explicitOriginalTarget', function() { return this.target; });
+		}
+	}
 })();

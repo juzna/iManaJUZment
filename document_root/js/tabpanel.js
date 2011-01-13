@@ -1,19 +1,18 @@
 
 /**
-* Panel se zalozkama
+* Panel with tabs
 */
-
 var TabPanel = Class.create({
-	// Styl pro TabPanel
+	// Which class to use
 	tabPanelClassName: '',
 	
-	// Cesta pro kolacky
+	// Path used to store cookies
 	cookiePath: '/',
 
 
 	/**
-	* Inicializace, zadame element (div) ze ktereho bude panel tvoren
-	*/
+	 * Creating new TabPanel: given container element
+	 */
 	initialize: function(el, params) {
 		params = params || {};
 		
@@ -30,44 +29,47 @@ var TabPanel = Class.create({
 		this.pagesCnt = 0;
 		this.active = null;
 		this.useCookie = el.hasAttribute('useCookie') ? (parseInt(el.getAttribute('useCookie')) ? true : false) : true; //!!params.useCookie;
-		this.defaultCache = Element.hasAttribute(el, 'cache') ? (parseFloat2(el.getAttribute('cache')) ? true : false) : true; // Zda muzeme cachovat
+		this.defaultCache = Element.hasAttribute(el, 'cache') ? (parseInt(el.getAttribute('cache')) ? true : false) : true; // Zda muzeme cachovat
 		
-		// Druhy index (napriklad cislo zakaznika)
+		// Store index attribute
 		this.index2 = this.element.getAttribute('index2');
 		this.id2 = this.id + (this.index2 ? ('-' + this.index2) : '');
-		
-		
-		// Pridame styl
+
+		// Set-up classes
 		this.element.addClassName(this.tabPanelClassName);
 		this.element.addClassName('tabPanel');
-		
-		
-		// Vytvorime radek se zalozkami
+
+		// Create list of tab-page headers
 		this.tabRow = new Element('ol', { className: 'tabPanelTabs' } );
 		this.element.insertBefore(this.tabRow, this.element.firstChild);
 		
-		// Projdeme vsecky elementy v panelu a pridame stranky
-		childs.each(this.addPage.bind(this));
+		// Use all sub-elements in container to create TabPages
+		childs.each(this.addPage, this);
 		
-		// Oznacime defaultni
-		var oznacena = this.getDefaultPage();
-		if(!oznacena) throw new Error("TabPanel " + this.id + " nema zvolenou zadnou defaultni stranku");
-		this.select(oznacena, false, true);
+		// Select default page
+		var selected = this.getDefaultPage();
+		if(!selected) throw new Error("TabPanel " + this.id + " has no default page");
+		this.select(selected, false, true);
 		
 		// Register history handler
-		var page = this.pages[oznacena];
-		this.history = new HistoryStack( { page: oznacena, ajax: page.ajax, link: page.link } );
-		HistoryHandler.register(this.element, this.onHistory.bind(this));
+		var page = this.pages[selected];
+		//this.history = new HistoryStack( { page: selected, ajax: page.ajax, link: page.link } );
+		//HistoryHandler.register(this.element, this.onHistory.bind(this));
 	},
-	
+
+  /**
+   * Get page element by it's name
+   * @param string name
+   * @reutrn TabPage
+   */
 	getPage: function(name) {
 		return this.pages[name];
 	},
 	
 	/**
-	* History move
-	*/
-	onHistory: function(ev, step, visible) {
+	 * History move (not used now)
+	 */
+	onHistory____: function(ev, step, visible) {
 		if(!visible) return;
 		
 		var url = this.history.move(step);
@@ -84,18 +86,19 @@ var TabPanel = Class.create({
 	},
 	
 	/**
-	* Najde vychozi stranku
-	*/
+	 * Find which TabPage is default one
+   * @return string name or index
+	 */
 	getDefaultPage: function() {
 		var ret;
 		
-		// Primo zadana u zalozky
-		if(Element.hasAttribute(this.element, 'active')) {
+		// Explicitly defined at TabPanel element
+		if(this.element.hasAttribute('active')) {
 			ret = this.element.getAttribute('active');
 			if(typeof this.pages[ret] != 'undefined') return ret;
 		}
 		
-		// Zadana pres URL
+		/*// Zadana pres URL
 		if(Tabs) {
 			var url = Tabs.getUrlParser(this.element);
 			var tabIndex = url.get('tabPanel-' + this.id2);
@@ -104,54 +107,53 @@ var TabPanel = Class.create({
 		} else {
 			if(HistoryParser && (tabIndex = HistoryParser.get('tabPanel-' + this.id2))) ret = tabIndex;
 		}
+		*/
 		
 		// Cookies
 		if(!ret && this.useCookie && (tabIndex = this.getCookie('tabPanel' + this.id2))) ret = tabIndex;
 		
-		// Co ma zvolen atribut selected
+		// Find 'selected' attribute in TabPage's element
 		for(var p in this.pages) {
 			var x = this.pages[p].element.getAttribute('selected');
 			if(x && parseInt(x)) return p;
 		}
 		
-		// Defaultne: prvni
+		// Or use default one: the first one
 		if(ret && typeof this.pages[ret] != 'undefined') return ret;
 		for(var i in this.pages) return i;
 	},
 	
-	
 	/**
-	* Prida novou stranku do panelu
-	*/
+	 * Adds new element to TabPanel and makes it a TabPage
+	 */
 	addPage: function(el, params) {
-		if(el.tabPage) return false; // Uz je pridan
+		if(el.tabPage) return false; // It's already a page
 		
 		var name;
 		
-		// Parametry nejsou zadane -> hledame vychozi
+		// Options not given -> try to look-up defaults
 		if(typeof params != 'object') {
 			if(el && (name = el.getAttribute('name')) && this.params.pages && this.params.pages[name]) params = this.params.pages[name];
 			else params = {};
 		}
 		
-		// Nazev stranky
+		// Get page name
 		this.pagesCnt++;
 		if(!name) name = params.name || ('page-' + this.pagesCnt);
 		
 		// Error
 		if(typeof this.pages[name] != 'undefined') {
-			alert('Z�lo�ka se jm�nem ' + name + ' ji� existuje');
+			alert('Tab with given name already exists:' + name);
 			return false;
 		}
 		
 		params.name = name;
 		
-		// Vytvorime novou stranku
+		// Instantiate new page
 		var page = new TabPanel.Page(this, el, params);
 		this.pages[name] = page;
-		
-		
-		// Pridame mezi zalozky
+
+		// Add tab into tab row
 		this.tabRow.appendChild(page.tab);
 		
 		// Active?
@@ -160,8 +162,8 @@ var TabPanel = Class.create({
 	
 	
 	/**
-	* Oznaci danou stranku
-	*/
+	 * Make a tab active
+	 */
 	select: function(name, disableAjax, disableHistory) {
 		var page = this.pages[name];
 		if(typeof page == 'undefined') return false; // Stranka neexistuje
@@ -174,52 +176,51 @@ var TabPanel = Class.create({
 		// Zobrazime div
 		page.show(disableAjax);
 		
-		if(Tabs) {
+		/*if(Tabs) {
 			var url = Tabs.getUrlParser(this.element);
 			url.setMake('tabPanel-' + this.id2, name);
 		}
-		
+		*/
+
 		// Ulozime stav
 		if(this.useCookie) {
 			// Ukladame do cookies
 			this.setCookie('tabPanel' + this.id2, name);
-		} else if(HistoryParser) {
+		}/* else if(HistoryParser) {
 			// Ukladame do url
 			HistoryParser.set('tabPanel' + this.id2, name);
-		}
+		}*/
 		
 		// Save history
-		if(!disableHistory) this.history.navigate( { page: name, ajax: page.ajax, link: page.link } );
+		//if(!disableHistory) this.history.navigate( { page: name, ajax: page.ajax, link: page.link } );
 		
 		// Zavolame callback
 		(this.onSelect || Prototype.emptyFunction)(name);
 		
 		// Fire event
-		Element.fire(page.element, 'select');
+		Element.fire(page.element, 'tabPanel:select');
 		
 		return page;
 	},
 	
 	/**
-	* Skryje aktualni
-	*/
+	 * Hide actual page
+	 */
 	hideSelected: function() {
-		// Skryjeme
 		if(this.active) {
 			this.pages[this.active].hide();
 		}
 	},
-	
-	
+
 	/**
-	* Zrusi cely panel
-	*/
+	 * Destroy's whole TabPanel
+	 */
 	dispose: function() {
 		this.element.tabPanel = null;
 		this.element = null;
 		$(this.tabRow).remove();
 		
-		// Zrusime stranky
+		// Destroy pages
 		for(var name in this.pages) {
 			this.pages[name].dispose();
 			this.pages[name] = null;
@@ -227,10 +228,9 @@ var TabPanel = Class.create({
 		this.pages = null;
 	},
 
-	
 	/**
-	* Nastavi cookies
-	*/
+	 * Set a cookies
+	 */
 	setCookie: function(name, value, days) {
 		var expires = '';
 		if(days) {
@@ -244,8 +244,8 @@ var TabPanel = Class.create({
 	},
 	
 	/**
-	* Nacte cookies
-	*/
+	 * Get a cookie
+	 */
 	getCookie: function(name) {
 		var re = new RegExp('(\;|^)[^;]*(' + name + ')\=([^;]*)(;|$)');
 		var res = re.exec(document.cookie);
@@ -253,28 +253,32 @@ var TabPanel = Class.create({
 	},
 	
 	/**
-	* Smaze kolacek
-	*/
+	 * Remove a cookie
+	 */
 	removeCookie: function(name) {
 		this.setCookie(name, '', -1);
 	}
 });
 
+
 /**
-* Stranka panelu zalozek
+* One page of TabPanel
 * TODO: dodelat volani eventu
 */
 TabPanel.Page = Class.create({
 	/**
-	* Pridani nove stranky
-	*/
-	initialize: function(tabPanel, el, params) {
-		params = params || {};
+	 * Create new TabPage
+   * @param TabPanel tabPanel in which is this page created
+   * @param Element el element containing this tab
+   * @param object options Options
+	 */
+	initialize: function(tabPanel, el, options) {
+		options = options || {};
 	
 		if(el.tagName == 'A') {
-			params.nadpis = el.innerHTML;
-			params.ajax = 1;
-			params.link = el.href;
+			options.title = el.innerHTML;
+			options.ajax = 1;
+			options.link = el.href;
 			
 			this.a = el;
 			
@@ -284,44 +288,44 @@ TabPanel.Page = Class.create({
 		
 		else {
 			var d = el.down(0);
-			if(d && (d.tagName == 'LEGEND' || d.tagName == 'H2')) {
-				params.nadpis = d.innerHTML;
+			if(d && (d.tagName == 'LEGEND' || d.tagName.match(/^h\d$/i))) {
+				options.title = d.innerHTML;
 				d.remove();
 			}
 		}
 		
 	
-		this.name = params.name;
+		this.name = options.name;
 		this.tabPanel = tabPanel;
-		this.params = params;
+		this.params = options;
 		this.element = el;
 		this.element.tabPage = this;
 		this.index = tabPanel.pagesCnt;
 		
 		// Povoleni cache
-		this.allowCache = params.cache || (Element.hasAttribute(el, 'cache') ? (parseFloat2(el.getAttribute('cache')) ? true : false) : tabPanel.defaultCache);
+		this.allowCache = options.cache || (Element.hasAttribute(el, 'cache') ? (parseInt(el.getAttribute('cache')) ? true : false) : tabPanel.defaultCache);
 		
 		// Styly
 		this.element.addClassName('tabPanelContent');
 		this.element.hide();
 		
 		// Nadpis
-		this.nadpis = params.nadpis || this.element.getAttribute('nadpis');
+		this.title = options.title || this.element.getAttribute('title');
 		this.tab = new Element('li', { className: 'tab' } );
 		if(this.a) {
 			this.tab.innerHTML = this.a.innerHTML;
 			this.a.remove();
 		}
-		else this.tab.update(this.nadpis);
+		else this.tab.update(this.title);
 		
 		// Ajax
-		this.ajax = params.ajax || parseFloat2(el.getAttribute('ajax'));
+		this.ajax = options.ajax || parseInt(el.getAttribute('ajax'));
 		if(this.ajax) {
-			this.link = params.link || el.getAttribute('link');
+			this.link = options.link || el.getAttribute('link');
 			
 			// Callbacky
-			this.fceLoad = params.fceLoad || getCallback(el, 'fceLoad');
-			this.fceOnload = params.onload || getCallback(el, 'onload');
+			this.fceLoad = options.fceLoad || Scope.getCallback(el, 'fceLoad');
+			this.fceOnload = options.onload || Scope.getCallback(el, 'onload');
 			
 			this.element.ajaxLoaded = false;
 		} else if(Element.hasAttribute(el, 'link')) {
@@ -330,8 +334,8 @@ TabPanel.Page = Class.create({
 		}
 		
 		// Callback
-		this.onShow = params.onshow || getCallback(el, 'onshow');
-		this.onHide = params.onhide || getCallback(el, 'onhide');
+		this.onShow = options.onshow || Scope.getCallback(el, 'onshow');
+		this.onHide = options.onhide || Scope.getCallback(el, 'onhide');
 		
 		
 		// Eventy
