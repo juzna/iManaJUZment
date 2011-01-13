@@ -51,17 +51,18 @@
   // Netmask inputs
   inputFormats.add('netmask', function(inp, options, format) {
     inputFormats.initializeAs('int', inp);
-    inp.validate = validatorNetmask;
+    inp.maxLength = 2;
+    inp.validator = validatorNetmask;
   });
 
   // IP address
   inputFormats.add('ip', function(inp, options, format) {
-    inp.validate = validatorIPAddress;
+    inp.validator = validatorIPAddress;
   });
 
   // MAC address
   inputFormats.add('mac', function(inp, options, format) {
-    inp.validate = validatorMACAddress;
+    inp.validator = validatorMACAddress;
     inp.localizator = macAddressLocalizator;
     inp.serializator = macAddressSerializator;
   });
