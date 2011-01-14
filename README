@@ -1,8 +1,7 @@
 System for ISPs
 
 Used 3rd party libraries:
- - Doctrine 1.2 from git, with some little patches
- - Doctrine extensions - from SVN
+ - Doctrine 2 from git, with some little patches
  - Nette - from archive, 2.0alpha (should find, how to convert Nette from Git to php5.3 version and replace)
  - Dibi - from git (maybe wont be needed)
 
