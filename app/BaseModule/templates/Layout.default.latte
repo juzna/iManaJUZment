@@ -1,0 +1,10 @@
+{block content}
+
+<h1 n:block="title">Available layouts</h1>
+
+<ul>
+  <li n:foreach="$list as $name => $description">
+    <a href="{link set, $name}">{$description}</a>
+    {if $name == $selected}(in use){/if}
+  </li>
+</ul>

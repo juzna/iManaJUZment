@@ -64,4 +64,18 @@ class LayoutFactory implements ILayoutFactory {
     // No layout known, use the base one
     return 'BasicLayout';
   }
+
+  /**
+   * Get list of supported layouts
+   * @return array Map: name -> description
+   */
+  public static function getSupportedLayouts() {
+    return array(
+      'basic'       => "Basic",
+      'simple'      => "Simple",
+      'ajaxContent' => "Content for AJAX requests",
+      'tablet'      => "iPad",
+    //  'phone'       => 'Phone'
+    );
+  }
 }
