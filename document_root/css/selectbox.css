@@ -1,0 +1,52 @@
+/**
+ * This file is part of the "iManaJUZment" - complex system for internet service providers
+ *
+ * Copyright (c) 2005 - 2011 Jan Dolecek (http://juzna.cz)
+ *
+ * iManaJUZment is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iManaJUZment.  If not, see <http://www.gnu.org/licenses/gpl.txt>.
+ *
+ * @license http://www.gnu.org/licenses/gpl.txt
+ */
+
+.selectBoxContainer { background: white; height: 20px; left: 0px; position: relative; display: inline;}
+.selectBoxOptions { position: absolute; border: 1px solid #7f9db9; max-height: 500px; background-color: white; left: 0px; top: 14px; overflow: auto; display: none; z-index: 2; min-height: 100px; min-width: 100px; }
+.selectBoxContainer.selectBox_optionsVisible .selectBoxOptions { display: block; }
+
+.selectBoxInput { position: relative; padding: 1px; height: 16px; }
+
+.selectBoxOptions table { border-color: silver;}
+.selectBoxOptions th, .selectBoxOptions td { white-space: nowrap; height: 16px; overflow: hidden; color: black; padding-left: 3px !important; }
+.selectBoxOptions tbody tr.selected { background-color: yellow; color: black; }
+.selectBoxOptions tbody tr:hover { background-color: #316AC5; color: white; }
+.selectBoxOptions tbody tr.selected:hover { background-color: green; color: white; }
+
+/* select with just an arrow */
+span.selectBoxArrow { position: absolute; right: 0px; top: -2px; width: 15px; height: 18px; cursor: pointer; background-image: url('../img/selectbox.png'); background-repeat: no-repeat; background-position: 0px 0px;}
+span.selectBoxArrow:hover { background-position: 0px -18px; }
+.selectBoxContainer.selectBox_optionsVisible span.selectBoxArrow { background-position: 0px -36px; }
+
+/* arrow and buttons */
+span.selectBoxArrow2 { position: absolute; right: 0px; top: -2px; width: 15px; height: 9px; cursor: pointer; background-image: url('../img/selectbox.png'); background-repeat: no-repeat; background-position: -15px 0px; }
+span.selectBoxArrow2:hover { background-position: -15px -18px; }
+.selectBoxContainer.selectBox_optionsVisible span.selectBoxArrow2 { background-position: -15px -36px; }
+span.selectBoxDialogButton { position: absolute; right: 0px; top: 7px; width: 15px; height: 9px; cursor: pointer; background-image: url('../img/selectbox.png'); background-repeat: no-repeat; background-position: -15px -9px; }
+span.selectBoxDialogButton:hover { background-position: -15px -27px; }
+.selectBoxContainer.selectBox_optionsVisible span.selectBoxDialogButton { background-position: -15px -45px; }
+
+/* UserFormat */
+.userFormatContainer { background: white; height: 20px; left: 0px; position: relative; display: inline;}
+span.userFormatButton { position: absolute; right: 0px; top: -2px; width: 15px; height: 18px; cursor: pointer; background-image: url('../img/selectbox.png'); background-position: -30px 0px; }
+span.userFormatButton:hover { background-position: -30px -18px; }
+span.userFormatButton.down { background-position: -30px -36px; }
+
+
+span.userFormatContainer.disabled span.userFormatButton { background-image: url('../img/selectbox_disabled.png'); }
+span.selectBoxContainer.disabled span.selectBoxArrow { background-image: url('../img/selectbox_disabled.png'); }
+span.selectBoxContainer.disabled span.selectBoxArrow2 { background-image: url('../img/selectbox_disabled.png'); }
+span.selectBoxContainer.disabled span.selectBoxDialogButton { background-image: url('../img/selectbox_disabled.png'); }

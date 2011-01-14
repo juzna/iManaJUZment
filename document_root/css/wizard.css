@@ -1,0 +1,32 @@
+/**
+ * This file is part of the "iManaJUZment" - complex system for internet service providers
+ *
+ * Copyright (c) 2005 - 2011 Jan Dolecek (http://juzna.cz)
+ *
+ * iManaJUZment is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iManaJUZment.  If not, see <http://www.gnu.org/licenses/gpl.txt>.
+ *
+ * @license http://www.gnu.org/licenses/gpl.txt
+ */
+
+.wizard .wizardWrapper {clear: both; background: transparent url(../img/theme_exekutor/wizard.png) no-repeat 190px 0;}
+.wizard .wizardSteps {float: left; padding: 30px 0 15px 0; width: 200px;}
+.wizard .wizardSteps li {position: relative; float: left; clear: left; width: inherit; height: 38px; color: #FFFFFF; font-weight: bold; white-space: nowrap;}
+.wizard .wizardSteps .con_left {display: block; float: left; margin-left: 8px; width: 39px; height: 38px; line-height: 38px; background: url(../img/theme_exekutor/wizard_step_left.png) no-repeat; text-align: center; font-size: 16px; font-family: Verdana, sans-serif;}
+.wizard .wizardSteps .con_right {display: block; margin-left: 39px; padding: 0 12px 0 20px; height: 38px; background: url(../img/theme_exekutor/wizard_step.png) repeat-x; line-height: 38px; text-align: right;}
+.wizard .wizardSteps li.active {color: #666666;}
+.wizard .wizardSteps li.active .con_left, .wizard .wizardSteps li.active .con_right {margin-left: 0; background-position: left bottom;}
+.wizard .wizardSteps li .visDiv {position: absolute; right: 0; top: 0; width: 10px; height: 100%; background: transparent url(../img/theme_exekutor/wizard_step_visDiv.png) repeat-y right center;} .wizard .wizardSteps li.active .visDiv {display: none;}
+.wizard .wizardSteps li .visDivActive {display: none; position: absolute; left: -5px; right: 0px; top: -3px; bottom: -7px; background: transparent url(../img/theme_exekutor/wizard_step_visDivActive.png) no-repeat; z-index: 9;} .wizard .wizardSteps li.active .visDivActive {display: block;}
+.wizard .wizardSteps li:last-child {float: none;}
+.wizard .wizardContentsWrapper {margin-left: 200px; padding: 35px 0px 15px 30px;}
+.wizard .wizardContentsWrapper > fieldset {margin: 0; padding: 0; border: 0;}
+.wizard .wizardControls {}
+.wizard2 .wizardContentsWrapper { margin-left: 0px; }
+.wizard .wizardTitle { padding: 35px 0px 10px 30px; }
+.wizard .wizardTitle + .wizardContentsWrapper { padding-top: 0px; }

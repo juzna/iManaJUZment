@@ -1,0 +1,41 @@
+/**
+ * This file is part of the "iManaJUZment" - complex system for internet service providers
+ *
+ * Copyright (c) 2005 - 2011 Jan Dolecek (http://juzna.cz)
+ *
+ * iManaJUZment is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with iManaJUZment.  If not, see <http://www.gnu.org/licenses/gpl.txt>.
+ *
+ * @license http://www.gnu.org/licenses/gpl.txt
+ */
+
+.contextMenu, ul.contextMenu_submenu {list-style: none; margin: 0; padding: 0;} .contextMenu > li, ul.contextMenu_submenu > li {margin: 0; padding: 0;} /* Reset ul & li style */
+.contextMenu, .contextMenu_submenu {position: absolute; left: auto; top: 0px; padding: 2px; min-width: 150px; max-width: 300px; background: #F1F1F1; border: 1px solid #979797; z-index: 30; color: #000000;} /* all sub content */
+.contextMenu, ul.contextMenu_submenu {width: auto; min-width: auto; background: #F1F1F1 url(../img/common/contextMenu.png) repeat-y 28px 0px;} /* only menu */
+
+.contextMenu > li, ul.contextMenu_submenu > li  {position: relative; display: block; cursor: default;}
+.contextMenu > li:hover > span.icon, ul.contextMenu_submenu > li:hover > span.icon {background-position: left center;}
+.contextMenu > li:hover > span.text, ul.contextMenu_submenu > li:hover > span.text {background-position: right center;}
+.contextMenu > li.parent, ul.contextMenu_submenu > li.parent  {background: url(../img/common/contextMenu_btn_parent.png) no-repeat right center;}
+
+.contextMenu > li span.icon, ul.contextMenu_submenu > li span.icon {float: left; display: block; width: 26px; height: 24px; line-height: 24px; background: transparent url(../img/theme_basic/contextMenu_btn_hover_left.png) no-repeat left 999px;}
+.contextMenu > li span.icon img.icon, ul.contextMenu_submenu > li span.icon img.icon {margin: 4px auto;}
+.contextMenu > li span.text, ul.contextMenu_submenu > li span.text {margin-left: 26px; padding: 0 35px 0 6px; display: block; height: 24px; line-height: 24px; text-align: left; white-space: nowrap; background: transparent url(../img/theme_basic/contextMenu_btn_hover_right.png) no-repeat right 999px;}
+
+/* Custom items */
+.contextMenu > li.separator, ul.contextMenu_submenu > li .separator {margin: 3px 3px 3px 26px; height: 0px; border-top: 1px solid #DEDEDE; border-bottom: 1px solid #FFFFFF;}
+
+/* Icons */
+.contextMenu > li.checkbox.checked span.icon img.icon, ul.contextMenu_submenu > li.checkbox.checked span.icon img.icon {background-image: url(../img/theme_basic/contextMenu_icon_checkbox.png);}
+.contextMenu > li.radio span.icon img.icon, ul.contextMenu_submenu > li.radio span.icon img.icon {background-image: url(../img/theme_basic/contextMenu_icon_radio.png);}
+.contextMenu > li.radio:hover span.icon img.icon, ul.contextMenu_submenu > li.radio:hover span.icon img.icon {background-position: left middle;}
+.contextMenu > li.radio.checked span.icon img.icon, ul.contextMenu_submenu > li.radio.checked span.icon img.icon {background-position: left bottom;}
+
+/* Displaying submenus */
+.contextMenu li .contextMenu_submenu, .contextMenu li:hover .contextMenu_submenu li .contextMenu_submenu, .contextMenu li .contextMenu_submenu li:hover .contextMenu_submenu li .contextMenu_submenu  {visibility: hidden;}
+.contextMenu li:hover .contextMenu_submenu, .contextMenu li .contextMenu_submenu li:hover .contextMenu_submenu, .contextMenu li .contextMenu_submenu li .contextMenu_submenu li:hover .contextMenu_submenu {visibility: visible;}

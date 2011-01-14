@@ -46,38 +46,6 @@ hr {margin: 8px 0; border: 0; border-bottom: 1px dashed #bfbfbf;}
 ul.float li {float: left; margin-right: 8px;}
 ul.float li:last-child {margin-right: 0;}
 
-/* TABPANEL */
-.tabPanel  {margin: 20px 0px 20px -10px; padding-left: 10px; background: url(../img/theme_basic/tabPanel.png) no-repeat 0 22px;}
-.tabPanel .tabPanelTabs {margin-left: 10px; width: 100%; height: 32px;}
-.tabPanel .tabPanelTabs > li.tab {position: relative; float: left; display: block; margin-top: 4px; margin-right: -1px; height: 28px; color: #FFFFFF; font-weight: bold; white-space: nowrap; cursor: pointer;}
-.tabPanel .tabPanelTabs > li.tab span.left, .tabPanel .tabPanelTabs > li.tab span.right {display: block; height: 28px; width: 8px;}
-.tabPanel .tabPanelTabs > li.tab span.content {display: block; padding: 0px 12px !important; height: 28px; line-height: 28px; background-image: url(../img/theme_basic/tabPanel_tab.png); background-position: 0px 0px; background-repeat: repeat-x;}
-.tabPanel .tabPanelTabs > li.tab span.left {float: left; background-image: url(../img/theme_basic/tabPanel_tab_left.png); background-position: 0px 0px; background-repeat: repeat-x;}
-.tabPanel .tabPanelTabs > li.tab span.right {float: right; background-image: url(../img/theme_basic/tabPanel_tab_right.png); background-position: 0px 0px; background-repeat: repeat-x;}
-.tabPanel .tabPanelTabs > li.tab .visDiv {display: none; position: absolute; top: 0px; right: -5px; width: 5px; height: 32px; background: url(../img/theme_basic/tabPanel_tab_visDiv.png) no-repeat; z-index: 9;}
-.tabPanel .tabPanelTabs > li.tab:hover, .tabPanel .tabPanelTabs > li.tab:hover  span {background-position: 0px -28px;}
-.tabPanel .tabPanelTabs > li.tab.active {height: 32px; margin-top: 0px; cursor: default;}
-.tabPanel .tabPanelTabs > li.tab.active, .tabPanel .tabPanelTabs > li.tab.active  span {height: 32px; line-height: 32px; color: #666666;; background-position: 0px -56px;}
-.tabPanel .tabPanelTabs > li.tab.active .visDiv  {display: block;}
-.tabPanel .tabPanelContent {margin-right: -10px; padding: 10px 32px 20px 12px; background: url(../img/theme_basic/tabPanel_bottom.png) no-repeat right bottom;}
-
-/* WIZARD */
-.wizard .wizardWrapper {clear: both; background: transparent url(../img/theme_exekutor/wizard.png) no-repeat 190px 0;}
-.wizard .wizardSteps {float: left; padding: 30px 0 15px 0; width: 200px;}
-.wizard .wizardSteps li {position: relative; float: left; clear: left; width: inherit; height: 38px; color: #FFFFFF; font-weight: bold; white-space: nowrap;}
-.wizard .wizardSteps .con_left {display: block; float: left; margin-left: 8px; width: 39px; height: 38px; line-height: 38px; background: url(../img/theme_exekutor/wizard_step_left.png) no-repeat; text-align: center; font-size: 16px; font-family: Verdana, sans-serif;}
-.wizard .wizardSteps .con_right {display: block; margin-left: 39px; padding: 0 12px 0 20px; height: 38px; background: url(../img/theme_exekutor/wizard_step.png) repeat-x; line-height: 38px; text-align: right;}
-.wizard .wizardSteps li.active {color: #666666;}
-.wizard .wizardSteps li.active .con_left, .wizard .wizardSteps li.active .con_right {margin-left: 0; background-position: left bottom;}
-.wizard .wizardSteps li .visDiv {position: absolute; right: 0; top: 0; width: 10px; height: 100%; background: transparent url(../img/theme_exekutor/wizard_step_visDiv.png) repeat-y right center;} .wizard .wizardSteps li.active .visDiv {display: none;}
-.wizard .wizardSteps li .visDivActive {display: none; position: absolute; left: -5px; right: 0px; top: -3px; bottom: -7px; background: transparent url(../img/theme_exekutor/wizard_step_visDivActive.png) no-repeat; z-index: 9;} .wizard .wizardSteps li.active .visDivActive {display: block;}
-.wizard .wizardSteps li:last-child {float: none;}
-.wizard .wizardContentsWrapper {margin-left: 200px; padding: 35px 0px 15px 30px;}
-.wizard .wizardContentsWrapper > fieldset {margin: 0; padding: 0; border: 0;}
-.wizard .wizardControls {}
-.wizard2 .wizardContentsWrapper { margin-left: 0px; }
-.wizard .wizardTitle { padding: 35px 0px 10px 30px; }
-.wizard .wizardTitle + .wizardContentsWrapper { padding-top: 0px; }
 
 /* Paragraphs */
 p {margin: 8px 0; line-height: 16px;}
@@ -264,34 +232,10 @@ img.icon.ap_add {background-image: url(../img/common/icon_ap_add.png);}
 #quickNav li span {display: block;}
 #quickNav li:hover a {background: #C5E8FB;}
 
-/* CONTEXTMENU */
-.contextMenu, ul.contextMenu_submenu {list-style: none; margin: 0; padding: 0;} .contextMenu > li, ul.contextMenu_submenu > li {margin: 0; padding: 0;} /* Reset ul & li style */
-.contextMenu, .contextMenu_submenu {position: absolute; left: auto; top: 0px; padding: 2px; min-width: 150px; max-width: 300px; background: #F1F1F1; border: 1px solid #979797; z-index: 30; color: #000000;} /* all sub content */
-.contextMenu, ul.contextMenu_submenu {width: auto; min-width: auto; background: #F1F1F1 url(../img/common/contextMenu.png) repeat-y 28px 0px;} /* only menu */
 
-.contextMenu > li, ul.contextMenu_submenu > li  {position: relative; display: block; cursor: default;}
-.contextMenu > li:hover > span.icon, ul.contextMenu_submenu > li:hover > span.icon {background-position: left center;}
-.contextMenu > li:hover > span.text, ul.contextMenu_submenu > li:hover > span.text {background-position: right center;}
-.contextMenu > li.parent, ul.contextMenu_submenu > li.parent  {background: url(../img/common/contextMenu_btn_parent.png) no-repeat right center;}
 
-.contextMenu > li span.icon, ul.contextMenu_submenu > li span.icon {float: left; display: block; width: 26px; height: 24px; line-height: 24px; background: transparent url(../img/theme_basic/contextMenu_btn_hover_left.png) no-repeat left 999px;}
-.contextMenu > li span.icon img.icon, ul.contextMenu_submenu > li span.icon img.icon {margin: 4px auto;}
-.contextMenu > li span.text, ul.contextMenu_submenu > li span.text {margin-left: 26px; padding: 0 35px 0 6px; display: block; height: 24px; line-height: 24px; text-align: left; white-space: nowrap; background: transparent url(../img/theme_basic/contextMenu_btn_hover_right.png) no-repeat right 999px;}
 
-/* Custom items */
-.contextMenu > li.separator, ul.contextMenu_submenu > li .separator {margin: 3px 3px 3px 26px; height: 0px; border-top: 1px solid #DEDEDE; border-bottom: 1px solid #FFFFFF;}
-
-/* Icons */
-.contextMenu > li.checkbox.checked span.icon img.icon, ul.contextMenu_submenu > li.checkbox.checked span.icon img.icon {background-image: url(../img/theme_basic/contextMenu_icon_checkbox.png);}
-.contextMenu > li.radio span.icon img.icon, ul.contextMenu_submenu > li.radio span.icon img.icon {background-image: url(../img/theme_basic/contextMenu_icon_radio.png);}
-.contextMenu > li.radio:hover span.icon img.icon, ul.contextMenu_submenu > li.radio:hover span.icon img.icon {background-position: left middle;}
-.contextMenu > li.radio.checked span.icon img.icon, ul.contextMenu_submenu > li.radio.checked span.icon img.icon {background-position: left bottom;}
-
-/* Displaying submenus */
-.contextMenu li .contextMenu_submenu, .contextMenu li:hover .contextMenu_submenu li .contextMenu_submenu, .contextMenu li .contextMenu_submenu li:hover .contextMenu_submenu li .contextMenu_submenu  {visibility: hidden;}
-.contextMenu li:hover .contextMenu_submenu, .contextMenu li .contextMenu_submenu li:hover .contextMenu_submenu, .contextMenu li .contextMenu_submenu li .contextMenu_submenu li:hover .contextMenu_submenu {visibility: visible;}
-
-/* juznovo */
+/* testing */
 div.buttons { width: 320px; }
 select.adresa { min-width: 120px; }
 select.adresa[name=adresa] { min-width: 80px; }
