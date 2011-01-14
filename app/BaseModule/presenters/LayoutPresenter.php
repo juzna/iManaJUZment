@@ -25,7 +25,7 @@ class LayoutPresenter extends BasePresenter {
   }
 
   function actionSet($layout) {
-    $this->getHttpResponse()->setCookie('layout', $layout, strtotime('+1 month'));
+    $this->getHttpResponse()->setCookie('layout', $layout, strtotime('+1 month'), null, null, null, false);
     $this->flashMessage('Layout has been set');
     $this->redirect('default');
   }

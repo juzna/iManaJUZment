@@ -39,6 +39,12 @@ class SignPresenter extends BasePresenter {
 		$this->session->start(); // required by $form->addProtection()
 	}
 
+  public function formatLayoutTemplateFiles($presenter, $layout) {
+    return \Nette\Application\Presenter::formatLayoutTemplateFiles($presenter, $layout);
+  }
+
+
+
   /**
    * Check if we're in supported browser
    */
