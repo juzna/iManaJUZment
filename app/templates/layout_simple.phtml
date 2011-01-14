@@ -1,0 +1,76 @@
+{**
+ * Layout template for simple view
+ *
+ * @copyright  Copyright (c) 2010 Jan Dolecek - juzna.cz
+ * @package    iManaJUZment
+ *
+ *}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>ISP manager | {block #title|striptags}Welcome{/block}</title>
+
+  {* misc *}
+  <link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+  <meta name="description" content="Nette Framework web application skeleton">
+  <meta name="robots" content="{$robots}" n:ifset="$robots">
+
+  {* CSS files *}
+  <link rel="stylesheet" media="all" href="{$basePath}/css/reset.css" type="text/css" />
+  <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
+  <link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
+  <link n:tag-foreach="$presenter->getPageLayout()->getRequiredCssFiles() as $css" rel="stylesheet" href="{$basePath}/css/{$css}" type="text/css" />
+
+  {* JS files *}
+  <script type="text/javascript" src="{$basePath}/js/prototype.js"></script>
+  <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" href="{$basePath}/js/{$js}"></script>
+  <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
+  <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+  <script type="text/javascript">
+    var basePath = {$basePath};
+    $j = jQuery.noConflict(); // We have jQuery and Prototype together
+  </script>
+
+</head>
+
+<body>
+<div id="body">
+
+  {* header *}
+	<div id="header">
+    <h1>{include #title|striptags}</h1>
+    <a href="{link :Base:Menu:default}">Menu</a>
+    <a href="{link :Base:Homepage:default}">Homepage</a>
+  </div>
+
+  {* <form id="header_search" method="get" action="{link :Base:Search:search}">
+    <input type="text" class="inp" name="text" value="" ondblclick="this.value = '';" />
+    <button>Search</button>
+  </form> *}
+
+  <div id="content">
+    {foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
+    {include #content}
+  </div>
+
+  <div id="userinfo" n:inner-if="$user->loggedIn">
+    Signed in as {$user->identity->username}{if $user->identity->realName} ({$user->identity->realName}){/if}. <a href="{link :Base:Sign:out}">Sign out</a>
+  </div>
+
+	<div id="footer">
+		<div id="footer_developerShow" onclick="Developer.show();"></div>
+		<div class="con_left">
+			<p id="statusBarLoading"></p>
+			<p id="statusBar"></p>
+		</div>
+		<div class="con_right">
+      <p>Current date: {=date('Y-m-d')} | </p>
+			<p class="sign">Programmed by <a href="http://juzna.cz">juzna.cz</a>, designed by <a href="http://strajk.cz">strajk.cz</a></p>
+		</div>
+	</div>
+</div>
+
+
+</body>
+</html>

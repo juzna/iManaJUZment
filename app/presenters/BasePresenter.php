@@ -61,6 +61,29 @@ abstract class BasePresenter extends Presenter {
 
     return $files;
   }
+
+  /**
+   * Get layout to be used with this presenter
+   * @return ILayout
+   */
+  public function getPageLayout() {
+    return LayoutFactory::getLayout($this->getHttpRequest());
+  }
+
+  /**
+   * Get layout template path
+   * @override
+   * @param string $presenter
+   * @param string $layout
+   * @return string
+   */
+  public function formatLayoutTemplateFiles($presenter, $layout) {
+    if($file = $this->getPageLayout()->getLayoutTemplateFile()) return (array) $file;
+    elseif(!isset($file)) return parent::formatLayoutTemplateFiles($presenter, $layout);
+    else return array();
+  }
+
+
   
   /**
    * Get specific path for actual module

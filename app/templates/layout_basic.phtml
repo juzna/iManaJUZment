@@ -1,8 +1,8 @@
 {**
  * My Application layout template.
  *
- * @copyright  Copyright (c) 2009 John Doe
- * @package    MyApplication
+ * @copyright  Copyright (c) 2010 Jan Dolecek - juzna.cz
+ * @package    iManaJUZment
  *
  * @param string   $basePath web base path
  * @param string   $robots   tell robots how to index the content of a page (optinal)
@@ -23,40 +23,18 @@
   <link rel="stylesheet" media="all" href="{$basePath}/css/reset.css" type="text/css" />
   <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
   <link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
-
   <link rel="stylesheet" href="{$basePath}/css/layout_basic.css" type="text/css" />
-  <link rel="stylesheet" href="{$basePath}/css/content.css" type="text/css" />
-  <link rel="stylesheet" href="{$basePath}/css/selectbox.css" type="text/css" />
-  <link rel="stylesheet" href="{$basePath}/css/tabpanel.css" type="text/css" />
-  <link rel="stylesheet" href="{$basePath}/css/contextmenu.css" type="text/css" />
-  <link rel="stylesheet" href="{$basePath}/css/wizard.css" type="text/css" />
-  <link rel="stylesheet" href="{$basePath}/css/calendar.css" type="text/css">
-  <link rel="stylesheet" href="{$basePath}/css/isp.css" type="text/css">
-  <link rel="stylesheet" href="{$basePath}/css/input.css" type="text/css">
-  <link rel="stylesheet" href="{$basePath}/css/window.css" type="text/css">
+  <link n:tag-foreach="$presenter->getPageLayout()->getRequiredCssFiles() as $css" rel="stylesheet" href="{$basePath}/css/{$css}" type="text/css" />
 
   {* JS files *}
   <script type="text/javascript" src="{$basePath}/js/prototype.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/misc.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/scriptaculous.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/scriptaculous-builder.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/scriptaculous-effects.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/scope.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/tabpanel.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/calendar.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/calendar-cs.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/input.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/input-date.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/input-number.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/input-net.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/input-color.js"></script>
-  <script type="text/javascript" src="{$basePath}/js/window.js"></script>
-
-
+  <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" href="{$basePath}/js/{$js}"></script>
   <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
   <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
   <script type="text/javascript">
     var basePath = {$basePath};
+    var usedLayout = {= get_class($presenter->getPageLayout())};
+    var x = {= $presenter->getPageLayout()->getRequiredJsFiles()};
     $j = jQuery.noConflict(); // We have jQuery and Prototype together
   </script>
 
