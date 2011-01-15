@@ -44,7 +44,7 @@ if($allowCoolUrl) {
     'action' => 'default',
   ));
 }
-$router[] = new SimpleRouter('Base:Homepage:default', $allowCoolUrl ? Route::ONE_WAY : 0);
+$router[] = new SimpleRouter('Base:Sign:welcome', $allowCoolUrl ? Route::ONE_WAY : 0);
 
 
 
