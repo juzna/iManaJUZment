@@ -64,7 +64,17 @@ class UserAuthenticator extends Object implements Nette\Security\IAuthenticator 
 	 * @return string
 	 */
 	public function calculateHash($password, $method) {
-		return md5($password . str_repeat('*random salt*', 10));
+    switch($method) {
+      case 'md5':
+      case '':
+        return md5($password);
+
+      case 'sha1':
+        return sha1($password);
+
+      default:
+        throw new \NotImplementedException("Algorithm $method");
+    }
 	}
   
   /**
