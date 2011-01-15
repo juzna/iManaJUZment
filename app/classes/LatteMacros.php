@@ -24,11 +24,11 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
   public function __construct() {
     parent::__construct();
 
-    $this->macros['table'] = "<?php %:macroTable% ?>";
-    $this->macros['tabpanel'] = "<?php %:macroTabPanel% ?>";
-    $this->macros['/tabpanel'] = "<?php %:macroTabPanelEnd% ?>";
-    $this->macros['tabpage'] = "<?php %:macroTabPage% ?>";
-    $this->macros['/tabpage'] = "<?php %:macroTabPageEnd% ?>";
+    $this->macros['table'] = "%:macroTable%";
+    $this->macros['tabpanel'] = "%:macroTabPanel%";
+    $this->macros['/tabpanel'] = "%:macroTabPanelEnd%";
+    $this->macros['tabpage'] = "%:macroTabPage%";
+    $this->macros['/tabpage'] = "%:macroTabPageEnd%";
   }
 
   /**
@@ -44,8 +44,18 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
   public function macroTable($content, $modifiers) {
     $tableName = $this->fetchToken($content);
     $ds = $this->fetchToken($content);
-    
-    return '$presenter->drawTable(' . $this->formatString($tableName) . ', ' . $ds . $this->formatArray($content, ', ') . ')';
+
+    $codeTable = '<?php $presenter->drawTable(' . $this->formatString($tableName) . ', ' . $ds . $this->formatArray($content, ', ') . '); ?>';
+
+    // We're in TabPanel, but not in page -> this table is another TabPage
+    if(isset($this->tabPanelStack[0]['.inPage']) && !$this->tabPanelStack[0]['.inPage']) {
+      return $this->macroTabPage($tableName, '') . $codeTable . $this->macroTabPageEnd('', '');
+    }
+
+    // Just a table
+    else {
+      return $codeTable;
+    }
   }
 
 
@@ -62,7 +72,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
       'pages' => array(),
     ));
 
-    return '?><div class="tabPanel" id="tabPanel-' . $name . '"> <?php ';
+    return '<div class="tabPanel" id="tabPanel-' . $name . '">';
   }
 
   // End of tab-panel
@@ -70,7 +80,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     // Remove this tab-panel from stack
     $tabPanel = array_shift($this->tabPanelStack);
 
-    return '?>' . $this->renderTabPanelContents($tabPanel) . '</div><?php';
+    return $this->renderTabPanelContents($tabPanel) . '</div>';
   }
 
   // Start of a page
@@ -91,14 +101,16 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     );
 
     $tabPanel['.lastBlockName'] = $blockName;
+    $tabPanel['.inPage'] = true;
     $this->namedBlocks[$blockName] = $blockName;
-    return "{block $blockName}";
+    return "<?php {block $blockName} ?>";
   }
 
   // End of a page
   public function macroTabPageEnd($content, $modifiers) {
+    $this->tabPanelStack[0]['.inPage'] = false;
     $blockName = $this->tabPanelStack[0]['.lastBlockName'];
-    return "{/block $blockName}";
+    return "<?php {/block $blockName} ?>";
   }
 
   // Content renderer
