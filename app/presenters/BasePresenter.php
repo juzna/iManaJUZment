@@ -119,6 +119,25 @@ abstract class BasePresenter extends Presenter {
     $template->registerFilter($latte);
   }
 
+  /**
+   * Generate link with backlink parameter
+   * @param string $destination
+   * @param array $args
+   * @return string
+   */
+  public function link_back($destination, $args = array()) {
+    // Prepare backlink
+    static $backlink = null;
+    if(!isset($backlink)) $backlink = $this->application->storeRequest();
+    
+    // Create link
+    if(!is_array($args)) $args = (array) $args;
+    $args['backlink'] = $backlink;
+    return $this->link($destination, $args);
+  }
+
+
+
 
 	/******************** Tables *********************/
   

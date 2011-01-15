@@ -35,7 +35,7 @@
 
 {tabpanel AP}
 {tabpage basic, "Basic info"}
-  <a href="{link edit, 'ap', $AP->ID}">Edit</a>
+  <a href="{backlink edit, 'ap', $AP->ID}">Edit</a>
   <table>
     <tr><th>ID:</th>              <td>{$AP->ID}</td></tr>
     <tr><th>Network:</th>         <td>{$AP->network->name} ({$AP->network->ID})</td></tr>

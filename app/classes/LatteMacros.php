@@ -29,6 +29,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     $this->macros['/tabpanel'] = "%:macroTabPanelEnd%";
     $this->macros['tabpage'] = "%:macroTabPage%";
     $this->macros['/tabpage'] = "%:macroTabPageEnd%";
+    $this->macros['backlink'] = "<?php echo %:escape%(%:macroBacklink%); ?>";
   }
 
   /**
@@ -56,6 +57,14 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     else {
       return $codeTable;
     }
+  }
+
+  /**
+   * Generate link with backlink argument
+   * @return string
+   */
+  public function macroBacklink($content, $modifiers) {
+    return $this->formatModifiers('$presenter->link_back(' . $this->formatLink($content) .')', $modifiers);
   }
 
 

@@ -19,6 +19,25 @@
 use ActiveEntity\Entity;
 
 class DashboardPresenter extends BasePresenter {
+  /**
+   * @var string Key of a link which stores original request before going to this page
+   * @persistent
+   */
+  public $backlink = '';
+
+  /**
+   * @var string Destination for redirection after changes are saved
+   * @persistent
+   */
+  public $redirect;
+
+  /**
+   * @var string Page to be redirected by default
+   */
+  public $defaultRedirect = 'default';
+
+
+
   /**************   Basic renderers    *****************/
 
   /**
@@ -142,7 +161,7 @@ class DashboardPresenter extends BasePresenter {
     $row->flush();
 
     $this->flashMessage("Deleted!");
-    $this->redirect('default');
+    $this->redirectOnSuccess();
   }
 
 
@@ -195,7 +214,16 @@ class DashboardPresenter extends BasePresenter {
     if($frm['save']->isSubmittedBy()) {
       $frm->saveForm();
       $this->flashMessage('Saved!');
-      $this->redirect('default');
+      $this->redirectOnSuccess();
     }
+  }
+
+  /**
+   * Action is sucessfully finished -> perform default redirect
+   */
+  protected function redirectOnSuccess() {
+    if($this->redirect) $this->redirect($this->redirect);
+    if($this->backlink) $this->application->restoreRequest($this->backlink);
+    $this->redirect($this->defaultRedirect);
   }
 }
