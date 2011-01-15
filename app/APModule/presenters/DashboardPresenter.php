@@ -43,6 +43,7 @@ class DashboardPresenter extends \DashboardPresenter {
    * @param int $id ID of access point
    */
   public function renderDetail($id) {
+    $this->template->tabpanel_page = @$_GET['tabpanel_page'];
     $this->template->AP = \AP::find($id);
     $this->template->Tags =\APTag::getRepository()->findAll();
   }
