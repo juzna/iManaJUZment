@@ -109,7 +109,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     $ret[] = '<ol class="tabPanelTabs">';
     $first = true;
     foreach($tabPanel['pages'] as $page) {
-      $codeHref = '<?php echo ' . $this->macroLink('this, tabpanel_page => ' . $page['name']) . ';?>';
+      $codeHref = '<?php echo ' . $this->macroLink('this, tabpanel_page => ' . $page['name'], '') . ';?>';
       $codeIsActual = '<?php if(isset($tabpanel_page) && $tabpanel_page == ' .  var_export($page['name'], true) . ') echo " active"; ?>';
       $first = false;
 
