@@ -18,12 +18,12 @@
 .tabPanel .tabPanelTabs {margin-left: 10px; width: 100%; height: 32px;}
 .tabPanel .tabPanelTabs > li.tab {position: relative; float: left; display: block; margin-top: 4px; margin-right: -1px; height: 28px; color: #FFFFFF; font-weight: bold; white-space: nowrap; cursor: pointer;}
 .tabPanel .tabPanelTabs > li.tab span.left, .tabPanel .tabPanelTabs > li.tab span.right {display: block; height: 28px; width: 8px;}
-.tabPanel .tabPanelTabs > li.tab span.content {display: block; padding: 0px 12px !important; height: 28px; line-height: 28px; background-image: url(../img/theme_basic/tabPanel_tab.png); background-position: 0px 0px; background-repeat: repeat-x;}
+.tabPanel .tabPanelTabs > li.tab .content {display: block; padding: 0px 12px !important; height: 28px; line-height: 28px; background-image: url(../img/theme_basic/tabPanel_tab.png); background-position: 0px 0px; background-repeat: repeat-x;}
 .tabPanel .tabPanelTabs > li.tab span.left {float: left; background-image: url(../img/theme_basic/tabPanel_tab_left.png); background-position: 0px 0px; background-repeat: repeat-x;}
 .tabPanel .tabPanelTabs > li.tab span.right {float: right; background-image: url(../img/theme_basic/tabPanel_tab_right.png); background-position: 0px 0px; background-repeat: repeat-x;}
 .tabPanel .tabPanelTabs > li.tab .visDiv {display: none; position: absolute; top: 0px; right: -5px; width: 5px; height: 32px; background: url(../img/theme_basic/tabPanel_tab_visDiv.png) no-repeat; z-index: 9;}
 .tabPanel .tabPanelTabs > li.tab:hover, .tabPanel .tabPanelTabs > li.tab:hover  span {background-position: 0px -28px;}
 .tabPanel .tabPanelTabs > li.tab.active {height: 32px; margin-top: 0px; cursor: default;}
-.tabPanel .tabPanelTabs > li.tab.active, .tabPanel .tabPanelTabs > li.tab.active  span {height: 32px; line-height: 32px; color: #666666;; background-position: 0px -56px;}
+.tabPanel .tabPanelTabs > li.tab.active, .tabPanel .tabPanelTabs > li.tab.active span, .tabPanel .tabPanelTabs > li.tab.active a {height: 32px; line-height: 32px; color: #666666;; background-position: 0px -56px;}
 .tabPanel .tabPanelTabs > li.tab.active .visDiv  {display: block;}
 .tabPanel .tabPanelContent {margin-right: -10px; padding: 10px 32px 20px 12px; background: url(../img/theme_basic/tabPanel_bottom.png) no-repeat right bottom;}

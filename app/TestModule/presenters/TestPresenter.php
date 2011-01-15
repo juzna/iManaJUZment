@@ -20,4 +20,11 @@ namespace TestModule;
 
 class TestPresenter extends \BasePresenter {
 
+  /**
+   * @return void
+   */
+  function renderTabpanel() {
+    $this->template->tabpanel_page = @$_GET['tabpanel_page'];
+  }
+
 }

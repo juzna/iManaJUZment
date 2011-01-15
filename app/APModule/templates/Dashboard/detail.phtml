@@ -33,11 +33,9 @@
   </li>
 </ul>
 
-<div class="tabPanel" id="tabPanelAP">
-
-<fieldset>
-  <legend>Basic info</legend>
-  <a href="{link edit, 'ap', $AP->ID}">Edit</a>
+{tabpanel AP}
+{tabpage basic, "Basic info"}
+  <a href="{backlink edit, 'ap', $AP->ID}">Edit</a>
   <table>
     <tr><th>ID:</th>              <td>{$AP->ID}</td></tr>
     <tr><th>Network:</th>         <td>{$AP->network->name} ({$AP->network->ID})</td></tr>
@@ -74,7 +72,7 @@
     <tr><th>isDeleted:</th>       <td>{$AP->isDeleted}</td></tr>
     <tr><th>deleted:</th>         <td>{$AP->deleted}</td></tr>
   </table>
-</fieldset>
+{/tabpage}
 
 {table APSwIf, $AP->SwInterfaces, AP => $AP->ID }
 {table APIP, $AP->IPs, AP => $AP->ID }
@@ -82,9 +80,8 @@
 {table APAntenna, $AP->Antennas, AP => $AP->ID }
 {table APHw, $AP->Hardware, AP => $AP->ID }
 {table APVlan, $AP->Vlans, AP => $AP->ID}
-{table APPort, $AP->Ports, AP => $AP->ID }
 {table APCoverage, $AP->Coverages, AP => $AP->ID }
 {table APRoute, $AP->Routes, AP => $AP->ID }
 {table APService, $AP->Services, AP => $AP->ID }
 
-</div>
+{/tabpanel}
