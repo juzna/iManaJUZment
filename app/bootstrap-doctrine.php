@@ -53,6 +53,11 @@ ActiveEntity\Entity::setEntityManager($em);
 
 $em->getEventManager()->addEventSubscriber(new \ActiveEntity\Events\DefaultValues);
 
+
+// Add entity manager to context
+Environment::getApplication()->getContext()->addService('Doctrine\\ORM\\EntityManager', $em);
+$config->setSQLLogger(Nella\Doctrine\Panel::createAndRegister());
+
 /**
  * @return Doctrine\ORM\EntityManager
  */
