@@ -67,6 +67,10 @@ class SignPresenter extends BasePresenter {
     $this->browserCheck();
   }
 
+  public function renderTest() {
+    $this->template->cntUsers = q("select count(u.ID) from User u")->getSingleScalarResult();
+  }
+
   /**
    * Login was ok -> redirect
    */
