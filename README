@@ -5,3 +5,30 @@ Used 3rd party libraries:
  - Nette - from archive, 2.0alpha (should find, how to convert Nette from Git to php5.3 version and replace)
  - Dibi - from git (maybe wont be needed)
 
+
+Instalation:
+  # clone git repository
+  git clone git://github.com/juzna/iManaJUZment.git isp
+  cd isp
+
+  # download submodules
+  git submodules init
+  git submodules update
+
+  # set-up development mode
+  touch app/development
+
+  # prepare temp/ and log/ dir
+  mkdir -m 0777 temp log
+
+  # update .htaccess file to your needs (rewrite config may need changes)
+  nano document_root/.htaccess
+
+  # set-up apache's virtualhost to document_root/ directory
+
+  # prepare mysql database and execute initial SQL script
+
+  # set database connection details in app/config.ini
+
+  # voila, you should be running
+  
