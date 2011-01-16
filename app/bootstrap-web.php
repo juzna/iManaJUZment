@@ -23,8 +23,11 @@ require_once __DIR__ . '/bootstrap-common.php';
 // 3a) get and setup a front controller
 $application = Environment::getApplication();
 $application->errorPresenter = 'Error';
-//$application->catchExceptions = TRUE;
+$application->catchExceptions = TRUE;
 
+// Set session path
+$session = Environment::getSession();
+$session->setSavePath(TMP_DIR . '/sessions/');
 
 // 3b) establish database connection
 //$application->onStartup[] = 'UserAuthenticator::initialize';
