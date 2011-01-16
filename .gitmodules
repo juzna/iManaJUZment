@@ -9,7 +9,7 @@
 	url = juzna@juzna.cz:projects/doctrine-orm.git
 [submodule "3rdParty/doctrine2/dbal"]
 	path = 3rdParty/doctrine2/dbal
-	url = url = juzna@juzna.cz:projects/doctrine-dbal.git
+	url = juzna@juzna.cz:projects/doctrine-dbal.git
 [submodule "3rdParty/doctrine2/migrations"]
 	path = 3rdParty/doctrine2/migrations
 	url = git://github.com/doctrine/migrations.git
