@@ -8,4 +8,7 @@ data/ormd/export2/
 data/ormd/export3/
 /.idea
 /app/development
+/temp
+/log
+
 
