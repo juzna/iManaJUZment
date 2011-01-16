@@ -18,7 +18,7 @@
 
 use ActiveEntity\Entity;
 
-class DashboardPresenter extends BasePresenter {
+abstract class DashboardPresenter extends BasePresenter {
   /**
    * @var string Key of a link which stores original request before going to this page
    * @persistent
