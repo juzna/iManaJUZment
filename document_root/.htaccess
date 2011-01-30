@@ -1,6 +1,8 @@
 # disable directory listing
 Options +Indexes
 
+php_value session.save_path "/home/juzna/projects/servisweb3/temp/session/"
+
 # configure PHP
 # <IfModule mod_php5.c>
 #    php_flag magic_quotes_gpc off
