@@ -42,6 +42,9 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     return empty($data) ? array() : eval($data . ';');
   }
 
+  /**
+   * Draws a table or a tab-page with a table
+   */
   public function macroTable($content, $modifiers) {
     $tableName = $this->fetchToken($content);
     $ds = $this->fetchToken($content);
@@ -128,11 +131,10 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
 
     // Display header
     $ret[] = '<ol class="tabPanelTabs">';
-    $first = true;
+    $ret[] = '<?php $_tabPanelPage = $presenter->getParam("tabpanel_' . $tabPanel['name'] . '_page", "' . $tabPanel['pages'][0]['name'] . '"); ?>';
     foreach($tabPanel['pages'] as $page) {
-      $codeHref = '<?php echo ' . $this->macroLink('this, tabpanel_page => ' . $page['name'], '') . ';?>';
-      $codeIsActual = '<?php if(isset($tabpanel_page) && $tabpanel_page == ' .  var_export($page['name'], true) . ') echo " active"; ?>';
-      $first = false;
+      $codeHref = '<?php echo ' . $this->macroLink('this, tabpanel_' . $tabPanel['name'] . '_page => ' . $page['name'], '') . ';?>';
+      $codeIsActual = '<?php if($_tabPanelPage === ' .  var_export($page['name'], true) . ') echo " active"; ?>';
 
       $ret[] = '<li class="tab' . $codeIsActual .'">' .
         '<span class="left"></span><span class="right"></span>' .
@@ -145,7 +147,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     // Display individual tabs
     $ret[] = '<div class="tabPanelContent">';
     foreach($tabPanel['pages'] as $page) {
-      $ret[] = '<?php if(isset($tabpanel_page) && $tabpanel_page == ' .  var_export($page['name'], true) . ') { ?>';
+      $ret[] = '<?php if($_tabPanelPage === ' .  var_export($page['name'], true) . ') { ?>';
       $ret[] = "<div class=\"tabPage\" id=\"{$page['id']}\">";
       $ret[] = "<!--\n" . var_export($page, true) . "\n-->";
       $ret[] = '<?php ' . $this->macroInclude('#' . $page['id'], '') . '; ?>';
@@ -154,11 +156,11 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     }
 
     // Implicit tab
-    {
+    /* {
       $ret[] = '<?php if(!isset($tabpanel_page)) { ?>';
       $ret[] = "<div class=\"tabPage implicit\">Choose a tab</div>";
       $ret[] = '<?php } ?>';
-    }
+    }*/
     $ret[] = '</div>';
 
     return implode("\n", $ret);
