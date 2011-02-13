@@ -139,9 +139,17 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
   protected function _setupTableFieldFromMetadata(TableField $field, array $def) {
     if(!$md = @$def['fieldMetadata']) return;
 
-    if($link = @$md['ActiveEntity\\Annotations\\Link']) $field->parameters['link'] = $link;
+    if($link = @$md['ActiveEntity\\Annotations\\Link']) $field->parameters['link'] = $this->mergeMetadata($this->metadata->classMetadata['ActiveEntity\\Annotations\\Links'], $link);
     if($p = @$md['ActiveEntity\\Annotations\\Show']) $field->parameters['show'] = $p;
   }
+
+  protected function mergeMetadata($default, $md) {
+    if($default) foreach($default as $k => $v) {
+      if($k !== 'value' && property_exists($md, $k) && !isset($md->$k)) $md->$k = $v;
+    }
+    return $md;
+  }
+
   
   /**
    * Get variable which is primary key
