@@ -27,8 +27,9 @@ class BasicLayout extends DefaultLayout {
     'misc.js',
     'scriptaculous.js', 'scriptaculous-builder.js', 'scriptaculous-effects.js',
     'scope.js',
+    'dialog.js',
   //  'tabpanel.js',
-    'window.js',
+  //  'window.js',
     'calendar.js', 'calendar-cs.js',
     'input.js', 'input-date.js', 'input-number.js', 'input-net.js', 'input-color.js',
   );

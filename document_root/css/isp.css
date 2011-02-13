@@ -16,3 +16,13 @@
 
 
 #tagChooser { position: absolute; background: white; min-width: 200px; min-height: 100px; border: 1px solid gray; }
+
+
+
+/* Dialogs */
+.dialog_overlay { position: absolute; top: 0; left: 0; height: 100%; width: 100%; z-index: 250; overflow: visible; }
+.dialog { position: relative; max-width: 500px; top: 200px; margin: auto; background:rgba(82,82,82,0.7); padding: 10px; border-radius: 8px; -webkit-border-radius:8px }
+.dialog > span.close { position: absolute; right: 18px; font-weight: bold; cursor: pointer; top: 12px; }
+.dialog > span.close:hover { color: black; }
+.dialog > h2 { background:#6d84b4;border:1px solid #3b5998;border-bottom:none;color:#fff;font-size:14px;font-weight:bold;margin:0; }
+.dialog > div { background:#fff; border:1px solid #555; border-top-width:0 }
