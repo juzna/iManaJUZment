@@ -24,7 +24,17 @@ class InetSpeed extends Basebehaviour {
   	$fields = array('min', 'max', 'burst', 'tresh', 'time');
   	$types = array('tx', 'rx');
   	foreach($fields as $field) {
-  	  foreach($types as $type) self::hasColumn($type . $field, 'string', 20, array());
+  	  foreach($types as $type) self::hasColumn($type . $field, 'string', 20,
+        // Params
+        array(
+
+        ),
+
+        // Metadata
+        array(
+          'ActiveEntity\Annotations\Title' => new \ActiveEntity\Annotations\Title(array('value' => ucfirst($field) . ' ' . $type . ' speed'))
+        )
+      );
   	}
   	
   	self::hasColumn('txpriority', 'integer', 2, array());

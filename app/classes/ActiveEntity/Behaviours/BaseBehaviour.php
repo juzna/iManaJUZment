@@ -28,13 +28,14 @@ class BaseBehaviour {
   /**
    * Add column to definition
    */
-  public static function hasColumn($name, $type, $len = null, $params = null) {
+  public static function hasColumn($name, $type, $len = null, $params = null, $metadata = null) {
     $params = (array) $params;
     $params['fieldName'] = $name;
     $params['columnName'] = $name;
     $params['type'] = $type;
     $params['length'] = $len;
     $params['nullable'] = true;
+    $params['fieldMetadata'] = $metadata;
     
     self::$cols[get_called_class()][] = $params;
   }
