@@ -214,6 +214,11 @@ abstract class DashboardPresenter extends BasePresenter {
     if($frm['save']->isSubmittedBy()) {
       $frm->saveForm();
       $this->flashMessage('Saved!');
+      if(!empty($_SERVER['HTTP_WANTJSON'])) {
+        $this->payload->state = 1;
+        $this->payload->message = 'Saved!';
+        $this->terminate();
+      }
       $this->redirectOnSuccess();
     }
   }

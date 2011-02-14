@@ -9,11 +9,12 @@
 
 var Dialog = Class.create({
   defaultOptions: {
+    handleForms: true,
     title: 'new window'
   },
 
   initialize: function(options) {
-    this.options = Object.extend(Object.clone(Dialog.defaultOptions), options || {});
+    this.options = Object.extend(Object.clone(this.defaultOptions), options || {});
   },
 
   clear: function() {
@@ -32,6 +33,8 @@ var Dialog = Class.create({
       this.elTitle = Builder.node('h2').update(this.options.title || ''),
       this.elContent = Builder.node('div', { className: 'content' })
     ]));
+
+    if(this.options.handleForms) this.elContainer.observe('submit', this.handleSubmit.bindAsEventListener(this));
   },
 
   update: function(data) {
@@ -53,18 +56,64 @@ var Dialog = Class.create({
 
   show: function() {
     if(!this.elContainer) this.initDOM();
+    Dialog.elOverlay.show();
     this.elContainer.show();
     return this;
   },
 
   hide: function() {
     if(this.elContainer) this.elContainer.hide();
+    if(Dialog.elOverlay) Dialog.elOverlay.hide();
     return this;
   },
 
   destroy: function() {
     this.elContainer.remove(); // Remove container from DOM
+    if(Dialog.elOverlay) Dialog.elOverlay.hide();
     this.clear();
+  },
+
+  handleSubmit: function(ev) {
+    console.log('Handeled form submit', ev, ev.target);
+    ev.stop();
+    var frm = ev.target, orig = frm._submittedBy;
+
+    // There is original button which submitted the form
+    if(orig) {
+      if(orig.name == 'cancel') {
+        this.destroy();
+        return;
+      }
+    }
+
+    // Send ajax
+    frm.request({
+      requestHeaders: {
+        wantJSON: 1
+      },
+      
+      onComplete: function(transport) {
+        if(transport.responseJSON && transport.responseJSON.state) {
+          this.setTitle(transport.responseJSON.message);
+          this.update('');
+          window.setTimeout(this.destroy.bind(this), 500);
+        }
+        else {
+          alert(transport.responseJSON.message || 'Unknown error occurred');
+        }
+      }.bind(this)
+    })
   }
 
+
+});
+
+
+// For all forms, save button which was used to submit it
+document.observe('click', function(ev) {
+  var trg = ev.target;
+  if((trg instanceof HTMLButtonElement || trg instanceof HTMLInputElement) && (trg.type == 'submit' || trg.type == 'image') && trg.form) {
+    trg.form._submittedByEvent = ev;
+    trg.form._submittedBy = trg;
+  }
 });
