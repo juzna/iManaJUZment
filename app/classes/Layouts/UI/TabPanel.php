@@ -98,7 +98,7 @@ class TabPanel {
     $ret[] = '</ul>';
     $ret[] = '</div>';
 
-    $ret[] = '<script language="text/javascript">$j(function() { $j("#tabPanel-' . $tabPanel['name'] . '").tabs(); });</script>';
+    $ret[] = '<script type="text/javascript">$j(function() { $j("#tabPanel-' . $tabPanel['name'] . '").tabs(); });</script>';
 
     return implode("\n", $ret);
   }
