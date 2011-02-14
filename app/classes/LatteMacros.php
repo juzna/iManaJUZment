@@ -83,8 +83,6 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
       'name' => $name,
       'pages' => array(),
     ));
-
-    return '<div class="tabPanel" id="tabPanel-' . $name . '">';
   }
 
   // End of tab-panel
@@ -92,7 +90,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     // Remove this tab-panel from stack
     $tabPanel = array_shift($this->tabPanelStack);
 
-    return $this->renderTabPanelContents($tabPanel) . '</div>';
+    return $this->renderTabPanelContents($tabPanel);
   }
 
   // Start of a page
@@ -130,6 +128,7 @@ class LatteMacros extends \Nette\Templates\LatteMacros {
     $ret = array();
 
     // Display header
+    $ret[] = '<div class="tabPanel" id="tabPanel-' . $tabPanel['name'] . '">';
     $ret[] = '<ol class="tabPanelTabs">';
     $ret[] = '<?php $_tabPanelPage = $presenter->getParam("tabpanel_' . $tabPanel['name'] . '_page", "' . $tabPanel['pages'][0]['name'] . '"); ?>';
     foreach($tabPanel['pages'] as $page) {

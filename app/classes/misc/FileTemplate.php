@@ -14,22 +14,20 @@
  *
  * @license http://www.gnu.org/licenses/gpl.txt
  */
+ 
+class FileTemplate extends \Nette\Templates\FileTemplate {
+  protected static $layoutName = null;
 
-
-namespace TestModule;
-
-class TestPresenter extends \BasePresenter {
-
-  /**
-   * @return void
-   */
-  function renderTabpanel() {
-    $this->template->tabpanel_page = @$_GET['tabpanel_page'];
+  protected function getCacheNamespace() {
+    return parent::getCacheNamespace() . '-' . self::getLayoutName();
   }
 
-  function renderBehavioralMetadata() {
-    \Nette\Debug::dump(\APSwIf::getClassMetadata()->getFieldMapping('rxmin'));
+  protected function getLayoutName() {
+    // Find layout name
+    if(self::$layoutName === null) {
+      self::$layoutName = LayoutFactory::getLayout(\Nette\Environment::getHttpRequest())->getName();
+    }
 
+    return self::$layoutName;
   }
-
 }

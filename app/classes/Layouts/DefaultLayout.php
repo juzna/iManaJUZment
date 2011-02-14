@@ -37,6 +37,14 @@ abstract class DefaultLayout implements ILayout {
   protected $templateName = null;
 
   /**
+   * Get name of this layout
+   * @return string
+   */
+  function getName() {
+    return get_class($this);
+  }
+
+  /**
    * Set-up environment or global variables which are needed for this layout (like AjaxConent can disable Debug panel)
    * @return void
    */
@@ -81,4 +89,16 @@ abstract class DefaultLayout implements ILayout {
     throw new \NotImplementedException('Control not known');
     // TODO: Implement renderFormControl() method.
   }
+
+  /**
+   * Renders a component
+   * @param  $name
+   * @param  $definition
+   * @return void
+   */
+  function renderComponent($name, $definition) {
+    // TODO: Implement renderComponent() method.
+  }
+
+
 }

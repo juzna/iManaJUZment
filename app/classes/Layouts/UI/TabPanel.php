@@ -16,20 +16,15 @@
  */
 
 
-namespace TestModule;
+namespace Layout\Components;
 
-class TestPresenter extends \BasePresenter {
-
-  /**
-   * @return void
-   */
-  function renderTabpanel() {
-    $this->template->tabpanel_page = @$_GET['tabpanel_page'];
-  }
-
-  function renderBehavioralMetadata() {
-    \Nette\Debug::dump(\APSwIf::getClassMetadata()->getFieldMapping('rxmin'));
+class TabPanel {
+  public static function render($definition) {
 
   }
+
+
+
+
 
 }
