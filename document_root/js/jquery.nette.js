@@ -71,12 +71,6 @@ if (typeof jQuery != 'function') {
 
 
 jQuery(function($) {
-
-	$.ajaxSetup({
-		success: $.nette.success,
-		dataType: 'json'
-	});
-
 	$.nette.createSpinner();
 
 	// apply AJAX unobtrusive way
@@ -84,7 +78,11 @@ jQuery(function($) {
 		event.preventDefault();
 		if ($.active) return;
 
-		$.post(this.href, $.nette.success);
+		$.ajax({
+      url: this.href,
+      success: $.nette.success,
+      dataType: 'json'
+    });
 
 		$.nette.spinner.css({
 			position: 'absolute',
