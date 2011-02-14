@@ -6,9 +6,10 @@
  * @package    MyApplication
  */
 
-use Nette\Environment;
-use Nette\Application\Route;
-use Nette\Application\SimpleRouter;
+use Nette\Environment,
+  Nette\Application\Route,
+  Nette\Application\SimpleRouter,
+  Nette\Debug;
 
 
 // Step 1: Load Nette Framework
@@ -17,7 +18,7 @@ use Nette\Application\SimpleRouter;
 require_once __DIR__ . '/bootstrap-common.php';
 
 
-
+Debug::addPanel(new LayoutPanel);
 
 // Step 3: Configure application
 // 3a) get and setup a front controller
@@ -53,4 +54,3 @@ $router[] = new SimpleRouter('Base:Sign:welcome', $allowCoolUrl ? Route::ONE_WAY
 
 // Step 5: Run the application!
 $application->run();
-

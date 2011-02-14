@@ -49,6 +49,14 @@ class LayoutFactory implements ILayoutFactory {
   }
 
   /**
+   * Get active layout
+   * @return ILayout
+   */
+  public static function getActiveLayout() {
+    return self::getLayout(\Nette\Environment::getHttpRequest(), false);
+  }
+
+  /**
    * Get class name of layout to be used based on HTTP request
    * @param HttpRequest $request
    * @return string
