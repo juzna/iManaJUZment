@@ -208,6 +208,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
           $linkDefinition = array(
             'title' => ucfirst($item),
             'view' => $item,
+            'class' => 'in_dialog',
             'params' => array(
               $links->alias,
               '$' . $indexField,
@@ -269,6 +270,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
           $linkDefinition = array(
             'title' => ucfirst($item),
             'view' => $item,
+            'class' => 'in_dialog',
             'params' => array(
               $links->alias,
             )

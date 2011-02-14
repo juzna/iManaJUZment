@@ -57,6 +57,7 @@ class Link extends Annotation {
   public $view;
   public $action;
   public $params;
+  public $class;
 }
 class HeaderLink extends Link {}
 

@@ -227,7 +227,7 @@ class SimpleRenderer extends \Nette\Object implements ITableRenderer {
     $params = implode(', ', $params);
 
     $href = '{plink ' . $target . ($params ? ", $params" : '') . '}';
-    echo '    <a href="' . $href . '">' . $link->title . '</a>';
+    echo '    <a href="' . $href . '" class="' . $link->class . '">' . $link->title . '</a>';
   }
 
   /**

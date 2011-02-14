@@ -108,12 +108,20 @@ var Dialog = Class.create({
 
 });
 
+(function($) {
+  $(function() {
+    $('a.in_dialog').live('click', function(ev) {
+      ev.preventDefault();
+      var d = new Dialog({title: jQuery(this).text() }).show().update('Loading...').load(this.href + ' #content');
+    });
 
-// For all forms, save button which was used to submit it
-document.observe('click', function(ev) {
-  var trg = ev.target;
-  if((trg instanceof HTMLButtonElement || trg instanceof HTMLInputElement) && (trg.type == 'submit' || trg.type == 'image') && trg.form) {
-    trg.form._submittedByEvent = ev;
-    trg.form._submittedBy = trg;
-  }
-});
+    // For all forms, save button which was used to submit it
+    $('body').bind('click', function(ev) {
+      var trg = ev.target;
+      if((trg instanceof HTMLButtonElement || trg instanceof HTMLInputElement) && (trg.type == 'submit' || trg.type == 'image') && trg.form) {
+        trg.form._submittedByEvent = ev;
+        trg.form._submittedBy = trg;
+      }
+    });
+  });
+})(jQuery);
