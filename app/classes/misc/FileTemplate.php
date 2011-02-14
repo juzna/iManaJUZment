@@ -19,7 +19,7 @@ class FileTemplate extends \Nette\Templates\FileTemplate {
   protected static $layoutName = null;
 
   protected function getCacheNamespace() {
-    return parent::getCacheNamespace() . '-' . self::getLayoutName();
+    return parent::getCacheNamespace() . '-' . $this->getLayoutName();
   }
 
   protected function getLayoutName() {

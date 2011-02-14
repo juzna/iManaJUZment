@@ -54,7 +54,7 @@ class LayoutFactory implements ILayoutFactory {
    * @return string
    */
   protected static function getClassName(HttpRequest $request) {
-    if($request->getHeader('ajax-content', 0)) return 'AjaxContentLayout';
+    if($request->getHeader('ajax-content', 0) || $request->getQuery('ajax-content', 0)) return 'AjaxContentLayout';
 
     // Layout name given in cookie
     if($layout = $request->getCookie('layout') or $layout = $request->getQuery('layout')) {
@@ -72,6 +72,7 @@ class LayoutFactory implements ILayoutFactory {
   public static function getSupportedLayouts() {
     return array(
       'basic'       => "Basic",
+      'basicJQuery' => "jQuery",
       'simple'      => "Simple",
       'ajaxContent' => "Content for AJAX requests",
       'tablet'      => "iPad",

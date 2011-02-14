@@ -36,6 +36,13 @@ interface ILayout {
   function activate();
 
   /**
+   * Check if this layout has a given feature
+   * @param string $name Feature name
+   * @return bool
+   */
+  function hasFeature($name);
+
+  /**
    * Get outer template for given layout
    * @param PresenterRequest $presenterRequest
    * @return string Path to template
@@ -69,5 +76,5 @@ interface ILayout {
    * @param  $definition
    * @return void
    */
-  function renderComponent($name, $definition);
+  function renderComponent($name, $definition, $options = null);
 }
