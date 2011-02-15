@@ -20,7 +20,7 @@ namespace Juz\Form;
 class DatePicker extends \Neuron\Form\DatePicker {
   public function __construct($label = NULL, $cols = NULL, $maxLength = NULL) {
     parent::__construct($label, $cols, $maxLength);
-    $this->setType('date');
+    // $this->setType('date');
   }
 
   public function getControl() {
