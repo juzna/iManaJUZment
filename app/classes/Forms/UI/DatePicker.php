@@ -18,13 +18,14 @@
 namespace Juz\Form;
 
 class DatePicker extends \Neuron\Form\DatePicker {
-  // just put it in our namespace ;)
+  public function __construct($label = NULL, $cols = NULL, $maxLength = NULL) {
+    parent::__construct($label, $cols, $maxLength);
+    $this->setType('date');
+  }
 
   public function getControl() {
     // TODO: add calendar icon to this
     // return (string) parent::getControl() . '<span>Date</span>';
     return parent::getControl();
   }
-
-
 }

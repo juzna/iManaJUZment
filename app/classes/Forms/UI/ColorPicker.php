@@ -25,6 +25,7 @@ class ColorPicker extends TextInput {
   public function __construct($label = NULL, $cols = NULL, $maxLength = NULL) {
     parent::__construct($label, $cols, $maxLength);
     $this->setAttribute('class', 'colorpicker');
+    $this->setType('color');
   }
 
   public function setValue($value) {

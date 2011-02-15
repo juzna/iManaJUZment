@@ -5641,6 +5641,8 @@ jQuery.fn.extend({
 						res.responseText );
 				}
 
+        self.trigger('content-loaded'); // Trigger event
+
 				if ( callback ) {
 					self.each( callback, [res.responseText, status, res] );
 				}

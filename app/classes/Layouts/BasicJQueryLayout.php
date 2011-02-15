@@ -34,6 +34,7 @@ class BasicJQueryLayout extends DefaultLayout {
     'calendar.js', 'calendar-cs.js',
     'input.js', 'input-date.js', 'input-number.js', 'input-net.js', 'input-color.js',
     'jquery.ui.selectmenu.js',
+    'layout.js',
   );
 
   protected static $features = array('jquery');
