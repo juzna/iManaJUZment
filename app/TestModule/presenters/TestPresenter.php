@@ -32,4 +32,9 @@ class TestPresenter extends \BasePresenter {
 
   }
 
+  function createComponentTestForm() {
+    $frm = new \Nette\Application\AppForm;
+    $frm['ap'] = new \Juz\Form\EntitySelectPicker('Acess Point', 'AP');
+    return $frm;
+  }
 }
