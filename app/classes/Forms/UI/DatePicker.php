@@ -19,4 +19,12 @@ namespace Juz\Form;
 
 class DatePicker extends \Neuron\Form\DatePicker {
   // just put it in our namespace ;)
+
+  public function getControl() {
+    // TODO: add calendar icon to this
+    // return (string) parent::getControl() . '<span>Date</span>';
+    return parent::getControl();
+  }
+
+
 }
