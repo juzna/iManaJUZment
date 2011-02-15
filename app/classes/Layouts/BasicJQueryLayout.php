@@ -20,6 +20,7 @@ class BasicJQueryLayout extends DefaultLayout {
   protected static $cssFiles = array(
     'content.css', 'calendar.css', 'isp.css', 'input.css', 'window.css',
   //  'selectbox.css', 'tabpanel.css', 'contextmenu.css', 'wizard.css',
+    'jquery.ui.selectmenu.css',
   );
 
   // All JS files
@@ -32,6 +33,7 @@ class BasicJQueryLayout extends DefaultLayout {
   //  'window.js',
     'calendar.js', 'calendar-cs.js',
     'input.js', 'input-date.js', 'input-number.js', 'input-net.js', 'input-color.js',
+    'jquery.ui.selectmenu.js',
   );
 
   protected static $features = array('jquery');
