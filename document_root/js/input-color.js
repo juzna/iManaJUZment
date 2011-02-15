@@ -90,12 +90,11 @@
         }
       });
 
-      tbd.bind('click', function(ev) {
-        if($(ev.target).is('td')) {
-          var color = $(ev.target).attr('data-color');
-          self.element.val(color).css('color', color);
-          self.hide();
-        }
+      tbd.closest('table').bind('click', function(ev) {
+        // Take either actual color or last one (if clicked on border)
+        var color = $(ev.target).is('td') ? $(ev.target).attr('data-color') : self.colorHex.val();
+        self.element.val(color).css('color', color);
+        self.hide();
       });
 
       // Clicked inside of color picker -> stop event
