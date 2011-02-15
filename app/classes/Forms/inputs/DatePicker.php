@@ -15,28 +15,8 @@
  * @license http://www.gnu.org/licenses/gpl.txt
  */
 
+namespace Juz\Form;
 
-namespace TestModule;
-
-class TestPresenter extends \BasePresenter {
-
-  /**
-   * @return void
-   */
-  function renderTabpanel() {
-    $this->template->tabpanel_page = @$_GET['tabpanel_page'];
-  }
-
-  function renderBehavioralMetadata() {
-    \Nette\Debug::dump(\APSwIf::getClassMetadata()->getFieldMapping('rxmin'));
-
-  }
-
-  function createComponentTestForm() {
-    $frm = new \Nette\Application\AppForm;
-    $frm['ap'] = new \Juz\Form\EntitySelectPicker('Acess Point', 'AP');
-    $frm['color'] = new \Juz\Form\ColorPicker('Select color');
-    $frm['date'] = new \Juz\Form\DatePicker('Added');
-    return $frm;
-  }
+class DatePicker extends \Neuron\Form\DatePicker {
+  // just put it in our namespace ;)
 }
