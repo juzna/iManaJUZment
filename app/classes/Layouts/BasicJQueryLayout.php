@@ -18,7 +18,7 @@
 class BasicJQueryLayout extends DefaultLayout {
   // Needed CSS files
   protected static $cssFiles = array(
-    'content.css', 'calendar.css', 'isp.css', 'input.css', 'window.css',
+    'content.css', 'isp.css', 'input.css', 'window.css',
   //  'selectbox.css', 'tabpanel.css', 'contextmenu.css', 'wizard.css',
     'jquery.ui.selectmenu.css',
   );
@@ -31,7 +31,6 @@ class BasicJQueryLayout extends DefaultLayout {
     'dialog.js',
   //  'tabpanel.js',
   //  'window.js',
-    'calendar.js', 'calendar-cs.js',
     'input.js', 'input-date.js', 'input-number.js', 'input-net.js', 'input-color.js',
     'jquery.ui.selectmenu.js',
     'layout.js',
