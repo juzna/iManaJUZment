@@ -15,10 +15,10 @@ $.widget("ui.selectmenu", {
 	getter: "value",
 	version: "1.8",
 	eventPrefix: "selectmenu",
-  listContainerSelector: 'ul',
   listContainerTag: 'ul',
-  listItemSelector: 'li',
+  listContainerSelector: null,
   listItemTag: 'li',
+  listItemSelector: null,
 	options: {
 		transferClasses: true,
 		typeAhead: "sequential",
@@ -40,6 +40,9 @@ $.widget("ui.selectmenu", {
 
 	_create: function() {
 		var self = this, o = this.options;
+
+    if(this.listItemSelector === null) this.listItemSelector = this.listItemTag;
+    if(this.listContainerSelector === null) this.listContainerSelector = this.listContainerTag;
 
 		// set a default id value, generate a new random one if not set by developer
 		var selectmenuId = this.element.attr('id') || 'ui-selectmenu-' + Math.random().toString(16).slice(2, 10);
