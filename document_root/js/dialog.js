@@ -74,6 +74,7 @@ var Dialog = Class.create({
   },
 
   handleSubmit: function(ev) {
+    if(ev.ctrlKey || ev._submittedByEvent && ev._submittedByEvent.ctrlKey) return;
     console.log('Handeled form submit', ev, ev.target);
     ev.stop();
     var frm = ev.target, orig = frm._submittedBy;
