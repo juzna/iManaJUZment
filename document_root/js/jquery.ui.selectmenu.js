@@ -15,6 +15,10 @@ $.widget("ui.selectmenu", {
 	getter: "value",
 	version: "1.8",
 	eventPrefix: "selectmenu",
+  listContainerSelector: 'ul',
+  listContainerTag: 'ul',
+  listItemSelector: 'li',
+  listItemTag: 'li',
 	options: {
 		transferClasses: true,
 		typeAhead: "sequential",
@@ -209,7 +213,7 @@ $.widget("ui.selectmenu", {
 					case $.ui.keyCode.ENTER:
 					case $.ui.keyCode.SPACE:
 						self.close(event, true);
-						$(event.target).parents('li:eq(0)').trigger('mouseup');
+						$(event.target).parents(this.listItemSelector + ':eq(0)').trigger('mouseup');
 						break;		
 					case $.ui.keyCode.TAB:
 						ret = true;
@@ -239,7 +243,7 @@ $.widget("ui.selectmenu", {
    * @return HTMLElement
    */
   _createListContainer: function() {
-    return $('<ul class="' + this.widgetBaseClass + '-menu ui-widget ui-widget-content" aria-hidden="true" role="listbox" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '"></ul>');
+    return $('<' + this.listContainerTag + ' class="' + this.widgetBaseClass + '-menu ui-widget ui-widget-content" aria-hidden="true" role="listbox" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '" />');
   },
 
   /**
@@ -270,7 +274,7 @@ $.widget("ui.selectmenu", {
    * @return HTMLElement
    */
   _createListItem: function(optionData) {
-    return $('<li role="presentation"><a href="#" tabindex="-1" role="option" aria-selected="false"'+ (optionData.typeahead ? ' typeahead="' + optionData.typeahead + '"' : '' ) + '>'+ optionData.text +'</a></li>')
+    return $('<' + this.listItemTag + ' role="presentation"><a href="#" tabindex="-1" role="option" aria-selected="false"'+ (optionData.typeahead ? ' typeahead="' + optionData.typeahead + '"' : '' ) + '>'+ optionData.text +'</a></' + this.listItemTag + '>')
   },
 
   /**
@@ -283,12 +287,12 @@ $.widget("ui.selectmenu", {
     if (optionData.parentOptGroup) {
       // whitespace in the optgroupname must be replaced, otherwise the li of existing optgroups are never found
       var optGroupName = this.widgetBaseClass + '-group-' + optionData.parentOptGroup.replace(/[^a-zA-Z0-9]/g, "");
-      if (this.list.find('li.' + optGroupName).size()) {
-        this.list.find('li.' + optGroupName + ':last ul').append(item);
+      if (this.list.find(this.listItemSelector + '.' + optGroupName).size()) {
+        this.list.find(this.listItemSelector + '.' + optGroupName + ':last ' + this.listContainerSelector).append(item);
       } else {
-        $('<li role="presentation" class="' + self.widgetBaseClass + '-group ' + optGroupName + '"><span class="' + self.widgetBaseClass + '-group-label">' + optionData.parentOptGroup + '</span><ul></ul></li>')
+        $('<' + this.listItemTag + ' role="presentation" class="' + self.widgetBaseClass + '-group ' + optGroupName + '"><span class="' + self.widgetBaseClass + '-group-label">' + optionData.parentOptGroup + '</span><' + this.listContainerTag + ' /></' + this.listItemTag + '>')
           .appendTo(this.list)
-          .find('ul')
+          .find(this.listContainerSelector)
           .append(item);
       }
     } else {
@@ -377,9 +381,9 @@ $.widget("ui.selectmenu", {
 			.toggleClass(self.widgetBaseClass + "-menu-dropdown ui-corner-bottom", isDropDown)
 			.toggleClass(self.widgetBaseClass + "-menu-popup ui-corner-all", !isDropDown)
 			// add corners to top and bottom menu items
-			.find('li:first')
+			.find(this.listItemSelector + ':first')
 			.toggleClass("ui-corner-top", !isDropDown)
-			.end().find('li:last')
+			.end().find(this.listItemSelector + ':last')
 			.addClass("ui-corner-bottom");
 		this.selectmenuIcon
 			.toggleClass('ui-icon-triangle-1-s', isDropDown)
@@ -415,7 +419,7 @@ $.widget("ui.selectmenu", {
 		}
 
 		// save reference to actionable li's (not group label li's)
-		this._optionLis = this.list.find('li:not(.' + self.widgetBaseClass + '-group)');
+		this._optionLis = this.list.find(this.listItemSelector + ':not(.' + self.widgetBaseClass + '-group)');
 						
 		// transfer disabled state
 		if (this.element.attr('disabled') === true) {
@@ -474,7 +478,7 @@ $.widget("ui.selectmenu", {
 				$(elem).trigger(eventType);
 				typeof(self._prevChar) == 'undefined' ? self._prevChar = [char] : self._prevChar[self._prevChar.length] = char;
 			}
-			this.list.find('li a').each(function(i) {	
+			this.list.find(this.listItemSelector + ' a').each(function(i) {
 				if (!focusFound) {
 					// allow the typeahead attribute on the option tag for a more specific lookup
 					var thisText = $(this).attr('typeahead') || $(this).text();
@@ -507,7 +511,7 @@ $.widget("ui.selectmenu", {
 				$(elem).trigger(eventType);
 				self._prevChar[1] = ind;
 			}
-			this.list.find('li a').each(function(i){	
+			this.list.find(this.listItemSelector + ' a').each(function(i){
 				if(!focusFound){
 					var thisText = $(this).text();
 					if( thisText.indexOf(C) == 0 || thisText.indexOf(c) == 0){
@@ -547,7 +551,7 @@ $.widget("ui.selectmenu", {
 			}
 			this.list.addClass(self.widgetBaseClass + '-open')
 				.attr('aria-hidden', false)
-				.find('li:not(.' + self.widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a')[0].focus();
+				.find(this.listItemSelector + ':not(.' + self.widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a')[0].focus();
 			if ( this.options.style == "dropdown" ) {
 				this.newelement.removeClass('ui-corner-all').addClass('ui-corner-top');
 			}
@@ -642,7 +646,7 @@ $.widget("ui.selectmenu", {
 	},
 
 	_scrollPage: function(direction) {
-		var numPerPage = Math.floor(this.list.outerHeight() / this.list.find('li:first').outerHeight());
+		var numPerPage = Math.floor(this.list.outerHeight() / this.list.find(this.listItemSelector + ':first').outerHeight());
 		numPerPage = (direction == 'up' ? -numPerPage : numPerPage);
 		this._moveFocus(numPerPage);
 	},
