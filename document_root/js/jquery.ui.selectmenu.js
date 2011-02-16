@@ -234,6 +234,23 @@ $.widget("ui.selectmenu", {
 		});
 	},
 
+  /**
+   * Get data for an option element
+   * These data will be stored in selectOptionData array
+   * (allows for overriding this method)
+   */
+  _getOptionData: function(option) {
+    return {
+      value: $(option).attr('value'),
+      text: this._formatText($(option).text()),
+      selected: $(option).attr('selected'),
+      classes: $(option).attr('class'),
+      typeahead: $(option).attr('typeahead'),
+      parentOptGroup: $(option).parent('optgroup').attr('label'),
+      bgImage: this.options.bgImage.call($(option))
+    };
+  },
+
 	_init: function() {
 		var self = this, o = this.options;
 		
@@ -242,15 +259,7 @@ $.widget("ui.selectmenu", {
 		this.element
 			.find('option')
 			.each(function() {
-				selectOptionData.push({
-					value: $(this).attr('value'),
-					text: self._formatText($(this).text()),
-					selected: $(this).attr('selected'),
-					classes: $(this).attr('class'),
-					typeahead: $(this).attr('typeahead'),
-					parentOptGroup: $(this).parent('optgroup').attr('label'),
-					bgImage: o.bgImage.call($(this))
-				});
+				selectOptionData.push(self._getOptionData(this));
 			});		
 				
 		// active state class is only used in popup style
