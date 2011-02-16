@@ -33,8 +33,9 @@ $config = new Configuration;
   $config->setClassMetadataFactoryName('ActiveEntity\ClassMetadataFactory');
 
   $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-  $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-  $reader->setAnnotationNamespaceAlias('ActiveEntity\Annotations\\', 'ae');
+  $reader->setDefaultAnnotationNamespace('Doctrine\\ORM\\Mapping\\');
+  $reader->setAnnotationNamespaceAlias('ActiveEntity\\Annotations\\', 'ae');
+  $reader->setAnnotationNamespaceAlias('Juz\\Forms\\Annotations\\', 'frm');
   $reader->setAutoloadAnnotations(true);
   
   $metadata = new \ActiveEntity\AnnotationDriver($reader, (array) $modelDirs);

@@ -47,6 +47,7 @@ class APIP extends \ActiveEntity\Entity
    * @var string $interface
    * @Column(name="interface", type="string", length=50, nullable=false)
    * @ae:show
+   * @frm:Override @frm:EntitySelect(targetEntity="APSwIf", dependencies={"AP"})
    */
   protected $interface;
 

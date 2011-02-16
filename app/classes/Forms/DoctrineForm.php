@@ -20,8 +20,9 @@ use Nette\Application\AppForm;
 
 class DoctrineForm extends AppForm {
   public static $metadataNamespaces = array(
-    'Doctrine\ORM\Mapping'     => '',
-    'ActiveEntity\Annotations' => 'ae',
+    'Doctrine\\ORM\\Mapping'    => '',
+    'ActiveEntity\\Annotations' => 'ae',
+    'Juz\\Forms\\Annotations'   => 'frm',
   );
 
   /**
@@ -29,6 +30,9 @@ class DoctrineForm extends AppForm {
    */
   protected $metadata;
   protected $entityName;
+
+  // Callback to be executed when setting default values
+  protected $onSetDefault = array();
   
   /**
   * Application form constructor.
@@ -66,8 +70,29 @@ class DoctrineForm extends AppForm {
         if(!$this->isFieldEditable($def, '')) continue;
         $label = $this->_getLabel($def, $description);
         $fieldName = $def['fieldName'];
+        $type = $def['type'];
 
-        switch($def['type']) {
+        // It has some special behaviour
+        //\Nette\Debug::dump($def['fieldMetadata']);
+        if(isset($def['fieldMetadata']['Juz\\Forms\\Annotations\\Override'])) {
+          // It's entity selector
+          /** @var $entitySelect \Juz\Forms\Annotations\EntitySelect */
+          if($entitySelect = @$def['fieldMetadata']['Juz\\Forms\\Annotations\\EntitySelect']) {
+            $type = 'none'; // Do not treat as normal element
+            $this[$fieldName] = $picker = new \Juz\Form\EntitySelectPicker($label, $entitySelect->targetEntity);
+
+            // When setting default values, execute this handler
+            if(is_array($entitySelect->dependencies) && !empty($entitySelect->dependencies)) {
+              $this->onSetDefault[] = function($values) use($picker, $entitySelect) {
+                foreach($entitySelect->dependencies as $dep) {
+                  if(array_key_exists($dep, $values)) $picker->addCondition($dep, $values[$dep]);
+                }
+              };
+            }
+          }
+        }
+
+        switch($type) {
           case 'string':
           default:
             $el = $this->addText($fieldName, $label);
@@ -76,6 +101,8 @@ class DoctrineForm extends AppForm {
           case 'boolean':
             $el = $this->addCheckBox($fieldName, $label);
             break;
+
+          case 'none':
         }
       }
 
@@ -315,6 +342,15 @@ class DoctrineForm extends AppForm {
 
     return $obj;
   }
+
+  public function setDefaults($values, $erase = FALSE) {
+    parent::setDefaults($values, $erase);
+
+    // Callbacks
+    foreach($this->onSetDefault as $cb) $cb($values);
+  }
+
+
   
   
   

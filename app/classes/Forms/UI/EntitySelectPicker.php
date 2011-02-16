@@ -45,6 +45,17 @@ class EntitySelectPicker extends SelectPicker {
     return $this->conditions;
   }
 
+  public function addCondition($key, $val) {
+    $this->conditions[$key] = $val;
+    return $this;
+  }
+
+  public function addConditions($list) {
+    if(!is_array($list)) throw new \InvalidArgumentException("Array expected");
+    $this->conditions += $list;
+    return $this;
+  }
+
   public function getDataSource() {
     /** @var $repo \Doctrine\ORM\EntityRepository */
     $repo = Entity::getRepository($this->entityName);
