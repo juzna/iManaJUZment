@@ -166,7 +166,7 @@ $.widget("ui.selectmenu", {
 		this.element.hide();		
 
 		// create menu portion, append to body
-		this.list = $('<ul class="' + self.widgetBaseClass + '-menu ui-widget ui-widget-content" aria-hidden="true" role="listbox" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '"></ul>').appendTo('body');
+		this.list = this._createListContainer().appendTo('body');
 		this.list.wrap(o.wrapperElement);				
 
 		// transfer menu click to menu button
@@ -233,6 +233,14 @@ $.widget("ui.selectmenu", {
 			self._refreshPosition();
 		});
 	},
+
+  /**
+   * Create container for list items
+   * @return HTMLElement
+   */
+  _createListContainer: function() {
+    return $('<ul class="' + this.widgetBaseClass + '-menu ui-widget ui-widget-content" aria-hidden="true" role="listbox" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '"></ul>');
+  },
 
   /**
    * Get data for an option element
