@@ -22,6 +22,8 @@ use ActiveEntity\Entity;
 class EntitySelectPicker extends SelectPicker {
   protected $entityName;
   protected $conditions = array();
+  protected $fieldId = null; // Field used as ID
+  protected $fieldName = null; // Field used as Name
 
   public function __construct($label = null, $entityName = null, $conditions = null) {
     parent::__construct($label, null);
@@ -63,8 +65,8 @@ class EntitySelectPicker extends SelectPicker {
     /** @var $metadata \ActiveEntity\ClassMetadata */
     $metadata = Entity::getClassMetadata($this->entityName);
 
-    $fieldId = $metadata->getSingleIdentifierFieldName();
-    $fieldName = $metadata->getNameField();
+    $fieldId = $this->fieldId ?: $metadata->getSingleIdentifierFieldName();
+    $fieldName = $this->fieldName ?: $metadata->getNameField();
 
     // Load it
     $list = is_array($this->conditions) && !empty($this->conditions) ? $repo->findBy($this->conditions) : $repo->findAll();
@@ -78,5 +80,22 @@ class EntitySelectPicker extends SelectPicker {
 
   public function setDataSource($dataSource) {
     throw new \InvalidStateException('Cannot change data source');
+  }
+
+
+  public function setFieldId($fieldId) {
+    $this->fieldId = $fieldId;
+  }
+
+  public function getFieldId() {
+    return $this->fieldId;
+  }
+
+  public function setFieldName($fieldName) {
+    $this->fieldName = $fieldName;
+  }
+
+  public function getFieldName() {
+    return $this->fieldName;
   }
 }

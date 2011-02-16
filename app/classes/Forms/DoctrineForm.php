@@ -81,6 +81,9 @@ class DoctrineForm extends AppForm {
             $type = 'none'; // Do not treat as normal element
             $this[$fieldName] = $picker = new \Juz\Form\EntitySelectPicker($label, $entitySelect->targetEntity);
 
+            if($entitySelect->fieldId) $picker->setFieldId($entitySelect->fieldId);
+            if($entitySelect->fieldName) $picker->setFieldName($entitySelect->fieldName);
+
             // When setting default values, execute this handler
             if(is_array($entitySelect->dependencies) && !empty($entitySelect->dependencies)) {
               $this->onSetDefault[] = function($values) use($picker, $entitySelect) {

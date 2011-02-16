@@ -36,4 +36,6 @@ class Override extends Annotation {}
 class EntitySelect extends Annotation {
   public $targetEntity;
   public $dependencies;
+  public $fieldId;
+  public $fieldName;
 }
