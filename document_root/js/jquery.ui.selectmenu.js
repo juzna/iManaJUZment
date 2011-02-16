@@ -309,6 +309,18 @@ $.widget("ui.selectmenu", {
       item.appendTo(this.list);
     }
   },
+  
+  _updateListWidth: function() {
+		// original selectmenu width
+		var o = this.options, selectWidth = this.element.width();
+
+		// set menu width to either menuWidth option value, width option value, or select width
+		if (o.style == 'dropdown') {
+			this.list.width(o.menuWidth ? o.menuWidth : (o.width ? o.width : selectWidth));
+		} else {
+			this.list.width(o.menuWidth ? o.menuWidth : (o.width ? o.width - o.handleWidth : selectWidth - o.handleWidth));
+		}
+  },
 
 	_init: function() {
 		var self = this, o = this.options;
@@ -405,15 +417,7 @@ $.widget("ui.selectmenu", {
 			this.newelement.add(this.list).addClass(transferClasses);
 		}
 
-		// original selectmenu width
-		var selectWidth = this.element.width();
-
-		// set menu width to either menuWidth option value, width option value, or select width 
-		if (o.style == 'dropdown') { 
-			this.list.width(o.menuWidth ? o.menuWidth : (o.width ? o.width : selectWidth)); 
-		} else { 
-			this.list.width(o.menuWidth ? o.menuWidth : (o.width ? o.width - o.handleWidth : selectWidth - o.handleWidth)); 
-		}
+    this._updateListWidth();
 
 		// calculate default max height
 		if (o.maxHeight) {
