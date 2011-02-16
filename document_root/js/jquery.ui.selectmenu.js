@@ -224,7 +224,9 @@ $.widget("ui.selectmenu", {
 						self._typeAhead(event.keyCode,'focus');					break;	
 				}
 				return ret;
-			});			
+			})
+			// this allows for using the scrollbar in an overflowed list
+			.bind('mousedown.selectmenu mouseup.selectmenu', function() { return false; });
 		
 		// needed when window is resized
 		$(window).bind("resize.selectmenu", function() {
@@ -305,10 +307,7 @@ $.widget("ui.selectmenu", {
 			} else {
 				thisLi.appendTo(this.list);
 			}
-			
-			// this allows for using the scrollbar in an overflowed list
-			this.list.bind('mousedown.selectmenu mouseup.selectmenu', function() { return false; });
-			
+
 			// append icon if option is specified
 			if (o.icons) {
 				for (var j in o.icons) {
@@ -496,7 +495,7 @@ $.widget("ui.selectmenu", {
 		var self = this;
 		var disabledStatus = this.newelement.attr("aria-disabled");
 		if ( disabledStatus != 'true' ) {
-			this._refreshPosition();
+			// this._refreshPosition();
 			this._closeOthers(event);
 			this.newelement
 				.addClass('ui-state-active');
