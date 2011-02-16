@@ -238,6 +238,9 @@ $.widget("ui.selectmenu", {
    * Get data for an option element
    * These data will be stored in selectOptionData array
    * (allows for overriding this method)
+   *
+   * @param HTMLElement option
+   * @return Object
    */
   _getOptionData: function(option) {
     return {
@@ -249,6 +252,17 @@ $.widget("ui.selectmenu", {
       parentOptGroup: $(option).parent('optgroup').attr('label'),
       bgImage: this.options.bgImage.call($(option))
     };
+  },
+
+  /**
+   * Creates list item to be appended to list
+   * (allows for overriding this method)
+   *
+   * @param Object optionData Data created in _getOptionData method
+   * @return HTMLElement
+   */
+  _createListItem: function(optionData) {
+    return $('<li role="presentation"><a href="#" tabindex="-1" role="option" aria-selected="false"'+ (optionData.typeahead ? ' typeahead="' + optionData.typeahead + '"' : '' ) + '>'+ optionData.text +'</a></li>')
   },
 
 	_init: function() {
@@ -270,7 +284,7 @@ $.widget("ui.selectmenu", {
 
 		// write li's
 		for (var i = 0; i < selectOptionData.length; i++) {
-					var thisLi = $('<li role="presentation"><a href="#" tabindex="-1" role="option" aria-selected="false"'+ (selectOptionData[i].typeahead ? ' typeahead="' + selectOptionData[i].typeahead + '"' : '' ) + '>'+ selectOptionData[i].text +'</a></li>')
+				var thisLi = this._createListItem(selectOptionData[i])
 				.data('index', i)
 				.addClass(selectOptionData[i].classes)
 				.data('optionClasses', selectOptionData[i].classes || '')
