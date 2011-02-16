@@ -265,6 +265,29 @@ $.widget("ui.selectmenu", {
     return $('<li role="presentation"><a href="#" tabindex="-1" role="option" aria-selected="false"'+ (optionData.typeahead ? ' typeahead="' + optionData.typeahead + '"' : '' ) + '>'+ optionData.text +'</a></li>')
   },
 
+  /**
+   * Append new item to the list
+   * @param HTMLElement item Element created in _createListItem
+   * @param Object optionData Option data gained from _getOptionData
+   */
+  _appendItemToList: function(item, optionData) {
+    // optgroup or not...
+    if (optionData.parentOptGroup) {
+      // whitespace in the optgroupname must be replaced, otherwise the li of existing optgroups are never found
+      var optGroupName = this.widgetBaseClass + '-group-' + optionData.parentOptGroup.replace(/[^a-zA-Z0-9]/g, "");
+      if (this.list.find('li.' + optGroupName).size()) {
+        this.list.find('li.' + optGroupName + ':last ul').append(item);
+      } else {
+        $('<li role="presentation" class="' + self.widgetBaseClass + '-group ' + optGroupName + '"><span class="' + self.widgetBaseClass + '-group-label">' + optionData.parentOptGroup + '</span><ul></ul></li>')
+          .appendTo(this.list)
+          .find('ul')
+          .append(item);
+      }
+    } else {
+      item.appendTo(this.list);
+    }
+  },
+
 	_init: function() {
 		var self = this, o = this.options;
 		
@@ -315,21 +338,8 @@ $.widget("ui.selectmenu", {
 					$(this).removeClass(self.widgetBaseClass + '-item-focus ui-state-hover');
 				});
 
-			// optgroup or not...
-			if (selectOptionData[i].parentOptGroup) {
-				// whitespace in the optgroupname must be replaced, otherwise the li of existing optgroups are never found
-				var optGroupName = self.widgetBaseClass + '-group-' + selectOptionData[i].parentOptGroup.replace(/[^a-zA-Z0-9]/g, "");
-				if (this.list.find('li.' + optGroupName).size()) {
-					this.list.find('li.' + optGroupName + ':last ul').append(thisLi);
-				} else {
-					$('<li role="presentation" class="' + self.widgetBaseClass + '-group ' + optGroupName + '"><span class="' + self.widgetBaseClass + '-group-label">' + selectOptionData[i].parentOptGroup + '</span><ul></ul></li>')
-						.appendTo(this.list)
-						.find('ul')
-						.append(thisLi);
-				}
-			} else {
-				thisLi.appendTo(this.list);
-			}
+      // Append item to list
+      this._appendItemToList(thisLi, selectOptionData[i]);
 
 			// append icon if option is specified
 			if (o.icons) {
