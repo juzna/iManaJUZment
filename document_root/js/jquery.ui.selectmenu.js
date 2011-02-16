@@ -270,6 +270,13 @@ $.widget("ui.selectmenu", {
   },
 
   /**
+   * Clear all items in list
+   */
+  _clearList: function() {
+    this.list.html("");
+  },
+
+  /**
    * Creates list item to be appended to list
    * (allows for overriding this method)
    *
@@ -318,7 +325,7 @@ $.widget("ui.selectmenu", {
 		var activeClass = (self.options.style == "popup") ? " ui-state-active" : "";
 
 		// empty list so we can refresh the selectmenu via selectmenu()
-		this.list.html("");
+		this._clearList();
 
 		// write li's
 		for (var i = 0; i < selectOptionData.length; i++) {
