@@ -10,7 +10,9 @@
 
 var Parent = $.ui.selectmenu;
 $.widget("ui.selectmenu2", Parent, {
-  widgetBaseClass: 'ui-selectmenu',
+  widgetBaseClass: 'ui-selectmenu', // Use classic styling
+  widgetEventPrefix: 'selectmenu',
+  
   listContainerTag: 'div',
   listItemTag: 'tr',
   listItemSelector: 'tr',
@@ -24,15 +26,16 @@ $.widget("ui.selectmenu2", Parent, {
   },
 
   _createListContainer: function() {
-    console.log('creating container', this);
     // Add inner table
-    return Parent.prototype._createListContainer.apply(this, arguments).append('<table><thead></thead><tbody></tbody></table>').css('overflow-x', 'hidden');
+    return Parent.prototype._createListContainer.apply(this, arguments)
+      .append('<table><thead></thead><tbody></tbody></table>')
+      .css('overflow-x', 'hidden');
   },
 
   _getOptionData: function(option) {
     // Add more options
     return $.extend(Parent.prototype._getOptionData.apply(this, arguments), {
-      data: { ahoj: 1, b: 2 }
+      data: JSON.parse(option.dataset.data || null) || {}
     });
   },
 
@@ -56,11 +59,5 @@ $.widget("ui.selectmenu2", Parent, {
   }
 
 });
-
-$.widget("ui.selectmenu3", Parent, {
-  widgetBaseClass: 'ui-selectmenu',
-  ahoj: 1
-});
-
 
 })(jQuery);
