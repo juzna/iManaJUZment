@@ -24,10 +24,23 @@ use Nette\Forms\IFormControl;
  */
 interface ILayout {
   /**
+   * Get name of this layout
+   * @return string
+   */
+  function getName();
+
+  /**
    * Set-up environment or global variables which are needed for this layout (like AjaxConent can disable Debug panel)
    * @return void
    */
   function activate();
+
+  /**
+   * Check if this layout has a given feature
+   * @param string $name Feature name
+   * @return bool
+   */
+  function hasFeature($name);
 
   /**
    * Get outer template for given layout
@@ -56,4 +69,12 @@ interface ILayout {
    * @return void
    */
   function renderFormControl(IFormControl $control);
+
+  /**
+   * Renders a component
+   * @param  $name
+   * @param  $definition
+   * @return void
+   */
+  function renderComponent($name, $definition, $options = null);
 }

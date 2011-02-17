@@ -67,3 +67,51 @@ function floor2(number, precision) {
 	var mul = Math.pow(10, precision);
 	return Math.floor(number * mul) / mul;
 }
+
+
+
+// Add some jQuery functions
+(function($) {
+  /**
+   * Test is something is instance of jQuery object
+   */
+  $.isJQuery = function(obj) {
+    return obj instanceof $.fn.init;
+  };
+
+  /**
+   * DOM tree builder
+   */
+  $.builder = function(tagName, attributes) {
+    var el, i;
+
+    // Create the element
+    if(typeof tagName === 'string') {
+      if(tagName.match(/^<[a-z]+/i)) el = $(tagName); // It's HTML fragment
+      else if(tagName.match(/^[a-z]+$/i)) el = $(document.createElement(tagName));
+      else throw new Error('Unknown tagName');
+    }
+    else if(tagName instanceof HTMLElement) el = $(tagName);
+    else if($.isJQuery(tagName)) el = tagName;
+    else throw new Error('Unknown tagName');
+
+    // Add attributes
+    if($.isPlainObject(attributes)) {
+      i = 2;
+      el.attr(attributes);
+    }
+    else {
+      i = 1;
+    }
+
+    // Process other arguments
+    for(; i < arguments.length; i++) {
+      var arg = arguments[i];
+      el.append(arg);
+    }
+
+    return el;
+  };
+
+
+})(jQuery);

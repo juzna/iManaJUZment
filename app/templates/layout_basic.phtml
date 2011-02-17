@@ -24,13 +24,22 @@
   <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
   <link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
   <link rel="stylesheet" href="{$basePath}/css/layout_basic.css" type="text/css" />
+  <link rel="stylesheet" href="{$basePath}/css/ui-lightness/jquery-ui-1.8.9.custom.css" type="text/css" />
   <link n:tag-foreach="$presenter->getPageLayout()->getRequiredCssFiles() as $css" rel="stylesheet" href="{$basePath}/css/{$css}" type="text/css" />
 
   {* JS files *}
   <script type="text/javascript" src="{$basePath}/js/prototype.js"></script>
 
   <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
+  <script type="text/javascript" src="{$basePath}/js/jquery.ui.js"></script>
+  <script type="text/javascript" src="{$basePath}/js/jquery-ui-i18n.js"></script>
   <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+  <script type="text/javascript" src="{$basePath}/js/jquery.maskedinput-1.2.2.js"></script>
+  <script type="text/javascript">
+    $j = jQuery.noConflict(); // We have jQuery and Prototype together
+  </script>
+
+  <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" src="{$basePath}/js/{$js}"></script>
   <script type="text/javascript">
     $j = jQuery.noConflict(); // We have jQuery and Prototype together
   </script>
@@ -40,8 +49,6 @@
     var usedLayout = {= get_class($presenter->getPageLayout())};
     var x = {= $presenter->getPageLayout()->getRequiredJsFiles()};
   </script>
-  <link rel="stylesheet" href="{$basePath}/css/tabpanel.css" type="text/css">
-
 </head>
 
 <body>

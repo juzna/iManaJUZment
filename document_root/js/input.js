@@ -57,3 +57,13 @@ document.onLive('input-format', function(container){
 });
 
 
+
+
+// Auto init dates
+jQuery(function($) {
+  $('.datepicker').datepicker( $.extend( {
+    showOn: 'button',
+    buttonImage: '/img/calendar.gif',
+    buttonImageOnly: true
+  }, $j.datepicker.regional.cs ));
+});

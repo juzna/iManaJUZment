@@ -33,8 +33,28 @@ abstract class DefaultLayout implements ILayout {
     'misc.js',
   );
 
+  // List of features of this layout
+  protected static $features = array();
+
   // Template to be used. Either this variable or getLayoutTemplateFile must be overriden
   protected $templateName = null;
+
+  /**
+   * Get name of this layout
+   * @return string
+   */
+  function getName() {
+    return get_class($this);
+  }
+
+  /**
+   * Check if this layout has a given feature
+   * @param string $name Feature name
+   * @return bool
+   */
+  function hasFeature($name) {
+    return in_array($name, static::$features);
+  }
 
   /**
    * Set-up environment or global variables which are needed for this layout (like AjaxConent can disable Debug panel)
@@ -80,5 +100,18 @@ abstract class DefaultLayout implements ILayout {
   function renderFormControl(IFormControl $control) {
     throw new \NotImplementedException('Control not known');
     // TODO: Implement renderFormControl() method.
+  }
+
+  /**
+   * Renders a component
+   * @param  $name
+   * @param  $definition
+   * @return void
+   */
+  function renderComponent($name, $definition, $options = null) {
+    $className = "Layout\\Components\\" . ucfirst($name);
+    if(!class_exists($className)) throw new \InvalidArgumentException("Component '$name' not exists in this layout");
+
+    return $className::render($definition, $this, $options);
   }
 }

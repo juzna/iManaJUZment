@@ -20,6 +20,7 @@ class BasicLayout extends DefaultLayout {
   protected static $cssFiles = array(
     'content.css', 'calendar.css', 'isp.css', 'input.css', 'window.css',
   //  'selectbox.css', 'tabpanel.css', 'contextmenu.css', 'wizard.css',
+    'tabpanel.css',
   );
 
   // All JS files

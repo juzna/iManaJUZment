@@ -1,0 +1,22 @@
+<ul>
+  <?php foreach($list as $name => $description): ?>
+  <li>
+    <a href="/base/layout/set?layout=<?php echo $name; ?>"><?php echo $description; ?></a>
+    <?php if($name == $selected): ?>(in use)<?php endif ?>
+  </li>
+<?php endforeach; ?>
+</ul>
+
+<script type="text/javascript">
+(function($) {
+  $('#nette-debug-layout a').click(function(ev) {
+    ev.preventDefault();
+    $.ajax({
+      url: this.href,
+      success: function() {
+        location.reload();
+      }
+    })
+  })
+})(jQuery);
+</script>

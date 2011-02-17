@@ -50,7 +50,7 @@ class APSwIf extends \ActiveEntity\BehavioralEntity
   /**
    * @var string $interface
    * @Column(name="interface", type="string", length=50, nullable=false)
-   * @ae:show
+   * @ae:show @ae:name
    */
   protected $interface;
 

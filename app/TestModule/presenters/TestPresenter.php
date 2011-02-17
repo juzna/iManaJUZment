@@ -27,6 +27,7 @@ class TestPresenter extends \BasePresenter {
     $this->template->tabpanel_page = @$_GET['tabpanel_page'];
   }
 
+
   function actionChange() {
     $ip = \APIP::find(1);
     $ip->description .= 'X';
@@ -35,4 +36,16 @@ class TestPresenter extends \BasePresenter {
     exit;
   }
 
+  function renderBehavioralMetadata() {
+    \Nette\Debug::dump(\APSwIf::getClassMetadata()->getFieldMapping('rxmin'));
+
+  }
+
+  function createComponentTestForm() {
+    $frm = new \Nette\Application\AppForm;
+    $frm['ap'] = new \Juz\Form\EntitySelectPicker('Acess Point', 'AP');
+    $frm['color'] = new \Juz\Form\ColorPicker('Select color');
+    $frm['date'] = new \Juz\Form\DatePicker('Added');
+    return $frm;
+  }
 }
