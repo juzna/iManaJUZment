@@ -57,6 +57,8 @@ var ClientDB = {
    * Each client has these properties:
    *  - sessionId - unique ID
    *  - registeredEvents: [ { table, operations[], columns[]?, conditions[{column, op, value}], expiry  } ]
+   *    - operations: either string 'all', or array with: add, edit, remove
+   *
    */
   storage: {},
 
@@ -111,10 +113,94 @@ var ClientDB = {
    * New notification received
    */
   onNotify: function(user, table, op, oldData, newData) {
+    // Go thru all clients
     for(var i in ClientDB.storage) {
-     var client = ClientDB.storage[i];
-     ClientDB.send(client, 'notify', { user: user, table: table });
+      var client = ClientDB.storage[i];
+
+      // Check their events
+      for(var j = 0; j < client.registeredEvents.length; j++) {
+        var ev = client.registeredEvents[j];
+
+        if(ClientDB.matchesEvent(ev, table, op, oldData, newData)) {
+          ClientDB.send(client, 'notify', { user: user, table: table });
+        }
+      }
     }
+  },
+
+  /**
+   * Check if registered event (ev) matches the notification
+   * @param Object ev
+   * @param String table
+   * @param String op
+   * @param Object oldData
+   * @param Object newData
+   * @return bool
+   */
+  matchesEvent: function(ev, table, op, oldData, newData) {
+    // Is it our table?
+    if(typeof ev.table === 'string' && ev.table !== table) return false; // subscribed for string
+    if(ev.table instanceof Array && 'indexOf' in ev.table && ev.table.indexOf(table) == -1) return false; // subscribed for array
+
+    // Is it our operation?
+    if(ev.operations !== 'all' && ev.operations instanceof Array && ev.operations.indexOf(op) == -1) return false; // Not our op
+
+    // Try conditions
+    if(ev.conditions instanceof Array) {
+      for(var i = 0; i < ev.conditions.length; i++) {
+        if(!ClientDB.matchesCondition(ev.conditions[i], newData, oldData)) return false; // Doesn't match this cond
+      }
+    }
+
+    // Changes in columns we are interested in?
+    if(ev.columns && !ClientDB.columnsOfInterest(ev.columns, oldData, newData)) return false;
+
+    // All conditions passed
+    return true;
+  },
+
+  /**
+   * Test if notification matches to a condition
+   */
+  matchesCondition: function(cond, newData, oldData) {
+    return (newData || oldData) &&
+           (!newData || ClientDB._matchesCondition(cond, newData)) &&
+           (!oldData || ClientDB._matchesCondition(cond, oldData));
+  },
+
+  // Check if one condition matches
+  _matchesCondition: function(cond, object) {
+    var col = cond.column; // What column are we talking about?
+    var val = cond.value;
+
+    switch(cond.op) {
+      case 'present':
+      case 1:
+        return (col in object) && (object[col] !== null);
+
+      case 'eq':
+      case 2:
+        return (col in object) && (object[col] == val);
+
+      // lt = 3,
+      // lte = 4,
+      // gt = 5,
+      // gte = 6,
+
+      default:
+        return true;
+    }
+  },
+
+  // If change is in columns we care about
+  columnsOfInterest: function(cols, oldData, newData) {
+    if(!cols) return true;
+    for(var i = 0; i < cols.length; i++) {
+      var col = cols[i];
+      if((col in oldData) || (col in newData)) return true;
+    }
+
+    return false;
   },
 
   /**
