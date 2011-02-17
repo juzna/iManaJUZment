@@ -27,4 +27,12 @@ class TestPresenter extends \BasePresenter {
     $this->template->tabpanel_page = @$_GET['tabpanel_page'];
   }
 
+  function actionChange() {
+    $ip = \APIP::find(1);
+    $ip->description .= 'X';
+    $ip->flush();
+
+    exit;
+  }
+
 }
