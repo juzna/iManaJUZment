@@ -131,6 +131,9 @@ var LiveConnect = (function($) {
       console.log('Received exception', msg);
     }
 
+    // LiveConnect change notification
+    else if(type == 'notify') onNotification(msg);
+
     // Misc message -> fire event
     else fireEvent(type, msg);
   }
@@ -166,7 +169,6 @@ var LiveConnect = (function($) {
       conditions: conds,
       columns: cols instanceof Array ? cols : null
     }
-
   }
 
   // Call has expired
@@ -186,6 +188,19 @@ var LiveConnect = (function($) {
     handlers[name].each(function(cb) {
       cb(msg);
     })
+  }
+
+  /**
+   * Notification received
+   * @param Object msg Notification details, contains:
+   *   - user
+   *   - table
+   *   - operation
+   *   - oldData
+   *   - newData
+   */
+  function onNotification(msg) {
+    // TODO:
   }
 
   // Exported methods
