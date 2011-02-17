@@ -52,7 +52,7 @@ $em = EntityManager::create($database, $config);
 ActiveEntity\Entity::setEntityManager($em);
 
 $em->getEventManager()->addEventSubscriber(new \ActiveEntity\Events\DefaultValues);
-
+\LiveConnect::register();
 
 // Add entity manager to context
 Environment::getApplication()->getContext()->addService('Doctrine\\ORM\\EntityManager', $em);
