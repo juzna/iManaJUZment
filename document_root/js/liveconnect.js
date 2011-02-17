@@ -367,7 +367,7 @@ var LiveConnect = (function($) {
         resTimeout: setTimeout(subscriptionTimeout, timeout * 1000, id)
       };
 
-      return Lib; // provides fluent interface
+      return id;
     },
 
     /**
@@ -426,6 +426,24 @@ var LiveConnect = (function($) {
       Lib.sendMessage(method, msg);
 
       return Lib; // Provides fluent interface
+    },
+
+
+
+
+
+    /*********   Debug      ********/
+
+    getInternals: function() {
+      return ({
+        handlers: handlers,
+        state: state,
+        messageBuffer: messageBuffer,
+        sequenceId: sequenceId,
+        callbacks: callbacks,
+        subscriptions: subscriptions,
+        subscriptionCounter: subscriptionCounter
+      });
     }
   }
 })(jQuery);
