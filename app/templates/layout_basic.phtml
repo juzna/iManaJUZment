@@ -28,14 +28,17 @@
 
   {* JS files *}
   <script type="text/javascript" src="{$basePath}/js/prototype.js"></script>
-  <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" src="{$basePath}/js/{$js}"></script>
+
   <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
   <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+  <script type="text/javascript">
+    $j = jQuery.noConflict(); // We have jQuery and Prototype together
+  </script>
+  <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" src="{$basePath}/js/{$js}"></script>
   <script type="text/javascript">
     var basePath = {$basePath};
     var usedLayout = {= get_class($presenter->getPageLayout())};
     var x = {= $presenter->getPageLayout()->getRequiredJsFiles()};
-    $j = jQuery.noConflict(); // We have jQuery and Prototype together
   </script>
   <link rel="stylesheet" href="{$basePath}/css/tabpanel.css" type="text/css">
 

@@ -93,7 +93,7 @@ var ClientDB = {
       // Send back response
       if(typeof ret !== 'undefined') {
         if(ret.__proto__ !== Object.prototype) ret = { data: ret }; // It's not plain object -> convert
-        ret.messageType = 'reply';
+        ret.messageType = 'call-reply';
         ret.sequenceId = msg.sequenceId;
         if('memo' in msg) ret.memo = msg.memo;
         client.send(ret);
