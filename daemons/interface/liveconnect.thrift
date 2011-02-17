@@ -7,24 +7,24 @@ namespace php LiveConnect
 /**
  * User info
  */
-typedef i32 User;
+typedef i32 User
 
 
 /**
  * What operation happened?
  */
 enum LiveConnectOp {
- add = 1,
- edit = 2,
- delete = 3,
- clone = 4,
+ opAdd = 1,
+ opEdit = 2,
+ opRemove = 3,
+ opClone = 4,
  all = 255,
 }
 
 /**
  * What changes happened?
  */
-typedef map<string,string> LiveConnectData;
+typedef map<string,string> LiveConnectData
 
 
 /**
@@ -37,7 +37,6 @@ enum LiveConnectConditionOp {
   lte = 4,
   gt = 5,
   gte = 6,
-  in = 7,
 }
 
 /**
@@ -68,7 +67,7 @@ struct Subscription {
 }
 
 
-Service LiveConnect {
+service LiveConnect {
   /**
    * Notification from system that a change happened
    */
