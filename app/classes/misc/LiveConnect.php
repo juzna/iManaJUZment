@@ -14,7 +14,11 @@
  *
  * @license http://www.gnu.org/licenses/gpl.txt
  */
- 
+
+use \Doctrine\ORM\Events,
+  Doctrine\ORM\Event,
+  ActiveEntity\Entity;
+
 class LiveConnect {
   protected static $socket;
   protected static $transport;
@@ -71,6 +75,8 @@ class LiveConnect {
     return true;
   }
 
+
+
   /**
    * Register Doctrine handler
    * @return void
@@ -79,32 +85,49 @@ class LiveConnect {
     /** @var $evm \Doctrine\Common\EventManager */
     $evm = em()->getEventManager();
 
-    $evm->addEventListener(array(\Doctrine\ORM\Events::onFlush), new self);
+    $evm->addEventListener(array(
+      Events::postPersist,
+      Events::postUpdate,
+      Events::postRemove,
+    ), new self);
   }
 
   /**
-   * Handler executed by Doctrine
-   * @return
+   * Handler when there is new entity persisted
+   * @param Doctrine\ORM\Event\LifecycleEventArgs $args
+   * @return void
    */
-  public function onFlush(\Doctrine\ORM\Event\OnFlushEventArgs $eventArgs) {
-    $em = $eventArgs->getEntityManager();
-    $uow = $em->getUnitOfWork();
+  public function postPersist(Event\LifecycleEventArgs $args) {
+    $entity = $args->getEntity();
+    $class = get_class($entity);
+    $newData = $entity instanceof Entity ? $entity->toArray() : null;
 
-    foreach($uow->getScheduledEntityInsertions() AS $entity) {
-      self::notify(1, get_class($entity), 'add', null, null);
-    }
+    self::notify(null, $class, LiveConnect_LiveConnectOp::opAdd, null, $newData);
+  }
 
-    foreach ($uow->getScheduledEntityUpdates() AS $entity) {
-      self::notify(1, get_class($entity), 'edit', null, null);
-    }
+  /**
+   * Handler when existing entity is updated
+   * @param Doctrine\ORM\Event\LifecycleEventArgs $args
+   * @return void
+   */
+  public function postUpdate(Event\LifecycleEventArgs $args) {
+    $entity = $args->getEntity();
+    $class = get_class($entity);
+    $newData = $entity instanceof Entity ? $entity->toArray() : null;
 
-    foreach ($uow->getScheduledEntityDeletions() AS $entity) {
-    }
+    self::notify(null, $class, LiveConnect_LiveConnectOp::opEdit, null, $newData);
+  }
 
-    foreach ($uow->getScheduledCollectionDeletions() AS $col) {
-    }
+  /**
+   * Handler when existing entity is removed
+   * @param Doctrine\ORM\Event\LifecycleEventArgs $args
+   * @return void
+   */
+  public function postRemove(Event\LifecycleEventArgs $args) {
+    $entity = $args->getEntity();
+    $class = get_class($entity);
+    $newData = $entity instanceof Entity ? $entity->toArray() : null;
 
-    foreach ($uow->getScheduledCollectionUpdates() AS $col) {
-    }
+    self::notify(null, $class, LiveConnect_LiveConnectOp::opRemove, null, $newData);
   }
 }

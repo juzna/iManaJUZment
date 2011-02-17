@@ -56,7 +56,7 @@ var ClientDB = {
    * Storage for clients
    * Each client has these properties:
    *  - sessionId - unique ID
-   *  - registeredEvents: [ { table, operations[], columns[]?, conditions[{column, op, value}]  } ]
+   *  - registeredEvents: [ { table, operations[], columns[]?, conditions[{column, op, value}], expiry  } ]
    */
   storage: {},
 
@@ -133,7 +133,7 @@ var MessageHandlers = {
   /**
    * Client wants to subscribe for a new event
    * @param client
-   * @param msg: { event: { tbl, op, [ col ], [ cond ] } }
+   * @param msg: { event: { tbl, op, [ col ], [ cond ], timeout } }
    */
   subscribe: function(client, msg) {
     client.registeredEvents.push(msg.ev);

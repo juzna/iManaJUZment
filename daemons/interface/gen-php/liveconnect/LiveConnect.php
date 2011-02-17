@@ -4,9 +4,9 @@
  *
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  */
-include_once $GLOBALS['THRIFT_ROOT'].'/Thrift.php';
+//include_once $GLOBALS['THRIFT_ROOT'].'/Thrift.php';
 
-include_once $GLOBALS['THRIFT_ROOT'].'/packages/liveconnect/liveconnect_types.php';
+//include_once $GLOBALS['THRIFT_ROOT'].'/packages/liveconnect/liveconnect_types.php';
 
 interface LiveConnectIf {
   public function notify($user, $table, $op, $oldData, $nwData);
@@ -314,7 +314,7 @@ class LiveConnectClient implements LiveConnectIf {
 
 // HELPER FUNCTIONS AND STRUCTURES
 
-class LiveConnect_LiveConnect_notify_args {
+class LiveConnect_LiveConnect_notify_args extends TBase {
   static $_TSPEC;
 
   public $user = null;
@@ -365,21 +365,7 @@ class LiveConnect_LiveConnect_notify_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['user'])) {
-        $this->user = $vals['user'];
-      }
-      if (isset($vals['table'])) {
-        $this->table = $vals['table'];
-      }
-      if (isset($vals['op'])) {
-        $this->op = $vals['op'];
-      }
-      if (isset($vals['oldData'])) {
-        $this->oldData = $vals['oldData'];
-      }
-      if (isset($vals['nwData'])) {
-        $this->nwData = $vals['nwData'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -389,152 +375,14 @@ class LiveConnect_LiveConnect_notify_args {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->user);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->table);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->op);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::MAP) {
-            $this->oldData = array();
-            $_size21 = 0;
-            $_ktype22 = 0;
-            $_vtype23 = 0;
-            $xfer += $input->readMapBegin($_ktype22, $_vtype23, $_size21);
-            for ($_i25 = 0; $_i25 < $_size21; ++$_i25)
-            {
-              $key26 = '';
-              $val27 = '';
-              $xfer += $input->readString($key26);
-              $xfer += $input->readString($val27);
-              $this->oldData[$key26] = $val27;
-            }
-            $xfer += $input->readMapEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 5:
-          if ($ftype == TType::MAP) {
-            $this->nwData = array();
-            $_size28 = 0;
-            $_ktype29 = 0;
-            $_vtype30 = 0;
-            $xfer += $input->readMapBegin($_ktype29, $_vtype30, $_size28);
-            for ($_i32 = 0; $_i32 < $_size28; ++$_i32)
-            {
-              $key33 = '';
-              $val34 = '';
-              $xfer += $input->readString($key33);
-              $xfer += $input->readString($val34);
-              $this->nwData[$key33] = $val34;
-            }
-            $xfer += $input->readMapEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_notify_args', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_notify_args');
-    if ($this->user !== null) {
-      $xfer += $output->writeFieldBegin('user', TType::I32, 1);
-      $xfer += $output->writeI32($this->user);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->table !== null) {
-      $xfer += $output->writeFieldBegin('table', TType::STRING, 2);
-      $xfer += $output->writeString($this->table);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->op !== null) {
-      $xfer += $output->writeFieldBegin('op', TType::I32, 3);
-      $xfer += $output->writeI32($this->op);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->oldData !== null) {
-      if (!is_array($this->oldData)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('oldData', TType::MAP, 4);
-      {
-        $output->writeMapBegin(TType::STRING, TType::STRING, count($this->oldData));
-        {
-          foreach ($this->oldData as $kiter35 => $viter36)
-          {
-            $xfer += $output->writeString($kiter35);
-            $xfer += $output->writeString($viter36);
-          }
-        }
-        $output->writeMapEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->nwData !== null) {
-      if (!is_array($this->nwData)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('nwData', TType::MAP, 5);
-      {
-        $output->writeMapBegin(TType::STRING, TType::STRING, count($this->nwData));
-        {
-          foreach ($this->nwData as $kiter37 => $viter38)
-          {
-            $xfer += $output->writeString($kiter37);
-            $xfer += $output->writeString($viter38);
-          }
-        }
-        $output->writeMapEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_notify_args', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_subscribe_args {
+class LiveConnect_LiveConnect_subscribe_args extends TBase {
   static $_TSPEC;
 
   public $clientKey = null;
@@ -560,15 +408,7 @@ class LiveConnect_LiveConnect_subscribe_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['clientKey'])) {
-        $this->clientKey = $vals['clientKey'];
-      }
-      if (isset($vals['ev'])) {
-        $this->ev = $vals['ev'];
-      }
-      if (isset($vals['timeout'])) {
-        $this->timeout = $vals['timeout'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -578,80 +418,14 @@ class LiveConnect_LiveConnect_subscribe_args {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->clientKey);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRUCT) {
-            $this->ev = new LiveConnect_EventDefinition();
-            $xfer += $this->ev->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->timeout);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_subscribe_args', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_subscribe_args');
-    if ($this->clientKey !== null) {
-      $xfer += $output->writeFieldBegin('clientKey', TType::STRING, 1);
-      $xfer += $output->writeString($this->clientKey);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->ev !== null) {
-      if (!is_object($this->ev)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('ev', TType::STRUCT, 2);
-      $xfer += $this->ev->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->timeout !== null) {
-      $xfer += $output->writeFieldBegin('timeout', TType::I32, 3);
-      $xfer += $output->writeI32($this->timeout);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_subscribe_args', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_subscribe_result {
+class LiveConnect_LiveConnect_subscribe_result extends TBase {
   static $_TSPEC;
 
   public $success = null;
@@ -666,9 +440,7 @@ class LiveConnect_LiveConnect_subscribe_result {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -678,52 +450,14 @@ class LiveConnect_LiveConnect_subscribe_result {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::BOOL) {
-            $xfer += $input->readBool($this->success);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_subscribe_result', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_subscribe_result');
-    if ($this->success !== null) {
-      $xfer += $output->writeFieldBegin('success', TType::BOOL, 0);
-      $xfer += $output->writeBool($this->success);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_subscribe_result', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_unsubscribe_args {
+class LiveConnect_LiveConnect_unsubscribe_args extends TBase {
   static $_TSPEC;
 
   public $clientKey = null;
@@ -744,12 +478,7 @@ class LiveConnect_LiveConnect_unsubscribe_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['clientKey'])) {
-        $this->clientKey = $vals['clientKey'];
-      }
-      if (isset($vals['ev'])) {
-        $this->ev = $vals['ev'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -759,68 +488,14 @@ class LiveConnect_LiveConnect_unsubscribe_args {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->clientKey);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRUCT) {
-            $this->ev = new LiveConnect_EventDefinition();
-            $xfer += $this->ev->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_unsubscribe_args', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_unsubscribe_args');
-    if ($this->clientKey !== null) {
-      $xfer += $output->writeFieldBegin('clientKey', TType::STRING, 1);
-      $xfer += $output->writeString($this->clientKey);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->ev !== null) {
-      if (!is_object($this->ev)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('ev', TType::STRUCT, 2);
-      $xfer += $this->ev->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_unsubscribe_args', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_unsubscribe_result {
+class LiveConnect_LiveConnect_unsubscribe_result extends TBase {
   static $_TSPEC;
 
   public $success = null;
@@ -835,9 +510,7 @@ class LiveConnect_LiveConnect_unsubscribe_result {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -847,52 +520,14 @@ class LiveConnect_LiveConnect_unsubscribe_result {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::BOOL) {
-            $xfer += $input->readBool($this->success);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_unsubscribe_result', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_unsubscribe_result');
-    if ($this->success !== null) {
-      $xfer += $output->writeFieldBegin('success', TType::BOOL, 0);
-      $xfer += $output->writeBool($this->success);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_unsubscribe_result', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_unsubscribeClient_args {
+class LiveConnect_LiveConnect_unsubscribeClient_args extends TBase {
   static $_TSPEC;
 
   public $clientKey = null;
@@ -907,9 +542,7 @@ class LiveConnect_LiveConnect_unsubscribeClient_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['clientKey'])) {
-        $this->clientKey = $vals['clientKey'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -919,52 +552,14 @@ class LiveConnect_LiveConnect_unsubscribeClient_args {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->clientKey);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_unsubscribeClient_args', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_unsubscribeClient_args');
-    if ($this->clientKey !== null) {
-      $xfer += $output->writeFieldBegin('clientKey', TType::STRING, 1);
-      $xfer += $output->writeString($this->clientKey);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_unsubscribeClient_args', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_unsubscribeClient_result {
+class LiveConnect_LiveConnect_unsubscribeClient_result extends TBase {
   static $_TSPEC;
 
   public $success = null;
@@ -979,9 +574,7 @@ class LiveConnect_LiveConnect_unsubscribeClient_result {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -991,52 +584,14 @@ class LiveConnect_LiveConnect_unsubscribeClient_result {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::BOOL) {
-            $xfer += $input->readBool($this->success);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_unsubscribeClient_result', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_unsubscribeClient_result');
-    if ($this->success !== null) {
-      $xfer += $output->writeFieldBegin('success', TType::BOOL, 0);
-      $xfer += $output->writeBool($this->success);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_unsubscribeClient_result', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_getSubscriptions_args {
+class LiveConnect_LiveConnect_getSubscriptions_args extends TBase {
   static $_TSPEC;
 
 
@@ -1053,40 +608,14 @@ class LiveConnect_LiveConnect_getSubscriptions_args {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_getSubscriptions_args', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_getSubscriptions_args');
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_getSubscriptions_args', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_getSubscriptions_result {
+class LiveConnect_LiveConnect_getSubscriptions_result extends TBase {
   static $_TSPEC;
 
   public $success = null;
@@ -1106,9 +635,7 @@ class LiveConnect_LiveConnect_getSubscriptions_result {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1118,75 +645,14 @@ class LiveConnect_LiveConnect_getSubscriptions_result {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::LST) {
-            $this->success = array();
-            $_size39 = 0;
-            $_etype42 = 0;
-            $xfer += $input->readListBegin($_etype42, $_size39);
-            for ($_i43 = 0; $_i43 < $_size39; ++$_i43)
-            {
-              $elem44 = null;
-              $elem44 = new LiveConnect_Subscription();
-              $xfer += $elem44->read($input);
-              $this->success []= $elem44;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_getSubscriptions_result', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_getSubscriptions_result');
-    if ($this->success !== null) {
-      if (!is_array($this->success)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('success', TType::LST, 0);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->success));
-        {
-          foreach ($this->success as $iter45)
-          {
-            $xfer += $iter45->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_getSubscriptions_result', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_getClients_args {
+class LiveConnect_LiveConnect_getClients_args extends TBase {
   static $_TSPEC;
 
 
@@ -1203,40 +669,14 @@ class LiveConnect_LiveConnect_getClients_args {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_getClients_args', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_getClients_args');
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_getClients_args', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_LiveConnect_getClients_result {
+class LiveConnect_LiveConnect_getClients_result extends TBase {
   static $_TSPEC;
 
   public $success = null;
@@ -1256,9 +696,7 @@ class LiveConnect_LiveConnect_getClients_result {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -1268,72 +706,136 @@ class LiveConnect_LiveConnect_getClients_result {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::LST) {
-            $this->success = array();
-            $_size46 = 0;
-            $_etype49 = 0;
-            $xfer += $input->readListBegin($_etype49, $_size46);
-            for ($_i50 = 0; $_i50 < $_size46; ++$_i50)
-            {
-              $elem51 = null;
-              $elem51 = new LiveConnect_ClientInfo();
-              $xfer += $elem51->read($input);
-              $this->success []= $elem51;
-            }
-            $xfer += $input->readListEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('LiveConnect_getClients_result', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('LiveConnect_getClients_result');
-    if ($this->success !== null) {
-      if (!is_array($this->success)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('success', TType::LST, 0);
-      {
-        $output->writeListBegin(TType::STRUCT, count($this->success));
-        {
-          foreach ($this->success as $iter52)
-          {
-            $xfer += $iter52->write($output);
-          }
-        }
-        $output->writeListEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('LiveConnect_getClients_result', self::$_TSPEC, $output);
   }
-
 }
 
+class LiveConnectProcessor {
+  protected $handler_ = null;
+  public function __construct($handler) {
+    $this->handler_ = $handler;
+  }
+
+  public function process($input, $output) {
+    $rseqid = 0;
+    $fname = null;
+    $mtype = 0;
+
+    $input->readMessageBegin($fname, $mtype, $rseqid);
+    $methodname = 'process_'.$fname;
+    if (!method_exists($this, $methodname)) {
+      $input->skip(TType::STRUCT);
+      $input->readMessageEnd();
+      $x = new TApplicationException('Function '.$fname.' not implemented.', TApplicationException::UNKNOWN_METHOD);
+      $output->writeMessageBegin($fname, TMessageType::EXCEPTION, $rseqid);
+      $x->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+      return;
+    }
+    $this->$methodname($rseqid, $input, $output);
+    return true;
+  }
+
+  protected function process_notify($seqid, $input, $output) {
+    $args = new LiveConnect_LiveConnect_notify_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $this->handler_->notify($args->user, $args->table, $args->op, $args->oldData, $args->nwData);
+    return;
+  }
+  protected function process_subscribe($seqid, $input, $output) {
+    $args = new LiveConnect_LiveConnect_subscribe_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new LiveConnect_LiveConnect_subscribe_result();
+    $result->success = $this->handler_->subscribe($args->clientKey, $args->ev, $args->timeout);
+    $bin_accel = ($output instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'subscribe', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('subscribe', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_unsubscribe($seqid, $input, $output) {
+    $args = new LiveConnect_LiveConnect_unsubscribe_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new LiveConnect_LiveConnect_unsubscribe_result();
+    $result->success = $this->handler_->unsubscribe($args->clientKey, $args->ev);
+    $bin_accel = ($output instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'unsubscribe', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('unsubscribe', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_unsubscribeClient($seqid, $input, $output) {
+    $args = new LiveConnect_LiveConnect_unsubscribeClient_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new LiveConnect_LiveConnect_unsubscribeClient_result();
+    $result->success = $this->handler_->unsubscribeClient($args->clientKey);
+    $bin_accel = ($output instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'unsubscribeClient', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('unsubscribeClient', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_getSubscriptions($seqid, $input, $output) {
+    $args = new LiveConnect_LiveConnect_getSubscriptions_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new LiveConnect_LiveConnect_getSubscriptions_result();
+    $result->success = $this->handler_->getSubscriptions();
+    $bin_accel = ($output instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'getSubscriptions', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('getSubscriptions', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_getClients($seqid, $input, $output) {
+    $args = new LiveConnect_LiveConnect_getClients_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new LiveConnect_LiveConnect_getClients_result();
+    $result->success = $this->handler_->getClients();
+    $bin_accel = ($output instanceof TProtocol::$TBINARYPROTOCOLACCELERATED) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'getClients', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('getClients', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->getTransport()->flush();
+    }
+  }
+}
 ?>

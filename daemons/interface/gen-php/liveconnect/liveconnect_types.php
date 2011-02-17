@@ -4,7 +4,7 @@
  *
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  */
-include_once $GLOBALS['THRIFT_ROOT'].'/Thrift.php';
+//include_once $GLOBALS['THRIFT_ROOT'].'/Thrift.php';
 
 
 $GLOBALS['LiveConnect_E_LiveConnectOp'] = array(
@@ -56,7 +56,7 @@ final class LiveConnect_LiveConnectConditionOp {
   );
 }
 
-class LiveConnect_Condition {
+class LiveConnect_Condition extends TBase {
   static $_TSPEC;
 
   public $column = null;
@@ -81,15 +81,7 @@ class LiveConnect_Condition {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['column'])) {
-        $this->column = $vals['column'];
-      }
-      if (isset($vals['operation'])) {
-        $this->operation = $vals['operation'];
-      }
-      if (isset($vals['value'])) {
-        $this->value = $vals['value'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -99,76 +91,14 @@ class LiveConnect_Condition {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->column);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->operation);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->value);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('Condition', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('Condition');
-    if ($this->column !== null) {
-      $xfer += $output->writeFieldBegin('column', TType::STRING, 1);
-      $xfer += $output->writeString($this->column);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->operation !== null) {
-      $xfer += $output->writeFieldBegin('operation', TType::I32, 2);
-      $xfer += $output->writeI32($this->operation);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->value !== null) {
-      $xfer += $output->writeFieldBegin('value', TType::STRING, 3);
-      $xfer += $output->writeString($this->value);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('Condition', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_EventDefinition {
+class LiveConnect_EventDefinition extends TBase {
   static $_TSPEC;
 
   public $table = null;
@@ -211,18 +141,7 @@ class LiveConnect_EventDefinition {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['table'])) {
-        $this->table = $vals['table'];
-      }
-      if (isset($vals['operations'])) {
-        $this->operations = $vals['operations'];
-      }
-      if (isset($vals['columns'])) {
-        $this->columns = $vals['columns'];
-      }
-      if (isset($vals['conditions'])) {
-        $this->conditions = $vals['conditions'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -232,155 +151,14 @@ class LiveConnect_EventDefinition {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->table);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::SET) {
-            $this->operations = array();
-            $_size0 = 0;
-            $_etype3 = 0;
-            $xfer += $input->readSetBegin($_etype3, $_size0);
-            for ($_i4 = 0; $_i4 < $_size0; ++$_i4)
-            {
-              $elem5 = null;
-              $xfer += $input->readI32($elem5);
-              $this->operations[$elem5] = true;
-            }
-            $xfer += $input->readSetEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::SET) {
-            $this->columns = array();
-            $_size6 = 0;
-            $_etype9 = 0;
-            $xfer += $input->readSetBegin($_etype9, $_size6);
-            for ($_i10 = 0; $_i10 < $_size6; ++$_i10)
-            {
-              $elem11 = null;
-              $xfer += $input->readString($elem11);
-              $this->columns[$elem11] = true;
-            }
-            $xfer += $input->readSetEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::SET) {
-            $this->conditions = array();
-            $_size12 = 0;
-            $_etype15 = 0;
-            $xfer += $input->readSetBegin($_etype15, $_size12);
-            for ($_i16 = 0; $_i16 < $_size12; ++$_i16)
-            {
-              $elem17 = null;
-              $elem17 = new LiveConnect_Condition();
-              $xfer += $elem17->read($input);
-              $this->conditions[$elem17] = true;
-            }
-            $xfer += $input->readSetEnd();
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('EventDefinition', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('EventDefinition');
-    if ($this->table !== null) {
-      $xfer += $output->writeFieldBegin('table', TType::STRING, 1);
-      $xfer += $output->writeString($this->table);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->operations !== null) {
-      if (!is_array($this->operations)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('operations', TType::SET, 2);
-      {
-        $output->writeSetBegin(TType::I32, count($this->operations));
-        {
-          foreach ($this->operations as $iter18 => $true)
-          {
-            $xfer += $output->writeI32($iter18);
-          }
-        }
-        $output->writeSetEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->columns !== null) {
-      if (!is_array($this->columns)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('columns', TType::SET, 3);
-      {
-        $output->writeSetBegin(TType::STRING, count($this->columns));
-        {
-          foreach ($this->columns as $iter19 => $true)
-          {
-            $xfer += $output->writeString($iter19);
-          }
-        }
-        $output->writeSetEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->conditions !== null) {
-      if (!is_array($this->conditions)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('conditions', TType::SET, 4);
-      {
-        $output->writeSetBegin(TType::STRUCT, count($this->conditions));
-        {
-          foreach ($this->conditions as $iter20 => $true)
-          {
-            $xfer += $iter20->write($output);
-          }
-        }
-        $output->writeSetEnd();
-      }
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('EventDefinition', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_Subscription {
+class LiveConnect_Subscription extends TBase {
   static $_TSPEC;
 
   public $clientKey = null;
@@ -416,21 +194,7 @@ class LiveConnect_Subscription {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['clientKey'])) {
-        $this->clientKey = $vals['clientKey'];
-      }
-      if (isset($vals['ev'])) {
-        $this->ev = $vals['ev'];
-      }
-      if (isset($vals['expiry'])) {
-        $this->expiry = $vals['expiry'];
-      }
-      if (isset($vals['renewals'])) {
-        $this->renewals = $vals['renewals'];
-      }
-      if (isset($vals['eventReceived'])) {
-        $this->eventReceived = $vals['eventReceived'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -440,104 +204,14 @@ class LiveConnect_Subscription {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->clientKey);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRUCT) {
-            $this->ev = new LiveConnect_EventDefinition();
-            $xfer += $this->ev->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->expiry);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->renewals);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 5:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->eventReceived);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('Subscription', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('Subscription');
-    if ($this->clientKey !== null) {
-      $xfer += $output->writeFieldBegin('clientKey', TType::STRING, 1);
-      $xfer += $output->writeString($this->clientKey);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->ev !== null) {
-      if (!is_object($this->ev)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('ev', TType::STRUCT, 2);
-      $xfer += $this->ev->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->expiry !== null) {
-      $xfer += $output->writeFieldBegin('expiry', TType::I32, 3);
-      $xfer += $output->writeI32($this->expiry);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->renewals !== null) {
-      $xfer += $output->writeFieldBegin('renewals', TType::I32, 4);
-      $xfer += $output->writeI32($this->renewals);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->eventReceived !== null) {
-      $xfer += $output->writeFieldBegin('eventReceived', TType::I32, 5);
-      $xfer += $output->writeI32($this->eventReceived);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('Subscription', self::$_TSPEC, $output);
   }
-
 }
 
-class LiveConnect_ClientInfo {
+class LiveConnect_ClientInfo extends TBase {
   static $_TSPEC;
 
   public $clientKey = null;
@@ -567,18 +241,7 @@ class LiveConnect_ClientInfo {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['clientKey'])) {
-        $this->clientKey = $vals['clientKey'];
-      }
-      if (isset($vals['numEventsRegistered'])) {
-        $this->numEventsRegistered = $vals['numEventsRegistered'];
-      }
-      if (isset($vals['numEventsTotal'])) {
-        $this->numEventsTotal = $vals['numEventsTotal'];
-      }
-      if (isset($vals['uptime'])) {
-        $this->uptime = $vals['uptime'];
-      }
+      parent::__construct(self::$_TSPEC, $vals);
     }
   }
 
@@ -588,85 +251,11 @@ class LiveConnect_ClientInfo {
 
   public function read($input)
   {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->clientKey);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->numEventsRegistered);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->numEventsTotal);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->uptime);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
+    return $this->_read('ClientInfo', self::$_TSPEC, $input);
   }
-
   public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('ClientInfo');
-    if ($this->clientKey !== null) {
-      $xfer += $output->writeFieldBegin('clientKey', TType::STRING, 1);
-      $xfer += $output->writeString($this->clientKey);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->numEventsRegistered !== null) {
-      $xfer += $output->writeFieldBegin('numEventsRegistered', TType::I32, 2);
-      $xfer += $output->writeI32($this->numEventsRegistered);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->numEventsTotal !== null) {
-      $xfer += $output->writeFieldBegin('numEventsTotal', TType::I32, 3);
-      $xfer += $output->writeI32($this->numEventsTotal);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->uptime !== null) {
-      $xfer += $output->writeFieldBegin('uptime', TType::I32, 4);
-      $xfer += $output->writeI32($this->uptime);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
+    return $this->_write('ClientInfo', self::$_TSPEC, $output);
   }
-
 }
 
 ?>
