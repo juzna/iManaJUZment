@@ -22,23 +22,23 @@ var thriftServer = thrift.createServer(LiveConnectStub, {
   },
 
   subscribe: function(clientKey, ev, timeout) {
-
+    // TODO: implement this method
   },
 
   unsubscribe: function(clientKey, ev) {
-
+    // TODO: implement this method
   },
 
   unsubscribeClient: function(clientKey) {
-
+    // TODO: implement this method
   },
 
   getSubscriptions: function() {
-
+    // TODO: implement this method
   },
 
   getClients: function() {
-
+    // TODO: implement this method
   }
 });
 thriftServer.listen(9090);
@@ -76,7 +76,6 @@ var ClientDB = {
 
     // Set-up basic properties
     client.registeredEvents = [];
-
   },
 
   /**
@@ -113,6 +112,15 @@ var ClientDB = {
    * New notification received
    */
   onNotify: function(user, table, op, oldData, newData) {
+    // Prepare notification object to be sent to clients
+    var notification = {
+      user: user,
+      table: table,
+      operation: op,
+      oldData: oldData,
+      newData: newData
+    };
+
     // Go thru all clients
     for(var i in ClientDB.storage) {
       var client = ClientDB.storage[i];
@@ -122,7 +130,7 @@ var ClientDB = {
         var ev = client.registeredEvents[j];
 
         if(ClientDB.matchesEvent(ev, table, op, oldData, newData)) {
-          ClientDB.send(client, 'notify', { user: user, table: table });
+          ClientDB.send(client, 'notify', notification);
         }
       }
     }
@@ -182,6 +190,7 @@ var ClientDB = {
       case 2:
         return (col in object) && (object[col] == val);
 
+      // TODO: implement other operations
       // lt = 3,
       // lte = 4,
       // gt = 5,
@@ -217,16 +226,37 @@ var ClientDB = {
 
 var MessageHandlers = {
   /**
+   * Get list of all available methods
+   */
+  availableMethods: function() {
+    return Object.keys(MessageHandlers);
+  },
+
+  /**
    * Client wants to subscribe for a new event
    * @param client
    * @param msg: { event: { tbl, op, [ col ], [ cond ], timeout } }
    */
   subscribe: function(client, msg) {
+    // TODO: check if received valid event request
     client.registeredEvents.push(msg.ev);
   },
 
+  /**
+   * Get client's ID
+   */
   getId: function(client) {
     return client.sessionId;
+  },
+
+  // Get number of online clients
+  getOnlineClientNum: function() {
+    return ClientDB.online;
+  },
+
+  // Get total number of clients ever connected
+  getTotalClientNum: function() {
+    return ClientDB.counter;
   }
 
 };
