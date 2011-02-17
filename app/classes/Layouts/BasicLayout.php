@@ -32,7 +32,7 @@ class BasicLayout extends DefaultLayout {
   //  'window.js',
     'calendar.js', 'calendar-cs.js',
     'input.js', 'input-date.js', 'input-number.js', 'input-net.js', 'input-color.js',
-    'liveconnect.js',
+    'liveconnect.js', 'liveconnect-form.js',
   );
 
   // Template file to be used
