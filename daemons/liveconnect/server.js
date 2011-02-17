@@ -250,7 +250,15 @@ socketIO.on('connection', function(client){
 
   // new client is here!
   client.on('message', function(msg) {
-    ClientDB.onMessage(client, msg);
+    try {
+      ClientDB.onMessage(client, msg);
+    }
+    catch(e) {
+      console.log('Exception on client', client.sessionId, ':', e);
+      client.send({ messageType: 'exception', error: e.toString() });
+      client.disconnect();
+      ClientDB.onDisconnect(client);
+    }
   });
 
   client.on('disconnect', function() {
