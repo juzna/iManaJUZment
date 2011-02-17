@@ -34,6 +34,7 @@ class BasicJQueryLayout extends DefaultLayout {
     'input.js', 'input-date.js', 'input-number.js', 'input-net.js', 'input-color.js',
     'jquery.ui.selectmenu.js', 'jquery.ui.selectmenu2.js',
     'layout.js',
+    'liveconnect.js', 'liveconnect-form.js',
   );
 
   protected static $features = array('jquery');

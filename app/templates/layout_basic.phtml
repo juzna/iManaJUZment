@@ -38,11 +38,6 @@
   <script type="text/javascript">
     $j = jQuery.noConflict(); // We have jQuery and Prototype together
   </script>
-
-  <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" src="{$basePath}/js/{$js}"></script>
-  <script type="text/javascript">
-    $j = jQuery.noConflict(); // We have jQuery and Prototype together
-  </script>
   <script n:foreach="$presenter->getPageLayout()->getRequiredJsFiles() as $js" type="text/javascript" src="{$basePath}/js/{$js}"></script>
   <script type="text/javascript">
     var basePath = {$basePath};
