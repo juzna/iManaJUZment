@@ -58,7 +58,7 @@ class LayoutFactory implements ILayoutFactory {
 
     // Layout name given in cookie
     if($layout = $request->getCookie('layout') or $layout = $request->getQuery('layout')) {
-      return ucfirst($layout) . 'Layout';
+      if(class_exists($cls = ucfirst($layout) . 'Layout')) return $cls;
     }
 
     // No layout known, use the base one
