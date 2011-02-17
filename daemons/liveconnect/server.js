@@ -181,7 +181,7 @@ var ClientDB = {
     var col = cond.column; // What column are we talking about?
     var val = cond.value;
 
-    switch(cond.op) {
+    switch(cond.operation) {
       case 'present':
       case 1:
         return (col in object) && (object[col] !== null);
