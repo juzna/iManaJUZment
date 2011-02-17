@@ -130,6 +130,8 @@ var ClientDB = {
         var ev = client.registeredEvents[j];
 
         if(ClientDB.matchesEvent(ev, table, op, oldData, newData)) {
+          notification.id = ev.subscriptionId;
+          console.log('Sending notification to', client.sessionId, 'for subscription', ev.subscriptionId);
           ClientDB.send(client, 'notify', notification);
         }
       }
@@ -238,8 +240,27 @@ var MessageHandlers = {
    * @param msg: { event: { tbl, op, [ col ], [ cond ], timeout } }
    */
   subscribe: function(client, msg) {
-    // TODO: check if received valid event request
-    client.registeredEvents.push(msg.ev);
+    var id = msg.id, eventRequests = msg.events, timeout = msg.timeout || 90;
+
+    for(var i = 0; i < eventRequests.length; i++) {
+      var ev = eventRequests[i];
+
+      // TODO: check if received valid event request
+
+      ev.subscriptionId = id;
+      ev.expire = (new Date).valueOf() + timeout * 1000; // Timeout in ms
+
+      // add to client
+      client.registeredEvents.push(ev);
+    }
+  },
+
+  extendSubscription: function(client, msg) {
+    // TODO:
+  },
+
+  unsubscribe: function(client, msg) {
+    // TODO:
   },
 
   /**
