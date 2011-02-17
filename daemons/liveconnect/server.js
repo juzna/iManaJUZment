@@ -35,6 +35,10 @@ var thriftServer = thrift.createServer(LiveConnectStub, {
 
   getSubscriptions: function() {
 
+  },
+
+  getClients: function() {
+
   }
 });
 thriftServer.listen(9090);
@@ -52,7 +56,7 @@ var ClientDB = {
    * Storage for clients
    * Each client has these properties:
    *  - sessionId - unique ID
-   *  - registeredEvents: [ { table, operations, columns, conditions } ]
+   *  - registeredEvents: [ { table, operations[], columns[]?, conditions[{column, op, value}]  } ]
    */
   storage: {},
 

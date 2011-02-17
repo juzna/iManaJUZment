@@ -623,6 +623,111 @@ LiveConnect_getSubscriptions_result.prototype.write = function(output){
   return
 }
 
+var LiveConnect_getClients_args = function(args){
+}
+LiveConnect_getClients_args.prototype = {}
+LiveConnect_getClients_args.prototype.read = function(input){ 
+  var ret = input.readStructBegin()
+  while (1) 
+  {
+    var ret = input.readFieldBegin()
+    var fname = ret.fname
+    var ftype = ret.ftype
+    var fid   = ret.fid
+    if (ftype == Thrift.Type.STOP) 
+      break
+    switch(fid)
+    {
+      default:
+        input.skip(ftype)
+    }
+    input.readFieldEnd()
+  }
+  input.readStructEnd()
+  return
+}
+
+LiveConnect_getClients_args.prototype.write = function(output){ 
+  output.writeStructBegin('LiveConnect_getClients_args')
+  output.writeFieldStop()
+  output.writeStructEnd()
+  return
+}
+
+var LiveConnect_getClients_result = function(args){
+  this.success = null
+if( args != null ){  if (null != args.success)
+  this.success = args.success
+}}
+LiveConnect_getClients_result.prototype = {}
+LiveConnect_getClients_result.prototype.read = function(input){ 
+  var ret = input.readStructBegin()
+  while (1) 
+  {
+    var ret = input.readFieldBegin()
+    var fname = ret.fname
+    var ftype = ret.ftype
+    var fid   = ret.fid
+    if (ftype == Thrift.Type.STOP) 
+      break
+    switch(fid)
+    {
+      case 0:      if (ftype == Thrift.Type.LIST) {
+        {
+          var _size46 = 0
+          var rtmp3
+          this.success = []
+          var _etype49 = 0
+          rtmp3 = input.readListBegin()
+          _etype49 = rtmp3.etype
+          _size46 = rtmp3.size
+          for (var _i50 = 0; _i50 < _size46; ++_i50)
+          {
+            var elem51 = null
+            elem51 = new ttypes.ClientInfo()
+            elem51.read(input)
+            this.success.push(elem51)
+          }
+          input.readListEnd()
+        }
+      } else {
+        input.skip(ftype)
+      }
+      break
+      default:
+        input.skip(ftype)
+    }
+    input.readFieldEnd()
+  }
+  input.readStructEnd()
+  return
+}
+
+LiveConnect_getClients_result.prototype.write = function(output){ 
+  output.writeStructBegin('LiveConnect_getClients_result')
+  if (null != this.success) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0)
+    {
+      output.writeListBegin(Thrift.Type.STRUCT, this.success.length)
+      {
+        for(var iter52 in this.success)
+        {
+          if (this.success.hasOwnProperty(iter52))
+          {
+            iter52=this.success[iter52]
+            iter52.write(output)
+          }
+        }
+      }
+      output.writeListEnd()
+    }
+    output.writeFieldEnd()
+  }
+  output.writeFieldStop()
+  output.writeStructEnd()
+  return
+}
+
 var LiveConnectClient = exports.Client = function(output, pClass) {
     this.output = output;
     this.pClass = pClass;
@@ -787,6 +892,39 @@ LiveConnectClient.prototype.recv_getSubscriptions = function(input,mtype,rseqid)
   }
   return callback("getSubscriptions failed: unknown result");
 }
+LiveConnectClient.prototype.getClients = function(callback){
+  this.seqid += 1;
+  this._reqs[this.seqid] = callback;
+    this.send_getClients()
+}
+
+LiveConnectClient.prototype.send_getClients = function(){
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('getClients', Thrift.MessageType.CALL, this.seqid)
+  var args = new LiveConnect_getClients_args()
+  args.write(output)
+  output.writeMessageEnd()
+  return this.output.flush()
+}
+
+LiveConnectClient.prototype.recv_getClients = function(input,mtype,rseqid){
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException()
+    x.read(input)
+    input.readMessageEnd()
+    return callback(x);
+  }
+  var result = new LiveConnect_getClients_result()
+  result.read(input)
+  input.readMessageEnd()
+
+  if (null != result.success ) {
+    return callback(null, result.success);
+  }
+  return callback("getClients failed: unknown result");
+}
 var LiveConnectProcessor = exports.Processor = function(handler) {
   this._handler = handler
 }
@@ -862,6 +1000,20 @@ LiveConnectProcessor.prototype.process_getSubscriptions = function(seqid, input,
   this._handler.getSubscriptions(function(success) {
     result.success = success
     output.writeMessageBegin("getSubscriptions", Thrift.MessageType.REPLY, seqid)
+    result.write(output)
+    output.writeMessageEnd()
+    output.flush()
+  })
+}
+
+LiveConnectProcessor.prototype.process_getClients = function(seqid, input, output) {
+  var args = new LiveConnect_getClients_args()
+  args.read(input)
+  input.readMessageEnd()
+  var result = new LiveConnect_getClients_result()
+  this._handler.getClients(function(success) {
+    result.success = success
+    output.writeMessageBegin("getClients", Thrift.MessageType.REPLY, seqid)
     result.write(output)
     output.writeMessageEnd()
     output.flush()

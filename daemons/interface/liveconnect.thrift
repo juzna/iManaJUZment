@@ -66,6 +66,13 @@ struct Subscription {
   5: optional i32 eventReceived,
 }
 
+struct ClientInfo {
+  1: required string clientKey,
+  2: optional i32 numEventsRegistered,
+  3: optional i32 numEventsTotal,
+  4: optional i32 uptime,
+}
+
 
 service LiveConnect {
   /**
@@ -92,4 +99,9 @@ service LiveConnect {
    * Get list of all subscriptions
    */
   list<Subscription> getSubscriptions()
+
+  /**
+   * Get client summary
+   */
+  list<ClientInfo> getClients()
 }

@@ -367,3 +367,90 @@ Subscription.prototype.write = function(output){
   return
 }
 
+var ClientInfo = module.exports.ClientInfo = function(args){
+  this.clientKey = null
+  this.numEventsRegistered = null
+  this.numEventsTotal = null
+  this.uptime = null
+if( args != null ){  if (null != args.clientKey)
+  this.clientKey = args.clientKey
+  if (null != args.numEventsRegistered)
+  this.numEventsRegistered = args.numEventsRegistered
+  if (null != args.numEventsTotal)
+  this.numEventsTotal = args.numEventsTotal
+  if (null != args.uptime)
+  this.uptime = args.uptime
+}}
+ClientInfo.prototype = {}
+ClientInfo.prototype.read = function(input){ 
+  var ret = input.readStructBegin()
+  while (1) 
+  {
+    var ret = input.readFieldBegin()
+    var fname = ret.fname
+    var ftype = ret.ftype
+    var fid   = ret.fid
+    if (ftype == Thrift.Type.STOP) 
+      break
+    switch(fid)
+    {
+      case 1:      if (ftype == Thrift.Type.STRING) {
+        this.clientKey = input.readString()
+      } else {
+        input.skip(ftype)
+      }
+      break
+      case 2:      if (ftype == Thrift.Type.I32) {
+        this.numEventsRegistered = input.readI32()
+      } else {
+        input.skip(ftype)
+      }
+      break
+      case 3:      if (ftype == Thrift.Type.I32) {
+        this.numEventsTotal = input.readI32()
+      } else {
+        input.skip(ftype)
+      }
+      break
+      case 4:      if (ftype == Thrift.Type.I32) {
+        this.uptime = input.readI32()
+      } else {
+        input.skip(ftype)
+      }
+      break
+      default:
+        input.skip(ftype)
+    }
+    input.readFieldEnd()
+  }
+  input.readStructEnd()
+  return
+}
+
+ClientInfo.prototype.write = function(output){ 
+  output.writeStructBegin('ClientInfo')
+  if (null != this.clientKey) {
+    output.writeFieldBegin('clientKey', Thrift.Type.STRING, 1)
+    output.writeString(this.clientKey)
+    output.writeFieldEnd()
+  }
+  if (null != this.numEventsRegistered) {
+    output.writeFieldBegin('numEventsRegistered', Thrift.Type.I32, 2)
+    output.writeI32(this.numEventsRegistered)
+    output.writeFieldEnd()
+  }
+  if (null != this.numEventsTotal) {
+    output.writeFieldBegin('numEventsTotal', Thrift.Type.I32, 3)
+    output.writeI32(this.numEventsTotal)
+    output.writeFieldEnd()
+  }
+  if (null != this.uptime) {
+    output.writeFieldBegin('uptime', Thrift.Type.I32, 4)
+    output.writeI32(this.uptime)
+    output.writeFieldEnd()
+  }
+  output.writeFieldStop()
+  output.writeStructEnd()
+  return
+}
+

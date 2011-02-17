@@ -537,4 +537,136 @@ class LiveConnect_Subscription {
 
 }
 
+class LiveConnect_ClientInfo {
+  static $_TSPEC;
+
+  public $clientKey = null;
+  public $numEventsRegistered = null;
+  public $numEventsTotal = null;
+  public $uptime = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'clientKey',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'numEventsRegistered',
+          'type' => TType::I32,
+          ),
+        3 => array(
+          'var' => 'numEventsTotal',
+          'type' => TType::I32,
+          ),
+        4 => array(
+          'var' => 'uptime',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['clientKey'])) {
+        $this->clientKey = $vals['clientKey'];
+      }
+      if (isset($vals['numEventsRegistered'])) {
+        $this->numEventsRegistered = $vals['numEventsRegistered'];
+      }
+      if (isset($vals['numEventsTotal'])) {
+        $this->numEventsTotal = $vals['numEventsTotal'];
+      }
+      if (isset($vals['uptime'])) {
+        $this->uptime = $vals['uptime'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'ClientInfo';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->clientKey);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->numEventsRegistered);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->numEventsTotal);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->uptime);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('ClientInfo');
+    if ($this->clientKey !== null) {
+      $xfer += $output->writeFieldBegin('clientKey', TType::STRING, 1);
+      $xfer += $output->writeString($this->clientKey);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->numEventsRegistered !== null) {
+      $xfer += $output->writeFieldBegin('numEventsRegistered', TType::I32, 2);
+      $xfer += $output->writeI32($this->numEventsRegistered);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->numEventsTotal !== null) {
+      $xfer += $output->writeFieldBegin('numEventsTotal', TType::I32, 3);
+      $xfer += $output->writeI32($this->numEventsTotal);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->uptime !== null) {
+      $xfer += $output->writeFieldBegin('uptime', TType::I32, 4);
+      $xfer += $output->writeI32($this->uptime);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 ?>
