@@ -77,6 +77,8 @@ abstract class DashboardPresenter extends BasePresenter {
 
     // Set-up form
     $frm = $this->getForm($what);
+    $el = $frm->getElementPrototype();
+    $el->attrs['data']['entityId'] = $id;
     if(!$frm->isSubmitted()) {
       $frm['action']->setValue('edit');
 

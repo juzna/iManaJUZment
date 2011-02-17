@@ -40,6 +40,11 @@ class DoctrineForm extends AppForm {
   public function __construct($entity = null, Nette\IComponentContainer $parent = NULL, $name = NULL) {
     parent::__construct($parent, $name);
     if($entity) $this->setEntity($entity);
+
+    /** @var $el Nette\Web\Html */
+    $el = $this->getElementPrototype();
+    $el->class('entityForm');
+    $el->attrs['data']['entityName'] = $entity;
   }
 
   /**
