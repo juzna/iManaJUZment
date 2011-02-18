@@ -27,7 +27,8 @@ use ActiveEntity\Reflection\ReflectionClass,
  */
 class Metadata implements \Juz\IExtensionSubscriber {
   /** @var \Juz\ClassMetaData Link to parent metadata */
-  protected $metadata;
+  protected $classMetadata;
+  protected $className;
 
   public $title;
   public $titles;
@@ -37,9 +38,78 @@ class Metadata implements \Juz\IExtensionSubscriber {
   public $notFoundParams;
 
 
-  public function __construct(\Juz\ClassMetaData $metadata) {
-    $this->metadata = $metadata;
+  public function __construct($className, \Juz\ClassMetaData $classMetadata) {
+    $this->className = $className;
+    $this->classMetadata = $classMetadata;
   }
+
+  public function setAnnotations($classAnnotations, $fieldsAnnotations) {
+    foreach($classAnnotations as $annotName => $annot) {
+      switch($annotName) {
+        case 'Title':
+          $this->title = $annot->value;
+          $this->titles = (array) $annot;
+          break;
+
+        case 'Editable':
+          $this->editable = true;
+          break;
+
+        case 'Listable':
+          $this->listable = true;
+          break;
+
+        case 'Behaviour':
+          $this->setUpBehaviour($this->className, $this->classMetadata, $annot);
+          break;
+
+        case 'NotFound':
+          $this->notFoundAction = $annot->action;
+          $this->notFoundParams = (array) $annot;
+          break;
+      }
+    }
+
+    foreach($fieldsAnnotations as $fieldName => $fieldAnnotations) {
+      if(!isset($this->classMetadata->fieldMappings[$fieldName])) continue;
+      $field = &$this->classMetadata->fieldMappings[$fieldName];
+
+      foreach($fieldAnnotations as $annotName => $annot) {
+        switch($annotName) {
+          case 'Title':
+            $field['title'] = $annot->value;
+            break;
+
+          case 'Get':
+            $field['autoGetter'] = true;
+            break;
+
+          case 'Set':
+            $field['autoSetter'] = true;
+            break;
+
+          case 'Format':
+            $field['format'] = $annot->value;
+            break;
+
+          case 'Show':
+            $field['showByDefault'] = true;
+            break;
+        }
+      }
+    }
+  }
+
+  /**
+   * Set up new behaviour for entity
+   */
+  private function setUpBehaviour($className, \Doctrine\ORM\Mapping\ClassMetadataInfo $metadata, Annotations\Behaviour $annot) {
+    $className::_setupBehavioralMetadata($metadata);
+  }
+
+
+
+
 
   /**
    * Gets a callback for named method
@@ -91,22 +161,6 @@ class Metadata implements \Juz\IExtensionSubscriber {
   public function getFieldDefinitions() {
     return $this->metadata->fieldMappings;
   }
-
-  /**
-   * Gets the ReflectionClass instance of the mapped class.
-   * @return ReflectionClass
-   */
-  public function getReflectionClass() {
-    if(!$this->metadata->reflClass) {
-      $this->metadata->reflClass = new ReflectionClass($this->metadata->name);
-    }
-    return $this->metadata->reflClass;
-  }
-
-  public function _getNewReflectionProperty($class, $property) {
-    return new ReflectionProperty($class, $property);
-  }
-  
   
 /*  protected function _validateAndCompleteFieldMapping(array &$mapping) {
     \Doctrine\ORM\Mapping\ClassMetadataInfo::_validateAndCompleteFieldMapping($mapping);

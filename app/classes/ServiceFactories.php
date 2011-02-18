@@ -49,7 +49,7 @@ class ServiceFactories {
       $reader->setAnnotationNamespaceAlias('Juz\\Forms\\Annotations\\', 'frm');
       $reader->setAutoloadAnnotations(true);
 
-      $metadata = new \ActiveEntity\AnnotationDriver($reader, (array) $modelDirs);
+      $metadata = new \Juz\AnnotationDriver($reader, (array) $modelDirs);
 
       $config->setMetadataDriverImpl($metadata);
     }

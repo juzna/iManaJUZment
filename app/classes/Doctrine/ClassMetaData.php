@@ -18,6 +18,10 @@
 namespace Juz;
 
 use Nette\Environment;
+use ActiveEntity\Reflection\ReflectionClass,
+  ActiveEntity\Reflection\ReflectionProperty;
+
+
 
 class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \ArrayAccess {
   /**
@@ -27,10 +31,6 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
 
   // Cache for implicit extension calls (see __call method)
   protected $callHashMap = array();
-
-  public function __construct($entityName) {
-    if($entityName !== '--dummy--') parent::__construct($entityName);
-  }
 
   /**
    * Get an extension
@@ -67,8 +67,10 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
    * Creates an extension by it's factory name
    */
   protected function createExtension($factory) {
-    if(strpos($factory, ':')) return callback($factory)->invoke($this);
-    else return new $factory($this);
+    $className = $this->getReflectionClass()->getName();
+
+    if(strpos($factory, ':')) return callback($factory)->invoke($className, $this);
+    else return new $factory($className, $this);
   }
 
   /**
@@ -167,4 +169,22 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
 
     return $cnt > 0;
   }
+
+
+
+  /**
+   * Gets the ReflectionClass instance of the mapped class.
+   * @return ReflectionClass
+   */
+  public function getReflectionClass() {
+    if(!$this->reflClass) {
+      $this->reflClass = new ReflectionClass($this->name);
+    }
+    return $this->reflClass;
+  }
+
+  public function _getNewReflectionProperty($class, $property) {
+    return new ReflectionProperty($class, $property);
+  }
+  
 }
