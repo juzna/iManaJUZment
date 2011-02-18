@@ -18,7 +18,12 @@
 namespace Juz;
 
 /**
- * Can add methods dynamically
+ * Extension can add methods dynamically
+ * For more info see ClassMetadata
+ * @see ClassMetadata
+ *
+ * @author Jan Dolecek - juzna.cz
+ *
  */
 interface IExtensionSubscriber {
   /**

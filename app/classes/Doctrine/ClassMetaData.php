@@ -22,7 +22,26 @@ use ActiveEntity\Reflection\ReflectionClass,
   ActiveEntity\Reflection\ReflectionProperty;
 
 
-
+/**
+ * Extensible ClassMetadata mapping driver for Doctrine 2 ORM
+ *
+ * Extensions are loaded from config.ini based on lines like:
+ *   metadata.extension.EXTENSION-NAME = FACTORY
+ *
+ *   Where extension name can be any string and factory is either:
+ *    - class name: then new $extension($className, $classMetadata) is called when extension is needed
+ *    - callback: then callback($className, $classMetadata) is called when extension is needed
+ *   In these cases, $className is a string representing class name of entity, $classMetadata is object in this file.
+ *
+ * Programmer can access extensions via $metadata->getExtension(NAME), or using array access like $metadata[NAME]
+ *
+ * Magic methods are also allowed and directly mapped to extensions. When extension wants to support this feature,
+ *   it has to implement IExtensionSubscriber interface and it's one method (which translated method name to callback).
+ *
+ *
+ * @author Jan Dolecek - juzna.cz
+ *
+ */
 class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \ArrayAccess {
   /**
    * Map of extensions: alias -> object
@@ -170,10 +189,12 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
     return $cnt > 0;
   }
 
+  
 
 
   /**
    * Gets the ReflectionClass instance of the mapped class.
+   * @deprecated Need to get rid of this
    * @return ReflectionClass
    */
   public function getReflectionClass() {
@@ -183,8 +204,12 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
     return $this->reflClass;
   }
 
+  /**
+   * Gets the ReflectionProperty
+   * @deprecated Need to get rid of this
+   * @return ReflectionClass
+   */
   public function _getNewReflectionProperty($class, $property) {
     return new ReflectionProperty($class, $property);
   }
-  
 }

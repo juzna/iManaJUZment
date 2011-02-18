@@ -21,6 +21,15 @@ namespace Juz;
 
 /**
  * Doctrine annotation driver which supports extensible metadata
+ *
+ * Loads config.ini and makes mappig to extensions based on configuration lines like this:
+ *   annotations.mapping.NAMESPACE = EXTENSION-NAME
+ *
+ * Reads class metadata and also field metadata, which are sent to metadata extension using
+ *   method setAnnotations($classMetadata, $fieldsMetadata)
+ *
+ * @author Jan Dolecek - juzna.cz
+ *
  */
 class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
 
@@ -75,7 +84,7 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
     }
 
 
-    // Map output table to extensions
+    // Map output tables to extensions
     foreach($classMetadata as $ext => $annotations) {
       $metadata->getExtension($ext)->setAnnotations($annotations, @$fieldMetadata[$ext]);
     }

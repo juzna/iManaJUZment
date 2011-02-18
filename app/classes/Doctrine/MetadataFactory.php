@@ -20,6 +20,9 @@ namespace Juz;
 
 /**
  * Factory for customized ClassMetadata info
+ *
+ * @author Jan Dolecek - juzna.cz
+ *
  */
 class ClassMetadataFactory extends \Doctrine\ORM\Mapping\ClassMetadataFactory {
   protected function newClassMetadataInstance($className) {
