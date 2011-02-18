@@ -80,7 +80,7 @@ class ServiceFactories {
 
     // Register event handlers
     $em->getEventManager()->addEventSubscriber(new \ActiveEntity\Events\DefaultValues);
-    //\LiveConnect::register();
+    \LiveConnect::register($em);
 
     return self::$em = $em;
   }

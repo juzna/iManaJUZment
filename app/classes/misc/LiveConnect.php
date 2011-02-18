@@ -81,9 +81,9 @@ class LiveConnect {
    * Register Doctrine handler
    * @return void
    */
-  public static function register() {
+  public static function register($em) {
     /** @var $evm \Doctrine\Common\EventManager */
-    $evm = em()->getEventManager();
+    $evm = $em->getEventManager();
 
     $evm->addEventListener(array(
       Events::postPersist,
