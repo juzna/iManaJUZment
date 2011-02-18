@@ -23,7 +23,7 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
   /**
    * @var EntityManager Static entity manager
    */
-  private static $entityManager;
+  private static $entityManager = null;
   
   public function __construct() {}
   
@@ -35,7 +35,7 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
    * @param EntityManager $em
    */
   public static function setEntityManager(EntityManager $em) {
-      self::$entityManager = $em;
+    self::$entityManager = $em;
   }
 
   /**
@@ -43,10 +43,11 @@ abstract class Entity extends \Nette\Object implements \ArrayAccess {
    * @return EntityManager
    */
   public static function getEntityManager() {
-      if (!self::$entityManager === null) {
-          throw Exception::noEntityManager();
-      }
-      return self::$entityManager;
+    if (self::$entityManager === null) {
+      self::$entityManager = $em = \Nette\Environment::getService('Doctrine\\ORM\\EntityManager');
+      if(!$em) throw Exception::noEntityManager();
+    }
+    return self::$entityManager;
   }
 
 
