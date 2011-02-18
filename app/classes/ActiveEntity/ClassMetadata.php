@@ -21,17 +21,37 @@ use ActiveEntity\Reflection\ReflectionClass,
   ActiveEntity\Reflection\ReflectionProperty;
 
 
+
 /**
  * Extended metadata for ActiveEntity's
  */
-class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
+class Metadata implements \Juz\IExtensionSubscriber {
+  /** @var \Juz\ClassMetaData Link to parent metadata */
+  protected $metadata;
+
   public $title;
   public $titles;
   public $listable = false;
   public $editable = false;
   public $notFoundAction;
   public $notFoundParams;
-  
+
+
+  public function __construct(\Juz\ClassMetaData $metadata) {
+    $this->metadata = $metadata;
+  }
+
+  /**
+   * Gets a callback for named method
+   * @param string $method
+   * @return callback
+   */
+  public function loader($method) {
+    // echo "Someone is lookign for $method\n";
+    if(method_exists($this, $method)) return callback($this, $method);
+  }
+
+
   /**
    * Get's title to be displayed
    *  - for creating table
@@ -55,21 +75,21 @@ class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
     }
 
     // Try field with name 'name'
-    if($this->hasField('name')) return 'name';
+    if($this->metadata->hasField('name')) return 'name';
 
     throw new \Exception("Name field not found in entity");
   }
 
   public function getAllFieldNames() {
-    return array_keys($this->reflFields);
+    return array_keys($this->metadata->reflFields);
   }
   
   public function getFieldNames() {
-    return array_keys($this->fieldMappings);
+    return array_keys($this->metadata->fieldMappings);
   }
   
   public function getFieldDefinitions() {
-    return $this->fieldMappings;
+    return $this->metadata->fieldMappings;
   }
 
   /**
@@ -77,10 +97,10 @@ class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
    * @return ReflectionClass
    */
   public function getReflectionClass() {
-    if(!$this->reflClass) {
-      $this->reflClass = new ReflectionClass($this->name);
+    if(!$this->metadata->reflClass) {
+      $this->metadata->reflClass = new ReflectionClass($this->metadata->name);
     }
-    return $this->reflClass;
+    return $this->metadata->reflClass;
   }
 
   public function _getNewReflectionProperty($class, $property) {
@@ -94,4 +114,3 @@ class ClassMetadata extends \Doctrine\ORM\Mapping\ClassMetadata {
   }
   */
 }
-

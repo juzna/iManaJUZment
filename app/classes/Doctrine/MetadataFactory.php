@@ -16,7 +16,7 @@
  */
 
 
-namespace ActiveEntity;
+namespace Juz;
 
 /**
  * Factory for customized ClassMetadata info

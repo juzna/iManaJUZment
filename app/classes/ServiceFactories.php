@@ -41,7 +41,7 @@ class ServiceFactories {
     {
       $modelDirs = glob(APP_DIR . "/*Module/models/") + array(APP_DIR . '/models/');
 
-      $config->setClassMetadataFactoryName('ActiveEntity\\ClassMetadataFactory');
+      $config->setClassMetadataFactoryName('Juz\\ClassMetadataFactory');
 
       $reader = new \Doctrine\Common\Annotations\AnnotationReader();
       $reader->setDefaultAnnotationNamespace('Doctrine\\ORM\\Mapping\\');
