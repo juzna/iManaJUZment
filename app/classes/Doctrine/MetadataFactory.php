@@ -29,4 +29,3 @@ class ClassMetadataFactory extends \Doctrine\ORM\Mapping\ClassMetadataFactory {
     return new ClassMetadata($className);
   }
 }
-

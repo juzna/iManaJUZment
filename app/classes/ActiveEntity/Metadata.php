@@ -145,26 +145,20 @@ class Metadata implements \Juz\IExtensionSubscriber {
     }
 
     // Try field with name 'name'
-    if($this->metadata->hasField('name')) return 'name';
+    if($this->classMetadata->hasField('name')) return 'name';
 
     throw new \Exception("Name field not found in entity");
   }
 
   public function getAllFieldNames() {
-    return array_keys($this->metadata->reflFields);
+    return array_keys($this->classMetadata->reflFields);
   }
   
   public function getFieldNames() {
-    return array_keys($this->metadata->fieldMappings);
+    return array_keys($this->classMetadata->fieldMappings);
   }
   
   public function getFieldDefinitions() {
-    return $this->metadata->fieldMappings;
-  }
-  
-/*  protected function _validateAndCompleteFieldMapping(array &$mapping) {
-    \Doctrine\ORM\Mapping\ClassMetadataInfo::_validateAndCompleteFieldMapping($mapping);
-    // Skip saving reflection property
-  }
-  */
+    return $this->classMetadata->fieldMappings;
+  }  
 }
