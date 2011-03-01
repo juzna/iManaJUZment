@@ -25,3 +25,9 @@
 [submodule "libs/Nella/Doctrine"]
 	path = libs/Nella/Doctrine
 	url = git://github.com/nella/Doctrine.git
+[submodule "3rdParty/doctrine2/mongodb"]
+	path = 3rdParty/doctrine2/mongodb
+	url = git://github.com/doctrine/mongodb.git
+[submodule "3rdParty/doctrine2/mongodb-odm"]
+	path = 3rdParty/doctrine2/mongodb-odm
+	url = git://github.com/doctrine/mongodb-odm.git
