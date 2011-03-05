@@ -34,25 +34,38 @@ class ServiceFactories {
     return self::$config ?: self::createDoctrineConfiguration();
   }
 
+  /**
+   * Get annotation reader
+   * @return \Doctrine\Common\Annotations\AnnotationReader
+   */
+  public static function createDoctrineAnnotationReader() {
+    $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+    $reader->setDefaultAnnotationNamespace('Doctrine\\ORM\\Mapping\\');
+
+    // Define aliases
+    $aliases = Environment::getConfig('annotations')->alias;
+    foreach($aliases as $alias => $prefix) {
+      $reader->setAnnotationNamespaceAlias($prefix . '\\', $alias);
+    }
+
+    $reader->setAutoloadAnnotations(true);
+
+    return $reader;
+  }
+
+  public static function createDoctrineAnnotationDriver() {
+    $reader = Environment::getService('Doctrine\Common\Annotations\AnnotationReader');
+    $modelDirs = glob(APP_DIR . "/*Module/models/") + array(APP_DIR . '/models/');
+
+    return new \Juz\AnnotationDriver($reader, (array) $modelDirs);
+  }
+
   public static function createDoctrineConfiguration() {
     $config = new Configuration;
 
     // Metadata driver - annotations
-    {
-      $modelDirs = glob(APP_DIR . "/*Module/models/") + array(APP_DIR . '/models/');
-
-      $config->setClassMetadataFactoryName('Juz\\ClassMetadataFactory');
-
-      $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-      $reader->setDefaultAnnotationNamespace('Doctrine\\ORM\\Mapping\\');
-      $reader->setAnnotationNamespaceAlias('ActiveEntity\\Annotations\\', 'ae');
-      $reader->setAnnotationNamespaceAlias('Juz\\Forms\\Annotations\\', 'frm');
-      $reader->setAutoloadAnnotations(true);
-
-      $metadata = new \Juz\AnnotationDriver($reader, (array) $modelDirs);
-
-      $config->setMetadataDriverImpl($metadata);
-    }
+    $config->setClassMetadataFactoryName('Juz\\ClassMetadataFactory');
+    $config->setMetadataDriverImpl(Environment::getService('Doctrine\ORM\Mapping\Driver\AnnotationDriver'));
 
     // Proxy
     $config->setProxyNamespace('Proxy');
