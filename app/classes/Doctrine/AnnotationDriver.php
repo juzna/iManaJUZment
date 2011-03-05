@@ -46,12 +46,12 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
   }
 
   /**
-   * Assign metadata to extensions
-   * @return void
+   * Loads metadata for extensions
+   * @param \ReflectionClass $class
+   * @return array
    */
-  protected function assignMetadataToExtensions(ClassMetadata $metadata) {
+  public function getExtensionMetadata(\ReflectionClass $class) {
     /** @var $property \ReflectionProperty */
-    /** @var $class \ReflectionClass */
 
     $mapping = self::getExtensionMapping();
 
@@ -59,7 +59,6 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
     $classMetadata = $fieldMetadata = array();
 
     // Prepare class metadata
-    $class = $metadata->getReflectionClass();
     $classAnnotations = $this->_reader->getClassAnnotations($class);
     foreach($classAnnotations as $name => $value) {
 
@@ -83,6 +82,15 @@ class AnnotationDriver extends \Doctrine\ORM\Mapping\Driver\AnnotationDriver {
       }
     }
 
+    return array($classMetadata, $fieldMetadata);
+  }
+
+  /**
+   * Assign metadata to extensions
+   * @return void
+   */
+  protected function assignMetadataToExtensions(ClassMetadata $metadata) {
+    list($classMetadata, $fieldMetadata) = $this->getExtensionMetadata($metadata->getReflectionClass());
 
     // Map output tables to extensions
     foreach($classMetadata as $ext => $annotations) {
