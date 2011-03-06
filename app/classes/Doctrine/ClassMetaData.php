@@ -53,6 +53,8 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
 
   /**
    * Get an extension
+   * @param string $name Extension name
+   * @return object
    */
   public function getExtension($name) {
     if(!isset($this->extensions[$name])) $this->findAndRegisterExtension($name);
@@ -61,6 +63,9 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
 
   /**
    * Add new extension
+   * @param string $name Extension name
+   * @param string|object $impl Implementation or factory name
+   * @return ClassMetaData Provides fluent interface
    */
   public function addExtension($name, $impl) {
     if(isset($this->extensions[$name])) throw new \InvalidArgumentException('Extension with this name already exists');
@@ -70,6 +75,8 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
 
   /**
    * Tries to find an extension by it's name
+   * @param string $name Extension name
+   * @return bool
    */
   public function findExtension($name) {
     if(!$md = Environment::getConfig('metadata')) return false; //No metadata found in config
@@ -84,6 +91,7 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
 
   /**
    * Creates an extension by it's factory name
+   * @param string $factory Callback or class name
    */
   protected function createExtension($factory) {
     $className = $this->getReflectionClass()->getName();
