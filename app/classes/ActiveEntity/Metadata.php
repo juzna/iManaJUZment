@@ -52,12 +52,12 @@ class Metadata implements \Juz\IExtensionSubscriber {
    * @return callback
    */
   public function loader($method) {
-    // echo "Someone is lookign for $method\n";
+    // echo "Someone is looking for $method\n";
     if(method_exists($this, $method)) return callback($this, $method);
   }
   
   /**
-   * Receives annotations for this extension
+   * Receives annotations directed for this extension from AnnotationDriver
    * @param array $classAnnotations
    * @param array $fieldsAnnotations
    * @return void
@@ -119,27 +119,18 @@ class Metadata implements \Juz\IExtensionSubscriber {
             break;
 
           case 'Link':
-            $field['links'][] = $annot;
+            $field['links'][] = $this->getLinkMetadataFromAnnotation($annot);
             break;
 
           case 'Links':
             if(!isset($field['links'])) $field['links'] = array();
-            if(is_array($annot->value)) $field['links'] += $annot->value;
+            if(is_array($annot->value)) {
+              foreach($annot->value as $link) $field['links'][] = $this->getLinkMetadataFromAnnotation($link);
+            }
             break;
         }
       }
     }
-  }
-
-  /**
-   * Gets ActiveEntity metadata for a specific field
-   */
-  public function getFieldMetadata($fieldName, $mdName = null) {
-    if(!isset($this->classMetadata->fieldMappings[$fieldName])) throw new \InvalidArgumentException('Field not exists');
-    $ret = isset($this->classMetadata->fieldMappings[$fieldName]['ActiveEntity']) ? $this->classMetadata->fieldMappings[$fieldName]['ActiveEntity'] : null;
-
-    if(isset($mdName)) return isset($ret[$mdName]) ? $ret[$mdName] : null;
-    else return $ret;
   }
 
   /**
@@ -148,6 +139,37 @@ class Metadata implements \Juz\IExtensionSubscriber {
   private function setUpBehaviour($className, \Doctrine\ORM\Mapping\ClassMetadataInfo $metadata, Annotations\Behaviour $annot) {
     $className::_setupBehavioralMetadata($metadata);
   }
+
+  protected function getLinkMetadataFromAnnotation(Annotations\Link $link) {
+    return new LinkMetadata((array) $link);
+  }
+
+  /**
+   * Gets ActiveEntity metadata for a specific field
+   */
+  public function getFieldMetadata($fieldName, $mdName = null) {
+    if(!is_string($fieldName) || strlen($fieldName) < 1) throw new \InvalidArgumentException('$fieldName must be valid field name');
+    if(!isset($this->classMetadata->fieldMappings[$fieldName])) throw new \InvalidArgumentException('Field not exists');
+    $ret = isset($this->classMetadata->fieldMappings[$fieldName]['ActiveEntity']) ? $this->classMetadata->fieldMappings[$fieldName]['ActiveEntity'] : null;
+
+    if(isset($mdName)) return isset($ret[$mdName]) ? $ret[$mdName] : null;
+    else return $ret;
+  }
+
+  /**
+   * Get annotations of a field
+   */
+  public function getFieldAnnotations($fieldName, $annotationName = null) {
+    if(!is_string($fieldName) || strlen($fieldName) < 1) throw new \InvalidArgumentException('$fieldName must be valid field name');
+    if(!$this->classMetadata->hasField($fieldName) && !$this->classMetadata->hasAssociation($fieldName)) throw new \InvalidArgumentException('Field not exists');
+    $ret = isset($this->fieldAnnotations[$fieldName]) ? $this->fieldAnnotations[$fieldName] : null;
+
+    if(isset($annotationName)) return isset($ret[$annotationName]) ? $ret[$annotationName] : null;
+    else return $ret;
+  }
+
+
+  /******** output methods ********/
 
   /**
    * Get's title to be displayed
@@ -161,19 +183,163 @@ class Metadata implements \Juz\IExtensionSubscriber {
   }
 
   /**
-   * Get field, which represents name of this entity
+   * Get field, which represents primary key for this entity
    * @throws Exception
    * @return string
    */
   public function getNameField() {
-    foreach($this->getFieldNames() as $field) {
-      $md = $this->getFieldMetadata($field);
-      if(isset($md['Name'])) return $field;
+    foreach($this->classMetadata->getFieldNames() as $fieldName) {
+      if($md = $this->getFieldMetadata($fieldName, 'Name')) return $fieldName;
     }
 
     // Try field with name 'name'
     if($this->classMetadata->hasField('name')) return 'name';
 
     throw new \Exception("Name field not found in entity");
+  }
+
+  /**
+   * Get list of fields for default sorting
+   * @return array of touples
+   */
+  public function getSortFields() {
+    return array(
+      array($this->getNameField(), 1),
+    );
+  }
+
+  public function getRequiredFields() {
+    $ret = array();
+    foreach($this->classMetadata->getAssociationMappings() as $fieldName => $def) {
+      if($this->getFieldAnnotations($fieldName, 'Required')) $ret[] = $fieldName;
+    }
+
+    return $ret;
+  }
+
+  /**
+   * Get set of links to be displayed for each item
+   * @return array<LinkMetadata>
+   */
+  public function getItemLinks() {
+    static $ret = null;
+    if($ret !== null) return $ret;
+
+    $ret = array();
+
+    // Some links are defined
+    if(isset($this->classAnnotations['Links'])) {
+      /** @var $links \ActiveEntity\Annotations\Links */
+      $links = $this->classAnnotations['Links'];
+
+      // Prepare common links
+      if(is_array($links->common)) foreach($links->common as $item) {
+        $linkDefinition = null;
+        switch($item) {
+          case 'detail':
+          case 'edit':
+          case 'clone':
+          case 'remove':
+          case 'delete':
+            $indexField = $this->classMetadata->getSingleIdentifierFieldName();
+            $linkDefinition = array(
+              'title' => ucfirst($item),
+              'view' => $item,
+              'class' => 'in_dialog',
+              'params' => array(
+                $links->alias,
+                '$' . $indexField,
+              )
+            );
+            break;
+
+            break;
+
+          case 'add':
+            // nothing
+            break;
+        }
+
+        // Add new link
+        if($linkDefinition) {
+          foreach(array('module', 'presenter', 'view', 'action', 'params') as $f) if(!isset($linkDefinition[$f]) && isset($links->$f)) $linkDefinition[$f] = $links->$f;
+          $ret[] = new LinkMetadata($linkDefinition);
+        }
+      }
+
+      // Prepare explicit links
+      if(is_array($links->value)) foreach($links->value as $link) {
+        if($link instanceof Annotations\Link) {
+          $link = (array) $link;
+
+          // Get default values
+          foreach(array('module', 'presenter', 'view', 'action', 'params') as $f) if(!isset($link[$f]) && isset($links->$f)) $link[$f] = $links->$f;
+          $ret[] = new LinkMetadata($link);
+        }
+      }
+    }
+
+    return $ret;
+  }
+
+  /**
+   * Get set of links to be displayed in table header
+   * @return array<LinkMetadata>
+   */
+  public function getHeaderLinks() {
+    static $ret = null;
+    if($ret !== null) return $ret;
+
+    $ret = array();
+
+    // Some links are defined
+    if(isset($this->classAnnotations['Links'])) {
+      /** @var $links \ActiveEntity\Annotations\Links */
+      $links = $this->classAnnotations['Links'];
+
+      // Prepare common links
+      if(is_array($links->common)) foreach($links->common as $item) {
+        $linkDefinition = null;
+        switch($item) {
+          case 'detail':
+          case 'edit':
+          case 'clone':
+          case 'remove':
+          case 'delete':
+            // Not for this section
+            break;
+
+          case 'add':
+            $linkDefinition = array(
+              'title' => ucfirst($item),
+              'view' => $item,
+              'class' => 'in_dialog',
+              'params' => array(
+                $links->alias,
+              )
+            );
+            break;
+        }
+
+        // Add new link
+        if($linkDefinition) {
+          foreach(array('module', 'presenter', 'view', 'action', 'params') as $f) if(!isset($linkDefinition[$f]) && isset($links->$f)) $linkDefinition[$f] = $links->$f;
+          $ret[] = new LinkMetadata($linkDefinition);
+        }
+      }
+
+      // Prepare explicit links
+      if(is_array($links->value)) foreach($links->value as $link) {
+        if($link instanceof Annotations\HeaderLink) {
+          $link = (array) $link;
+
+          // Get default values
+          foreach(array('module', 'presenter', 'view', 'action', 'params') as $f) if(!isset($link[$f]) && isset($links->$f)) $link[$f] = $links->$f;
+          $ret[] = new LinkMetadata($link);
+        }
+      }
+    }
+
+    return $ret;
   }
 }
