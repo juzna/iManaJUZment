@@ -22,12 +22,28 @@ namespace Juz\Tables;
 * Represents field of table
 */
 class Field {
+  /** @var string */
   public $name;
+
+  /** @var string */
   public $title;
+
+  /** @var string */
   public $variable;
+
+  /** @var string */
   public $content;
+
+  /** @var \ActiveEntity\LinkMetadata Link parameters */
+  public $link;
+
+  /** @var string */
+  public $icon;
+
+  /** @var array Misc parameters */
   public $parameters = array();
-  
+
+
   /**
    * @param string $name Name of field
    * @param array $params Array of additional parameters

@@ -144,7 +144,7 @@ class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRendere
       $show = $field->show ? '' : 'display: none;';
 
       echo "  <td col=\"$k\" style=\"$show\">";
-      $this->renderFieldContent($field);
+      echo $this->prepareFieldContent($field);
       echo "</td>\n";
     }
 
@@ -152,7 +152,7 @@ class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRendere
     if($links = $this->definition->getItemLinks()) {
       echo "  <td>\n";
       foreach($links as $link) {
-        $this->renderLink($link);
+        echo $this->prepareLink($link);
         echo "\n";
       }
       echo "  </td>\n";
@@ -167,13 +167,37 @@ class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRendere
    * @param \Juz\Tables\Field $field
    * @return void
    */
-  protected function renderFieldContent(Field $field) {
-    if($var = $field->variable) echo '{$item->' . $var . (!empty($field->show->helper) ? '|' . $field->show->helper : '') . '}';
-    elseif($content = $field->content) echo preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)/i', '\\1item->\\2', $content);
+  protected function prepareFieldContent(Field $field) {
+    // Get content of field
+    if($var = $field->variable) $ret = '{$item->' . $var . (!empty($field->show->helper) ? '|' . $field->show->helper : '') . '}';
+    elseif($content = $field->content) $ret = preg_replace('/(\\{[!]?\\$)([a-z0-9_]+)/i', '\\1item->\\2', $content);
+    else $ret = '[unknown]';
+
+    // Prepend icon
+    if($field->icon) $ret = $this->prepareIcon($field) . $ret;
+
+    // It is a link
+    if($field->link) {
+      $ret = $this->prepareLink($field->link, $ret);
+    }
+
+    return $ret;
   }
 
-  protected function renderLink(\ActiveEntity\Annotations\Link $link, $fixVariableNames = true) {
-    return; // TODO: dodelat
+  protected function prepareIcon(Field $field) {
+    return "<img class=\"icon $field->icon\" src=\"/images/icons/$field->icon.png\" /> ";
+  }
+
+
+  /**
+   * Prepare code for a link
+   *
+   * @param \ActiveEntity\LinkMetadata $link Parameters of link
+   * @param string $content Content of a link
+   * @param bool $fixVariableNames Whether to take variables from $item variable
+   * @return void
+   */
+  protected function prepareLink(\ActiveEntity\LinkMetadata $link, $content = null, $fixVariableNames = true) {
     // Prepare target
     $target = $link->module ? ":{$link->module}:" : '';
     $target .= $link->presenter . ':';
@@ -193,7 +217,7 @@ class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRendere
     $params = implode(', ', $params);
 
     $href = '{plink ' . $target . ($params ? ", $params" : '') . '}';
-    echo '    <a href="' . $href . '" class="' . $link->class . '">' . $link->title . '</a>';
+    return '    <a href="' . $href . '" class="' . $link->class . '">' . (isset($content) ? $content : $link->title) . '</a>';
   }
 
   /**
@@ -201,11 +225,10 @@ class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRendere
    * @return void
    */
   protected function renderHeaderLinks() {
-    return; // TODO: dodelat
     if(!$links = $this->definition->getHeaderLinks()) return;
 
     foreach($links as $link) {
-      $this->renderLink($link, false);
+      echo $this->prepareLink($link, null, false);
       echo "\n";
     }
   }

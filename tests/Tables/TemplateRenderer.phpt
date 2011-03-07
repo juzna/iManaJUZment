@@ -20,7 +20,15 @@ require_once __DIR__ . '/../bootstrap.php';
 $ds = Juz\Tables\DataSource\DoctrineRepositorySource::create(null, 'APIP');
 $def = new Juz\Tables\Definition\DummyDefinition;
 
-$renderer = new Juz\Tables\Creator\TemplateRenderer;
+// Dummy presenter to support links
+class DummyPresenter {
+  function link($target, $params) {
+    return $target . '&' . implode(', ', $params);
+  }
+}
+$presenter = new DummyPresenter;
+
+$renderer = new Juz\Tables\Creator\TemplateRenderer(array('presenter' => $presenter));
 $renderer->setTableDefinition($def);
 $renderer->setDataSource($ds);
 

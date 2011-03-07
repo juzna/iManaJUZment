@@ -19,7 +19,8 @@ namespace Juz\Tables\Definition;
 
 use Juz\Tables\ITableStructureDefinition,
   Juz\Tables\Field,
-  Juz\Tables\Parameter;
+  Juz\Tables\Parameter,
+  ActiveEntity\LinkMetadata;
 
 
 class DummyDefinition extends \Nette\Object implements ITableStructureDefinition {
@@ -61,6 +62,13 @@ class DummyDefinition extends \Nette\Object implements ITableStructureDefinition
       'ip' => new Field('ip', array(
         'title'   => 'IP address',
         'content' => '{$ip}/{$netmask}',
+        'icon'    => 'details',
+        'link' => new LinkMetadata(array(
+          'module'    => 'AP',
+          'presenter' => 'dashboard',
+          'view'      => 'detail',
+          'params'    => array('index' => '$ID'),
+        ))
       )),
     );
   }
@@ -97,7 +105,15 @@ class DummyDefinition extends \Nette\Object implements ITableStructureDefinition
    * @return array [ { title, module, presenter, view?, action?, params[] } ]
    */
   public function getHeaderLinks() {
-    return null;
+    return array(
+      new LinkMetadata(array(
+        'title'   => 'Add new',
+        'module'  => 'AP',
+        'presenter' => 'dashboard',
+        'view'      => 'add',
+        'params'    => array('network' => 1)
+      ))
+    );
   }
 
   /**
@@ -106,6 +122,14 @@ class DummyDefinition extends \Nette\Object implements ITableStructureDefinition
    * @return array
    */
   public function getItemLinks() {
-    return null;
+    return array(
+      new LinkMetadata(array(
+        'title'   => 'Edit',
+        'module'  => 'AP',
+        'presenter' => 'dashboard',
+        'view'      => 'edit',
+        'params'    => array('index' => '$ID')
+      ))
+    );
   }
 }
