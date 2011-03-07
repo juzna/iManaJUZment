@@ -20,6 +20,11 @@ use Juz\Tables\ITableStructureDefinition,
   Juz\Tables\IDataSource,
   Juz\Tables\Field;
 
+
+/**
+ * Renders table by creating Latte template first
+ * 
+ */
 class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRenderer {
   protected $templateVariables = null;
 

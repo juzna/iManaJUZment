@@ -18,7 +18,7 @@
 
 namespace AutoconfigModule;
 
-class ConfigPresenter extends \Presenter {
+class ConfigPresenter extends \BasePresenter {
 	function actionTest() {
 		require_once $this->dir . '/drivers/straightcore.php';
 		

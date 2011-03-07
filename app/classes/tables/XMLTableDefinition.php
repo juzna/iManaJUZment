@@ -21,7 +21,7 @@ use DOMDocument, DOMElement;
 
 
 
-class XMLTableDefinition extends \Nette\Object implements ITableDefinition {
+abstract class XMLTableDefinition extends \Nette\Object implements ITableDefinition {
   private $file;
   private $loaded = false;
 
