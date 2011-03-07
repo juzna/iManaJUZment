@@ -57,4 +57,17 @@ abstract class BaseCreator extends \Nette\Object implements \Juz\Tables\ITableCr
   public function getDatasource() {
     return $this->datasource;
   }
+
+  /**
+   * Get field value from misc formats of table row given
+   * (it's public so that it can be called from closures)
+   *
+   * @param mixed $row See documentation for IDataSource
+   * @param string $fieldName
+   * @return mixed
+   */
+  public function getFieldValue($row, $fieldName) {
+    if(is_array($row) || $row instanceof \ArrayAccess) return $row[$fieldName];
+    else return $row->$fieldName;
+  }
 }

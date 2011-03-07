@@ -72,13 +72,13 @@ class SimpleHtmlRenderer extends BaseRenderer implements \Juz\Tables\ITableRende
 
   protected function renderFieldContent($row, \Juz\Tables\Field $field) {
     if($var = $field->variable) {
-      echo is_array($row) ? $row[$var] : $row->$var;
+      echo $this->getFieldValue($row, $var);
     }
     elseif($content = $field->content) {
       // Callback function for reg exp
-      $cb = function($match) use ($row) {
-        $var = $match[1];
-        return is_array($row) ? $row[$var] : $row->$var;
+      $renderer = $this;
+      $cb = function($match) use ($row, $renderer) {
+        return $renderer->getFieldValue($row, $match[1]);
       };
 
       echo preg_replace_callback('/\\{\\$([^}]+)\\}/', $cb, $content);
