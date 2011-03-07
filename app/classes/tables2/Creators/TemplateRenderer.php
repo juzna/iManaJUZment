@@ -55,12 +55,19 @@ class TemplateRenderer extends BaseRenderer implements \Juz\Tables\ITableRendere
     $tpl = new \Nette\Templates\FileTemplate($path);
     $tpl->registerFilter(new \Nette\Templates\LatteFilter);
     $tpl->parameters = '';
-    $tpl->dataSource = $this->getDatasource();
+    $tpl->dataSource = $this->unifyDataSource($this->getDatasource());
 
     // Assign variables
     if($this->templateVariables) foreach($this->templateVariables as $k => $v) $tpl->$k = $v;
 
     return $tpl;
+  }
+
+  // TODO: replace this function with callback iterator or calls to Renderer->getFieldValue() in code
+  protected function unifyDataSource($ds) {
+    $ret = array();
+    foreach($ds as $key => $item) $ret[$key] = is_array($item) ? (object) $item : $item;
+    return $ret;
   }
 
   /**
