@@ -19,6 +19,7 @@
 namespace Juz\Tables\Definitions;
 
 use Juz\Tables\ITableDefinition,
+  Juz\Tables\Field,
   ActiveEntity\Annotations\Link,
   ActiveEntity\Annotations\HeaderLink,
   Doctrine;
@@ -28,14 +29,18 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
   /** @var string */
   private $entityName;
 
-  /** @var ActiveEntity\ClassMetadata */
-  private $metadata;
+  /** @var \Juz\ClassMetaData */
+  private $classMetadata;
+
+  /** @var \ActiveEntity\Metadata */
+  private $aeMetadata;
 
   private $_cache;
   
   public function __construct($name) {
     $this->entityName = $name;
-    $this->metadata = \ActiveEntity\Entity::getClassMetadata($name);
+    $this->classMetadata = \ActiveEntity\Entity::getClassMetadata($name);
+    $this->aeMetadata = $this->classMetadata->getExtension('ActiveEntity');
   }
 
   /**
@@ -51,7 +56,7 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
    * @return string
    */
   public function getTitle() {
-    return $this->metadata->getTitle();
+    return $this->aeMetadata->getTitle();
   }
 
   /**
@@ -62,33 +67,36 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
     $ret = array();
     $cntVisible = 0;
 
-    foreach($this->metadata->getAllFieldNames() as $fieldName) {
+    foreach($this->classMetadata->getAllFieldNames() as $fieldName) {
+      $title = $this->aeMetadata->getFieldMetadata($fieldName, 'Title') ?: ucfirst($fieldName);
+
       // It's simple field
-      if($this->metadata->hasField($fieldName)) {
-        $definition = $this->metadata->getFieldMapping($fieldName);
-        $ret[$fieldName] = $field = new TableField($fieldName, array(
-          'title'     => isset($definition['title']) ? $definition['title'] : ucfirst($fieldName),
+      if($this->classMetadata->hasField($fieldName)) {
+        $definition = $this->classMetadata->getFieldMapping($fieldName);
+        $ret[$fieldName] = $field = new Field($fieldName, array(
+          'title'     => $title,
           'variable'  => $fieldName,
           'show'      => $show = !empty($definition['showByDefault']),
         ));
-        $this->_setupTableFieldFromMetadata($field, $definition);
+        $this->_setupTableField($field);
         if($show) $cntVisible++;
       }
 
       // It's association
-      elseif($this->metadata->hasAssociation($fieldName)) {
-        $definition = $this->metadata->getAssociationMapping($fieldName);
-        if(empty($definition['fieldMetadata']['ActiveEntity\\Annotations\\Show'])) continue; // Should not be shown
+      elseif($this->classMetadata->hasAssociation($fieldName)) {
+        $definition = $this->classMetadata->getAssociationMapping($fieldName);
+        if(!$this->aeMetadata->getFieldMetadata($fieldName, 'Show')) continue; // Should not be shown
 
         // Get index field of the other entity
         $indexField = reset($definition['sourceToTargetKeyColumns']);
 
-        $ret[$fieldName] = $field = new TableField($fieldName, array(
-          'title'     => isset($definition['title']) ? $definition['title'] : ucfirst($fieldName),
+
+        $ret[$fieldName] = $field = new Field($fieldName, array(
+          'title'     => $title,
           'show'      => true,
           'contentCode' => "{= \\ActiveEntity\\Helper::DoctrineProxyIdentifier(\$item->$fieldName, '$indexField')}",
         ));
-        $this->_setupTableFieldFromMetadata($field, $definition);
+        $this->_setupTableField($field);
         $cntVisible++;
       }
     }
@@ -101,12 +109,20 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
     return $ret;
   }
 
+  private function _setupTableField(Field $field) {
+    // Get ActiveEntity metadata for this field
+    $md = $this->aeMetadata->getFieldMetadata($field->name);
+    
+    if(isset($md['show'])) $field->parameters['show'] = $md['show'];
+    if(isset($md['link'])) $field->parameters['link'] = array_merge(@$this->aeMetadata->classAnnotations['links'] ?: array(), $md['link']);
+  }
+
   /**
    * Get variable which is primary key
    * @return string
    */
   public function getFieldIndex() {
-    $keys = $this->metadata->getFieldNames();
+    $keys = $this->aeMetadata->getFieldNames();
     return $keys[0];
   }
   
@@ -134,8 +150,8 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
   public function getItemLinks() {
     if(isset($this->_cache['links'])) return $this->_cache['links'];
 
-    /** @var ActiveEntity\Annotations\Links */
-    $links = @$this->metadata->classMetadata['ActiveEntity\\Annotations\\Links'];
+    /** @var \ActiveEntity\Annotations\Links */
+    $links = @$this->aeMetadata->classAnnotations['Links'];
     if(!$links) return;
 
     $ret = array();
@@ -149,7 +165,7 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
         case 'clone':
         case 'remove':
         case 'delete':
-          $indexField = $this->metadata->getSingleIdentifierFieldName();
+          $indexField = $this->classMetadata->getSingleIdentifierFieldName();
           $linkDefinition = array(
             'title' => ucfirst($item),
             'view' => $item,
@@ -194,7 +210,7 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
     if(isset($this->_cache['headerLinks'])) return $this->_cache['headerLinks'];
 
     /** @var ActiveEntity\Annotations\Links */
-    $links = @$this->metadata->classMetadata['ActiveEntity\\Annotations\\Links'];
+    $links = @$this->aeMetadata->classAnnotations['Links'];
     if(!$links) return;
 
     $ret = array();
@@ -246,7 +262,7 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
   }
 
   private function _getMoreParamsForAddLink(&$list) {
-    foreach($this->metadata->getAssociationMappings() as $def) {
+    foreach($this->classMetadata->getAssociationMappings() as $def) {
       $fieldName = $def['fieldName'];
       if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) $list[$fieldName] = "\$variables['$fieldName']";
     }
@@ -265,10 +281,10 @@ class DoctrineDefinition extends \Nette\Object implements ITableDefinition {
     ));
 
     // Add parameters
-    foreach($this->metadata->getAssociationMappings() as $def) {
+    foreach($this->classMetadata->getAssociationMappings() as $def) {
       if(isset($def['fieldMetadata']['ActiveEntity\\Annotations\\Required'])) {
         $def->addParameter(
-          new TableParameter($def['fieldName'], array('required' => true))
+          new \Juz\Tables\Parameter($def['fieldName'], array('required' => true))
         );
       }
     }
