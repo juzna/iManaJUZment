@@ -70,7 +70,7 @@ class ArraySource extends \Nette\Object implements \Juz\Tables\IDataSource {
    * 0 on failure.
    */
   public function key() {
-    return $this->keys[$this->position];
+    return isset($this->keys[$this->position]) ? $this->keys[$this->position] : null;
   }
 
   /**
@@ -90,7 +90,7 @@ class ArraySource extends \Nette\Object implements \Juz\Tables\IDataSource {
    * @return mixed Can return any type.
    */
   public function current() {
-    return $this->list[$this->key()];
+    return ($key = $this->key()) === null ? null : $this->list[$key];
   }
 
   /**
@@ -148,6 +148,6 @@ class ArraySource extends \Nette\Object implements \Juz\Tables\IDataSource {
    * The return value will be casted to boolean if non-boolean was returned.
    */
   public function offsetExists($offset) {
-    return isset($this->list[$offset]);
+    return array_key_exists($offset, $this->list);
   }
 }

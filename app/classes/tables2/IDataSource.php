@@ -17,6 +17,19 @@
 
 namespace Juz\Tables;
 
+/**
+ * Simple data source for tables
+ *
+ * Acts as an array (or traversable object), where each item is on object representing table row.
+ *  This table row can be any object with:
+ *   - public properties
+ *   - magic method __get returning values for this properties
+ *   - an array where keys are column names
+ *   - object implementing ArrayAccess interface and returning column values by offsetGet() method
+ *
+ * Data source class can also implement IFilterable, IPagable and ISortable interfaces to support more features
+ *  for table creators, which are able to use this features
+ */
 interface IDataSource extends \Countable, \Iterator, \ArrayAccess {
-
+  // nothing
 }

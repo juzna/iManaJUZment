@@ -18,27 +18,8 @@
 namespace Juz\Tables;
 
 /**
- * DataSource can implement this interface to tell it supports paging
+ * Data source which supports paging, sorting and filtering
  */
-interface IPagable {
-  /**
-   * Sets offset
-   * @param int $offset
-   * @return \Juz\Tables\IPagable Provides a fluent interface
-   */
-  function setOffset($offset);
-
-  /**
-   * Limit number of items
-   * @param int $limit
-   * @return \Juz\Tables\IPagable Provides a fluent interface
-   */
-  function setLimit($limit);
-
-  /**
-   * Easy way going to a specific page
-   * @param int $page
-   * @return array Touple of offset:limit
-   */
-  function setPage($page);
+interface ISmartDataSource extends IDataSource, IPagable, ISortable, IFilterable {
+  // nothing
 }

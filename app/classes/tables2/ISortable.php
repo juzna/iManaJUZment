@@ -18,27 +18,31 @@
 namespace Juz\Tables;
 
 /**
- * DataSource can implement this interface to tell it supports paging
+ * DataSource can implement this interface to tell it supports sorting
  */
-interface IPagable {
-  /**
-   * Sets offset
-   * @param int $offset
-   * @return \Juz\Tables\IPagable Provides a fluent interface
-   */
-  function setOffset($offset);
+interface ISortable {
+  // Order constants
+  const ORDER_UNSPECIFIED = 0,
+    ORDER_ASCENDING = 1,
+    ORDER_DESCENDING = 2;
 
   /**
-   * Limit number of items
-   * @param int $limit
-   * @return \Juz\Tables\IPagable Provides a fluent interface
+   * Add field to sorting
+   * @param string $field
+   * @param int $order
+   * @return \Juz\Tables\ISortable Provides a fluent interface
    */
-  function setLimit($limit);
+  function sortBy($field, $order = self::ORDER_ASCENDING);
 
   /**
-   * Easy way going to a specific page
-   * @param int $page
-   * @return array Touple of offset:limit
+   * Get list of fields used to sort dataset
+   * @return array of touples $fieldName:$order
    */
-  function setPage($page);
+  function getSortFields();
+
+  /**
+   * Clear all defined sorting
+   * @return \Juz\Tables\ISortable Provides a fluent interface
+   */
+  function clearSorting();
 }

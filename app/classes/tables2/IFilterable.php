@@ -17,7 +17,16 @@
 
 namespace Juz\Tables;
 
+/**
+ * DataSource can implement this interface to tell it supports filtering
+ */
 interface IFilterable {
+  /**
+   * Get list of supported operators
+   * @return array of strings
+   */
+  function getSupportedOperators();
+
   /**
    * Get list of all defined filters
    * @return array

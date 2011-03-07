@@ -17,7 +17,8 @@
  
 require_once __DIR__ . '/../bootstrap.php';
 
-$ds = Juz\Tables\DataSource\DoctrineRepositorySource::create(null, 'APIP');
+//$ds = Juz\Tables\DataSource\DoctrineRepositorySource::create(null, 'APIP');
+$ds = new Juz\Tables\DataSource\DummySource;
 $def = new Juz\Tables\Definition\DummyDefinition;
 
 // Dummy presenter to support links

@@ -96,7 +96,7 @@ abstract class ExtendableArraySource extends \Nette\Object implements \Juz\Table
    */
   public function key() {
     $this->initialize();
-    return $this->keys[$this->position];
+    return isset($this->keys[$this->position]) ? $this->keys[$this->position] : null;
   }
 
   /**
@@ -118,7 +118,7 @@ abstract class ExtendableArraySource extends \Nette\Object implements \Juz\Table
    */
   public function current() {
     $this->initialize();
-    return $this->list[$this->key()];
+    return ($key = $this->key()) === null ? null : $this->list[$key];
   }
 
   /**
@@ -178,6 +178,6 @@ abstract class ExtendableArraySource extends \Nette\Object implements \Juz\Table
    */
   public function offsetExists($offset) {
     $this->initialize();
-    return isset($this->list[$offset]);
+    return array_key_exists($offset, $this->list);
   }
 }

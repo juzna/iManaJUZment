@@ -36,7 +36,13 @@ class DummySource extends ArraySource implements \Juz\Tables\IDataSource {
     ),
   );
 
-  public function __construct() {
-    parent::__construct(static::$items);
+  public function __construct($items = null, $castCallback = null) {
+    if(!isset($items)) $items = static::$items;
+
+    // Map items to another type
+    if($castCallback instanceof \Closure) $items = array_map($castCallback, $items);
+
+    // Create array data source
+    parent::__construct($items);
   }
 }
