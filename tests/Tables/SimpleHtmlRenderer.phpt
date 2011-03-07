@@ -17,16 +17,61 @@
  
 require_once __DIR__ . '/../bootstrap.php';
 
-//$ds = Juz\Tables\DataSource\DoctrineRepositorySource::create(null, 'APIP');
-$ds = new Juz\Tables\DataSource\DummySource;
-$def = new Juz\Tables\Definition\DummyDefinition;
+function createRenderer($ds) {
+  $def = new Juz\Tables\Definition\DummyDefinition;
 
-$renderer = new Juz\Tables\Creator\SimpleHtmlRenderer;
-$renderer->setTableDefinition($def);
-$renderer->setDataSource($ds);
+  $renderer = new Juz\Tables\Creator\SimpleHtmlRenderer;
+  $renderer->setTableDefinition($def);
+  $renderer->setDataSource($ds);
 
-//echo $renderer->toString();
+  return $renderer;
+}
 
-// Test output
-Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+// Reference output
+// $ds = new Juz\Tables\DataSource\DummySource;
+// echo $renderer->toString();
+// exit;
 
+
+// Include tests for Array data source (cuz it includes some good classes)
+require_once __DIR__ . '/ArraySource.phpt';
+
+
+// Test data source with array rows
+{
+  $ds = new Juz\Tables\DataSource\DummySource;
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
+
+
+// Test data source with stdClass rows
+{
+  $ds = new Juz\Tables\DataSource\DummySource(null, function($item) { return (object) $item; });
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));    
+}
+
+
+// Table rows are objects with magic methods
+{
+  $ds = new Juz\Tables\DataSource\DummySource(null, function($item) { return new MagicObject($item); });
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
+
+
+// Table rows are objects implementing ArrayAccess
+{
+  $ds = new Juz\Tables\DataSource\DummySource(null, function($item) { return new ArrayAccessObject($item); });
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
