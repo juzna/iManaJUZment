@@ -17,10 +17,6 @@
  
 require_once __DIR__ . '/../bootstrap.php';
 
-//$ds = Juz\Tables\DataSource\DoctrineRepositorySource::create(null, 'APIP');
-$ds = new Juz\Tables\DataSource\DummySource;
-$def = new Juz\Tables\Definition\DummyDefinition;
-
 // Dummy presenter to support links
 class DummyPresenter {
   function link($target, $params) {
@@ -29,14 +25,87 @@ class DummyPresenter {
 }
 $presenter = new DummyPresenter;
 
-$renderer = new Juz\Tables\Creator\TemplateRenderer(array('presenter' => $presenter));
-$renderer->setTableDefinition($def);
-$renderer->setDataSource($ds);
+// Allows to create renderers with different datasource
+function createRenderer($ds) {
+  global $presenter;
 
-echo $renderer->generateTemplateCode();
-echo "-----------------\n";
-echo $renderer->toString();
+  $def = new Juz\Tables\Definition\DummyDefinition;
+
+  $renderer = new Juz\Tables\Creator\TemplateRenderer(array('presenter' => $presenter));
+  $renderer->setTableDefinition($def);
+  $renderer->setDataSource($ds);
+
+  return $renderer;
+}
+
+
+// Sample outputs
+if(@$_SERVER['argv'][1] === 'sample') {
+  $ds = new Juz\Tables\DataSource\DummySource;
+  $renderer = createRenderer($ds);
+
+  switch(@$_SERVER['argv'][2]) {
+    case null:
+    default:
+      echo 'Supported samples: code, output';
+      break;
+
+    case 'code':
+      echo $renderer->generateTemplateCode();
+      break;
+
+    case 'output':
+      echo $renderer->toString();
+      break;
+  }
+  exit;
+}
 
 // Test output
 //Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
 
+
+// Include tests for Array data source (cuz it includes some good classes)
+require_once __DIR__ . '/ArraySource.phpt';
+
+
+// Test data source with array rows
+{
+  $ds = new Juz\Tables\DataSource\DummySource;
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
+
+
+// Test data source with stdClass rows
+{
+  $ds = new Juz\Tables\DataSource\DummySource(null, function($item) { return (object) $item; });
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
+
+
+// Table rows are objects with magic methods
+{
+  $ds = new Juz\Tables\DataSource\DummySource(null, function($item) { return new MagicObject($item); });
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
+
+
+// Table rows are objects implementing ArrayAccess
+// (so far this test fails, because TemplateRenderer is not ready for it)
+// TODO: fix template renderer and allow this test
+if(false) {
+  $ds = new Juz\Tables\DataSource\DummySource(null, function($item) { return new ArrayAccessObject($item); });
+  $renderer = createRenderer($ds);
+
+  // Test output
+  Assert::same($renderer->toString(), file_get_contents(__FILE__ . '.output'));
+}
