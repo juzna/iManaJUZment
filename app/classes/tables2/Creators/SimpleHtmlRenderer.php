@@ -22,50 +22,7 @@ use Juz\Tables\ITableStructureDefinition,
 /**
  * Renders table to HTML
  */
-class SimpleHtmlRenderer implements \Juz\Tables\ITableRenderer {
-  /** @var \Juz\Tables\ITableStructureDefinition */
-  protected $definition = null;
-
-  /** @var \Juz\Tables\IDataSource */
-  protected $datasource = null;
-
-  /**
-   * Adds table definition to this creator
-   * @param ITableStructureDefinition $def
-   * @return void
-   */
-  function setTableDefinition(ITableStructureDefinition $def) {
-    if(isset($this->definition)) throw new \LogicException('Table definition alredy set');
-    $this->definition = $def;
-  }
-
-  /**
-   * Adds datasource to this creator
-   * @param IDataSource $ds
-   * @return void
-   */
-  function setDataSource(IDataSource $ds) {
-    if(isset($this->datasource)) throw new \LogicException('Table datasource alredy set');
-    $this->datasource = $ds;
-  }
-
-  /**
-   * Renders table and returns it as string
-   * @return void
-   */
-  function toString() {
-    ob_start();
-
-    try {
-      $this->render();
-      return ob_get_clean();
-    }
-    catch(\Exception $e) {
-      ob_end_clean();
-      throw $e;
-    }
-  }
-
+class SimpleHtmlRenderer extends BaseRenderer implements \Juz\Tables\ITableRenderer {
   /**
    * Renders table to standard output
    * @return void
