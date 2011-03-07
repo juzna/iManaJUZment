@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/gpl.txt
  */
 
-namespace Juz\Tables\Definitions;
+namespace Juz\Tables\Definition;
 
 use Juz\Tables\ITableStructureDefinition,
   Juz\Tables\Field,

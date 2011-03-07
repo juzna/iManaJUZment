@@ -16,7 +16,7 @@
  */
 
 
-namespace Juz\Tables\Definitions;
+namespace Juz\Tables\Definition;
 
 use Juz\Tables\ITableDefinition,
   Juz\Tables\Field,
