@@ -197,8 +197,17 @@ class ClassMetaData extends \Doctrine\ORM\Mapping\ClassMetadata implements \Arra
     return $cnt > 0;
   }
 
-  
+  public function getAllFieldNames() {
+    return array_keys($this->reflFields);
+  }
 
+  public function getFieldNames() {
+    return array_keys($this->fieldMappings);
+  }
+
+  public function getFieldDefinitions() {
+    return $this->fieldMappings;
+  }
 
   /**
    * Gets the ReflectionClass instance of the mapped class.

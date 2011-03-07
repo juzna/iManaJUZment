@@ -30,6 +30,9 @@ class Metadata implements \Juz\IExtensionSubscriber {
   protected $classMetadata;
   protected $className;
 
+  public $classAnnotations;
+  public $fieldAnnotations;
+
   public $title;
   public $titles;
   public $listable = false;
@@ -43,7 +46,26 @@ class Metadata implements \Juz\IExtensionSubscriber {
     $this->classMetadata = $classMetadata;
   }
 
+  /**
+   * Gets a callback for named method; used for automagical method calls on ClassMetaData
+   * @param string $method
+   * @return callback
+   */
+  public function loader($method) {
+    // echo "Someone is lookign for $method\n";
+    if(method_exists($this, $method)) return callback($this, $method);
+  }
+  
+  /**
+   * Receives annotations for this extension
+   * @param array $classAnnotations
+   * @param array $fieldsAnnotations
+   * @return void
+   */
   public function setAnnotations($classAnnotations, $fieldsAnnotations) {
+    $this->classAnnotations = $classAnnotations;
+    $this->fieldAnnotations = $fieldsAnnotations;
+
     foreach($classAnnotations as $annotName => $annot) {
       switch($annotName) {
         case 'Title':
@@ -72,7 +94,7 @@ class Metadata implements \Juz\IExtensionSubscriber {
 
     foreach($fieldsAnnotations as $fieldName => $fieldAnnotations) {
       if(!isset($this->classMetadata->fieldMappings[$fieldName])) continue;
-      $field = &$this->classMetadata->fieldMappings[$fieldName];
+      $field = &$this->classMetadata->fieldMappings[$fieldName]['ActiveEntity'];
 
       foreach($fieldAnnotations as $annotName => $annot) {
         switch($annotName) {
@@ -95,9 +117,29 @@ class Metadata implements \Juz\IExtensionSubscriber {
           case 'Show':
             $field['showByDefault'] = true;
             break;
+
+          case 'Link':
+            $field['links'][] = $annot;
+            break;
+
+          case 'Links':
+            if(!isset($field['links'])) $field['links'] = array();
+            if(is_array($annot->value)) $field['links'] += $annot->value;
+            break;
         }
       }
     }
+  }
+
+  /**
+   * Gets ActiveEntity metadata for a specific field
+   */
+  public function getFieldMetadata($fieldName, $mdName = null) {
+    if(!isset($this->classMetadata->fieldMappings[$fieldName])) throw new \InvalidArgumentException('Field not exists');
+    $ret = isset($this->classMetadata->fieldMappings[$fieldName]['ActiveEntity']) ? $this->classMetadata->fieldMappings[$fieldName]['ActiveEntity'] : null;
+
+    if(isset($mdName)) return isset($ret[$mdName]) ? $ret[$mdName] : null;
+    else return $ret;
   }
 
   /**
@@ -106,21 +148,6 @@ class Metadata implements \Juz\IExtensionSubscriber {
   private function setUpBehaviour($className, \Doctrine\ORM\Mapping\ClassMetadataInfo $metadata, Annotations\Behaviour $annot) {
     $className::_setupBehavioralMetadata($metadata);
   }
-
-
-
-
-
-  /**
-   * Gets a callback for named method
-   * @param string $method
-   * @return callback
-   */
-  public function loader($method) {
-    // echo "Someone is lookign for $method\n";
-    if(method_exists($this, $method)) return callback($this, $method);
-  }
-
 
   /**
    * Get's title to be displayed
@@ -139,9 +166,9 @@ class Metadata implements \Juz\IExtensionSubscriber {
    * @return string
    */
   public function getNameField() {
-    // Look for name field
-    foreach($this->getFieldDefinitions() as $def) {
-      if(!empty($def['fieldMetadata']['ActiveEntity\\Annotations\\Name'])) return $def['fieldName'];
+    foreach($this->getFieldNames() as $field) {
+      $md = $this->getFieldMetadata($field);
+      if(isset($md['Name'])) return $field;
     }
 
     // Try field with name 'name'
@@ -149,16 +176,4 @@ class Metadata implements \Juz\IExtensionSubscriber {
 
     throw new \Exception("Name field not found in entity");
   }
-
-  public function getAllFieldNames() {
-    return array_keys($this->classMetadata->reflFields);
-  }
-  
-  public function getFieldNames() {
-    return array_keys($this->classMetadata->fieldMappings);
-  }
-  
-  public function getFieldDefinitions() {
-    return $this->classMetadata->fieldMappings;
-  }  
 }

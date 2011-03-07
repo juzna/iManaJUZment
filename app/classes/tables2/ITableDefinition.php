@@ -21,7 +21,7 @@ interface ITableDefinition extends ITableStructureDefinition {
   /**
    * Get definition of data source
    * @param string $name
-   * @return IDataSourceDefinition
+   * @return IDataSource
    */
   function getDataSourceDefinition($name = null);
 }
