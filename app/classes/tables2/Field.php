@@ -25,7 +25,7 @@ class Field {
   public $name;
   public $title;
   public $variable;
-  public $contentCode;
+  public $content;
   public $parameters = array();
   
   /**
