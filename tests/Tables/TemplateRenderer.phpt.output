@@ -1,0 +1,30 @@
+<fieldset id="tbl-outer" class="h3 nocollapse table_outer" ajax="0" params="">
+ <legend>Dummy table</legend>
+    <a href=":AP:dashboard:add&amp;1" class="">Add new</a>
+
+<table class="lines sortable withmenu" id="tbl-dummy-table" name="dummy">
+<thead><tr>
+  <th name="ID" width="" style="display: none;">#</th>
+  <th name="interface" width="" style="display: none;">Interface</th>
+  <th name="ip" width="" style="display: none;">IP address</th>
+  <th name="_links">Actions</th></tr></thead>
+<tbody>
+<tr index="ether1">
+  <td col="ID" style="display: none;">10</td>
+  <td col="interface" style="display: none;">ether1</td>
+  <td col="ip" style="display: none;">    <a href=":AP:dashboard:detail&amp;10" class=""><img class="icon details" src="/images/icons/details.png" /> 192.168.10.1/24</a></td>
+  <td>
+    <a href=":AP:dashboard:edit&amp;10" class="">Edit</a>
+  </td>
+</tr>
+<tr index="ether1">
+  <td col="ID" style="display: none;">11</td>
+  <td col="interface" style="display: none;">ether1</td>
+  <td col="ip" style="display: none;">    <a href=":AP:dashboard:detail&amp;11" class=""><img class="icon details" src="/images/icons/details.png" /> 192.168.11.1/24</a></td>
+  <td>
+    <a href=":AP:dashboard:edit&amp;11" class="">Edit</a>
+  </td>
+</tr>
+</tbody>
+</table>
+</fieldset>
