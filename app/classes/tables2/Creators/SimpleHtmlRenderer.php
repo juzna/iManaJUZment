@@ -72,7 +72,9 @@ class SimpleHtmlRenderer extends BaseRenderer implements \Juz\Tables\ITableRende
 
   protected function renderFieldContent($row, \Juz\Tables\Field $field) {
     if($var = $field->variable) {
-      echo $this->getFieldValue($row, $var);
+      $value = $this->getFieldValue($row, $var);
+      if($field->helper) $value = $this->applyHelpers($value, $field->helper);
+      echo $value;
     }
     elseif($content = $field->content) {
       // Callback function for reg exp

@@ -40,6 +40,12 @@ class Field {
   /** @var string */
   public $icon;
 
+  /** @var bool Whether to show this field by default */
+  public $show;
+
+  /** @var string|array Helpers to use for drawing this field */
+  public $helper;
+
   /** @var array Misc parameters */
   public $parameters = array();
 

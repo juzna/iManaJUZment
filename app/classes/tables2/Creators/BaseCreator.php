@@ -70,4 +70,39 @@ abstract class BaseCreator extends \Nette\Object implements \Juz\Tables\ITableCr
     if(is_array($row) || $row instanceof \ArrayAccess) return $row[$fieldName];
     else return $row->$fieldName;
   }
+
+  /**
+   * Apply helpers to a field value
+   * @param mixed $value
+   * @param string|array $helpers
+   * @return string
+   */
+  protected function applyHelpers($value, $helpers) {
+    if(is_string($helpers)) $helpers = (array) $helpers;
+
+    foreach($helpers as $key => $val) {
+      // Find out if it's just helper name, or with args
+      if(is_numeric($key)) {
+        if(is_array($val)) {
+          $helperName = array_shift($val);
+          $helperArgs = $val;
+        }
+        else {
+          $helperName = $val;
+          $helperArgs = null;
+        }
+      }
+      else {
+        $helperName = $key;
+        $helperArgs = $val;
+      }
+
+      $value = $this->applyHelper($value, $helperName, $helperArgs);
+    }
+  }
+
+  private function applyHelper($value, $name, $args) {
+    if($func = \Nette\Templates\TemplateHelpers::loader($name)) return $func($value);
+    else throw new \InvalidArgumentException;
+  }
 }
