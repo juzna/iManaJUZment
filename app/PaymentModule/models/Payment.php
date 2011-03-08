@@ -21,6 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Platba
  *
+ * @package Model\Payment
  * @Table @Entity
  */
 class Payment extends \ActiveEntity\Entity {

@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * AP
  *
+ * @package Model\AP
  * @Table @Entity
  * @ae:behaviour @ae:editable @ae:title("Access points", single="Access Point")
  * @ae:links(module="AP", presenter="dashboard", alias="ap", common={"add"}, {

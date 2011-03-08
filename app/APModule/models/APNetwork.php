@@ -22,8 +22,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APNetwork
  *
- * @Table()
- * @Entity
+ * @package Model\AP
+ * @Table @Entity
  */
 class APNetwork extends \ActiveEntity\Entity
 {

@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APRoute
  *
+ * @package Model\AP
  * @Table @Entity
  * @ae:links(module="AP", presenter="dashboard", alias="route", common={ "add", "edit", "clone", "delete" })
  */

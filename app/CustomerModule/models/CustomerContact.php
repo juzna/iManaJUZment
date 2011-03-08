@@ -21,6 +21,7 @@
 /**
  * Contact defails for a customer
  *
+ * @package Model\Customer
  * @Table @Entity
  */
 class CustomerContact extends \ActiveEntity\Entity {

@@ -17,6 +17,8 @@
 
 
 /**
+ *
+ * @package Model\Payment
  * @Entity
  */
 class PaymeeInstalationFee extends Paymee {

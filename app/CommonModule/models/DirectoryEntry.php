@@ -21,6 +21,7 @@
 /**
  * DirectoryEntry
  *
+ * @package Model\Common
  * @Table(name="Directory") @Entity
  */
 class DirectoryEntry extends \ActiveEntity\Entity {

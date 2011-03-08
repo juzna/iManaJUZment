@@ -21,6 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Inactivity of a customer
  *
+ * @package Model\Customer
  * @Table @Entity
  */
 class CustomerInactivity extends \ActiveEntity\Entity {

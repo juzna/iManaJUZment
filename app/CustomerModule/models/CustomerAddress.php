@@ -21,6 +21,7 @@
 /**
  * Postal address of customer
  *
+ * @package Model\Customer
  * @Table @Entity
  * @ae:links(module="Customer", presenter="dashboard", alias="address", common={"add", "edit", "delete"})
  */

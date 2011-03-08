@@ -22,8 +22,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APHw
  *
- * @Table()
- * @Entity
+ * @package Model\AP
+ * @Table @Entity
  */
 class APHw extends \ActiveEntity\Entity
 {

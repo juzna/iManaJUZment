@@ -21,6 +21,7 @@
 /**
  * DirectoryAddress
  *
+ * @package Model\Common
  * @Table @Entity
  */
 class DirectoryAddress extends \ActiveEntity\Entity {

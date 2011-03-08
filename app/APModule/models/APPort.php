@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APPort
  *
+ * @package Model\AP
  * @Table @Entity
  * @ae:links(module="AP", presenter="dashboard", alias="port", common={ "add", "edit", "clone", "delete" })
  */

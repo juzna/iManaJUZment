@@ -17,6 +17,8 @@
 
 
 /**
+ *
+ * @package Model\Payment
  * @Entity
  */
 class PaymeeTariff extends Paymee {

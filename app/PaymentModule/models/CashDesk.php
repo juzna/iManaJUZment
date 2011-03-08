@@ -17,6 +17,9 @@
 
 
 /**
+ * Cash desk for accounting
+ *
+ * @package Model\Payment\Payment
  * @Entity
  */
 class CashDesk extends \ActiveEntity\Entity {

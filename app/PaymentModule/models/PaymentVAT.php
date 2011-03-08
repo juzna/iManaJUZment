@@ -17,7 +17,9 @@
 
 
 /**
- * @entity
+ *
+ * @package Model\Payment
+ * @Entity
  */
 class PaymentVAT extends \ActiveEntity\Entity {
   /**

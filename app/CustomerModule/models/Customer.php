@@ -21,6 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Customer
  *
+ * @package Model\Customer
  * @Table @Entity
  */
 class Customer extends \ActiveEntity\Entity {

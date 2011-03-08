@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APServiceList
  *
+ * @package Model\AP
  * @Table @Entity
  */
 class APServiceDefinition extends \ActiveEntity\Entity

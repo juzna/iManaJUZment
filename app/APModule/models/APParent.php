@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APParent
  *
+ * @package Model\AP
  * @Table @Entity
  */
 class APParent extends \ActiveEntity\Entity

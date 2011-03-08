@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APPortVlan
  *
+ * @package Model\AP
  * @Table @Entity
  */
 class APPortVlan extends \ActiveEntity\Entity

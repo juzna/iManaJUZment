@@ -21,6 +21,7 @@
 /**
  * TariffFlag
  *
+ * @package Model\Common
  * @Table @Entity
  */
 class TariffFlag extends \ActiveEntity\Entity

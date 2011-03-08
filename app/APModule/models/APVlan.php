@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APVlan
  *
+ * @package Model\AP
  * @Table @Entity
  * @ae:links(module="AP", presenter="dashboard", alias="vlan", common={ "add", "edit", "clone", "delete" })
  */

@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APCoverage
  *
+ * @package Model\AP
  * @Table @Entity
  * @ae:links(module="AP", presenter="dashboard", alias="coverage", common={ "add", "edit", "clone", "delete" }, {
  *   @ae:link(title="detail", view="coverageDetail", params={"$ID"})

@@ -17,6 +17,9 @@
 
 
 /**
+ * Bank account
+ *
+ * @package Model\Payment\Payment
  * @Entity
  */
 class BankAccount extends \ActiveEntity\Entity {

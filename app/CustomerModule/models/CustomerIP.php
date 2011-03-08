@@ -21,6 +21,7 @@
 /**
  * IP address of customer
  *
+ * @package Model\Customer
  * @Table @Entity
  * @ae:links(module="Customer", presenter="dashboard", alias="ip", common={"add", "edit", "remove"})
  */

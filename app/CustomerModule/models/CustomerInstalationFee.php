@@ -17,6 +17,9 @@
 
 
 /**
+ * One time instalation fee of customer
+ *
+ * @package Model\Customer
  * @Entity
  * @ae:links(module="Customer", presenter="dashboard", alias="instalationfee", common={"add", "edit", "remove"})
  */

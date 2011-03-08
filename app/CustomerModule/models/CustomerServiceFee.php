@@ -17,6 +17,9 @@
 
 
 /**
+ * One time fee
+ *
+ * @package Model\Customer
  * @Entity
  * @ae:links(module="Customer", presenter="dashboard", alias="servicefee", common={"add", "edit", "remove"})
  */

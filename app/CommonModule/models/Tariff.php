@@ -21,6 +21,7 @@
 /**
  * Tariff
  *
+ * @package Model\Common
  * @Table @Entity
  * @ae:links(module="Common", presenter="tarif", alias="tarif", common={"add", "edit", "remove"}, {
  *  @ae:link(title="detail", view="detail", params={"$ID"})

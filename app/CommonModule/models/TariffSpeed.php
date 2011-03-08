@@ -21,6 +21,7 @@
 /**
  * TariffSpeed
  *
+ * @package Model\Common
  * @Table @Entity
  * @ae:Behavioral
  */

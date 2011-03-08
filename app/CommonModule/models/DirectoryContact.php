@@ -21,6 +21,7 @@
 /**
  * DirectoryContact
  *
+ * @package Model\Common
  * @Table @Entity
  */
 class DirectoryContact extends \ActiveEntity\Entity {

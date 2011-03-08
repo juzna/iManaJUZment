@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APParam
  *
+ * @package Model\AP
  * @Table @Entity
  */
 class APParams extends \ActiveEntity\Entity

@@ -19,6 +19,8 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
+ *
+ * @package Model\Shaping
  * @entity
  */
 class Shaper extends \ActiveEntity\Entity {

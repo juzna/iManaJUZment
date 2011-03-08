@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APSwIf
  *
+ * @package Model\AP
  * @Table @Entity @ae:Behaviour
  * @ae:links(module="AP", presenter="dashboard", alias="swif", common={ "add", "edit", "clone", "delete" })
  */

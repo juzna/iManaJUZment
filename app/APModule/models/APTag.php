@@ -20,6 +20,8 @@
 
 /**
  * APTag
+ * 
+ * @package Model\AP
  * @Table @Entity
  */
 class APTag extends \ActiveEntity\Entity

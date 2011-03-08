@@ -22,8 +22,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APServiceOSList
  *
- * @Table()
- * @Entity
+ * @package Model\AP
+ * @Table @Entity
  */
 class APServiceOSList extends \ActiveEntity\Entity
 {

@@ -21,6 +21,7 @@
 /**
  * Paymee
  *
+ * @package Model\Payment
  * @Entity
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="type", type="string")

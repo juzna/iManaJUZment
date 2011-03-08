@@ -26,6 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * APAntenna
  *
+ * @package Model\AP
  * @Table @Entity
  * @ae:links(module="AP", presenter="dashboard", alias="antenna", common={ "add", "edit", "clone", "delete" })
  */

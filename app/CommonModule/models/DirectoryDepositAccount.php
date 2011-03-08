@@ -21,6 +21,7 @@
 /**
  * DirectoryDepositAccount
  *
+ * @package Model\Common
  * @Table @Entity
  */
 class DirectoryDepositAccount extends \ActiveEntity\Entity {

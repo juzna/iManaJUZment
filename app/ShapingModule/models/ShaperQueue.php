@@ -17,6 +17,8 @@
 
 
 /**
+ *
+ * @package Model\Shaping
  * @entity
  */
 class ShaperQueue extends \ActiveEntity\Entity {

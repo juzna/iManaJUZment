@@ -20,8 +20,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
- * tariffs of a customer
+ * Tariffs of a customer
  *
+ * @package Model\Customer
  * @Table @Entity
  * @ae:links(module="Customer", presenter="dashboard", alias="tariff", common={"add", "edit", "delete"})
  * @hasLifecycleCallbacks
