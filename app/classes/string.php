@@ -55,7 +55,7 @@ class String extends \Nette\String {
    * @param int $len
    * @return string
    */
-  static function random($len) {
+  static function random__($len) {
     static $z = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     $slen = strlen($z) - 1;
     for($s = ""; $len > 0; $len--) $s .= substr($z, rand(0, $slen), 1);

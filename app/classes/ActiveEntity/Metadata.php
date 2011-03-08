@@ -25,7 +25,7 @@ use ActiveEntity\Reflection\ReflectionClass,
 /**
  * Extended metadata for ActiveEntity's
  */
-class Metadata implements \Juz\IExtensionSubscriber {
+class Metadata extends \Nette\Object implements \Juz\IExtensionSubscriber {
   /** @var \Juz\ClassMetaData Link to parent metadata */
   protected $classMetadata;
   protected $className;
@@ -149,7 +149,7 @@ class Metadata implements \Juz\IExtensionSubscriber {
    */
   public function getFieldMetadata($fieldName, $mdName = null) {
     if(!is_string($fieldName) || strlen($fieldName) < 1) throw new \InvalidArgumentException('$fieldName must be valid field name');
-    if(!isset($this->classMetadata->fieldMappings[$fieldName])) throw new \InvalidArgumentException('Field not exists');
+    if(!$this->classMetadata->hasField($fieldName) && !$this->classMetadata->hasAssociation($fieldName)) throw new \InvalidArgumentException('Field not exists');
     $ret = isset($this->classMetadata->fieldMappings[$fieldName]['ActiveEntity']) ? $this->classMetadata->fieldMappings[$fieldName]['ActiveEntity'] : null;
 
     if(isset($mdName)) return isset($ret[$mdName]) ? $ret[$mdName] : null;
@@ -172,7 +172,7 @@ class Metadata implements \Juz\IExtensionSubscriber {
   /******** output methods ********/
 
   /**
-   * Get's title to be displayed
+   * Gets title to be displayed
    *  - for creating table
    *  - for edit form
    */

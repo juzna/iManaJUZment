@@ -26,7 +26,7 @@ class DoctrineEntityTableDefinition extends \Nette\Object implements ITableDefin
   /** @var string */
   private $entity;
 
-  /** @var ActiveEntity\ClassMetadata */
+  /** @var \ActiveEntity\ClassMetadata */
   private $metadata;
 
   private $_cache;
